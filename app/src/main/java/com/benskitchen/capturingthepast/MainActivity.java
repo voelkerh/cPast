@@ -2,11 +2,9 @@ package com.benskitchen.capturingthepast;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
-import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 
@@ -17,10 +15,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Environment;
 import android.os.ParcelFileDescriptor;
-import android.os.storage.StorageManager;
 import android.provider.MediaStore;
 
 import androidx.core.content.ContextCompat;
@@ -53,7 +49,6 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -71,7 +66,6 @@ import info.androidhive.fontawesome.FontDrawable;
 import capturingthepast.R;
 
 public class MainActivity extends AppCompatActivity {
-    private static final int REQUEST_ACTION_OPEN_DOCUMENT_TREE = 3;
     private String catRef = "";
     private String strRef = "";
     private String strItem = "";
@@ -408,25 +402,6 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(
                 "content://media/internal/images/media"));
         startActivity(intent);
-    }
-
-    public void openFolder() throws FileNotFoundException {
-
-        StorageManager sm = (StorageManager) this.getSystemService(Context.STORAGE_SERVICE);
-        Intent intent = sm.getPrimaryStorageVolume().createOpenDocumentTreeIntent();
-        //String startDir = "Android";
-        //String startDir = "Download"; // Not choosable on an Android 11 device
-        //String startDir = "DCIM";
-        //  String startDir = "DCIM/Camera";  // replace "/", "%2F"
-        String startDir = "Pictures" + File.separator + "CapturingThePast";
-        Uri uri = intent.getParcelableExtra("android.provider.extra.INITIAL_URI");
-        String scheme = uri.toString();
-        scheme = scheme.replace("/root/", "/document/");
-        scheme += "%3A" + startDir;
-        uri = Uri.parse(scheme);
-        intent.putExtra("android.provider.extra.INITIAL_URI", uri);
-        ((Activity) this).startActivityForResult(intent, REQUEST_ACTION_OPEN_DOCUMENT_TREE);
-
     }
 
     private String createCatRef() {
