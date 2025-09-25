@@ -404,6 +404,7 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    // Domain Logic - move
     private String createCatRef() {
         catRef = strArchon;
         if (!strRef.isEmpty()) {
@@ -436,8 +437,7 @@ public class MainActivity extends AppCompatActivity {
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
 
-    private boolean dispatchTakePictureIntent() {
-       // Log.i("Content ", "CamIntent ");
+    private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         // Ensure that there's a camera activity to handle the intent
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
@@ -445,9 +445,9 @@ public class MainActivity extends AppCompatActivity {
             File photoFile = null;
             try {
                 photoFile = createImageFile();
-            } catch (IOException ex) {
+            } catch (IOException e) {
                 // Error occurred while creating the File
-                ex.printStackTrace();
+                e.printStackTrace();
             }
             // Continue only if the File was successfully created
             if (photoFile != null) {
@@ -457,9 +457,6 @@ public class MainActivity extends AppCompatActivity {
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
             }
-            return true;
-        } else {
-            return false;
         }
     }
 
@@ -470,14 +467,11 @@ public class MainActivity extends AppCompatActivity {
             Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath);
             try {
                 ExifInterface exif = new ExifInterface(currentPhotoPath);
-               // String model = exif.getAttribute(ExifInterface.TAG_MODEL);
-               // Log.i("Content ", "Image metadata for############################### " + currentPhotoPath + "  " + model);
                 saveImageToGallery(bitmap, exif);
                 dropdown.setSelection(nCurrentRepo);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
         }
     }
 
@@ -486,7 +480,6 @@ public class MainActivity extends AppCompatActivity {
         File image = new File(storageDir, "temp.jpg");
         currentFolderPath = storageDir.getAbsolutePath();
         currentPhotoPath = image.getAbsolutePath();
-        //Log.i("Content: ", "Image Legacy " + currentPhotoPath);
         return image;
     }
 
@@ -497,39 +490,6 @@ public class MainActivity extends AppCompatActivity {
         String imageFileName = strPrefix + "_" + timeStamp + "_" + catRef + ".jpg";
         String strCSV = "\"" + humanisedTime + "\",\"" + catRef + "\",\"" + imageFileName + "\",\"" + strNote + "\"";
         writePublicLog(strCSV);
-//        boolean bSaved = false;
-//        try {
-//                ContentResolver contentResolver = getContentResolver();
-//                ContentValues contentValues = new ContentValues();
-//                contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, imageFileName);
-//                contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "image/jpg");
-//                contentValues.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + File.separator + "CapturingThePast");
-//                Uri imageUri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
-//                fos = contentResolver.openOutputStream(Objects.requireNonNull(imageUri));
-//                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-//                Objects.requireNonNull(fos);
-//                int n = nCaptureCounter + 1;
-//                setCaptureCounter(n, catRef);
-//                String strToastMessage = "Image saved";
-//                Toast.makeText(this, strToastMessage, LENGTH_SHORT).show();
-//                bSaved = true;
-//        } catch (Exception e) {
-//            Toast.makeText(this, "Image not saved\n" + e.getMessage(), LENGTH_SHORT).show();
-//        }
-//        if(bSaved){
-//
-//        }
-//////////////////////////////////////////***/
-
-//        ContentValues values = new ContentValues();
-//        values.put(MediaStore.Images.Media.DISPLAY_NAME, filename);
-//        values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
-//        values.put(MediaStore.MediaColumns.DATE_ADDED, now);
-//        values.put(MediaStore.MediaColumns.DATE_MODIFIED, now);
-//        ContentResolver resolver = context.getContentResolver();
-        ////////////////////////*
-        ///Uri uri = resolver.insert( MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values );
-
 
         ContentResolver contentResolver = getContentResolver();
         ContentValues contentValues = new ContentValues();
@@ -547,7 +507,7 @@ public class MainActivity extends AppCompatActivity {
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
             }
 
-            // Synch data with disk. It's mandatory to be able later to call writeExif
+            // Sync data with disk. It's mandatory to be able later to call writeExif
             fd.sync();    // <---- HERE THE SOLUTION
             int n = nCaptureCounter + 1;
             setCaptureCounter(n, catRef);
@@ -559,15 +519,9 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Image not saved\n" + e.getMessage(), LENGTH_SHORT).show();
             e.printStackTrace();
         }
-
-
     }
 
-
-
     private void writeExif(Uri uri, ExifInterface exif) {
-//        String model = exif.getAttribute(ExifInterface.TAG_MODEL);
-//        Log.i("Content ", "Image metadata for############################### " + currentPhotoPath + "  " + model);
 
         try (ParcelFileDescriptor imagePfd = getContentResolver().openFileDescriptor(uri, "rw")) {
             ExifInterface exifNew = new ExifInterface(imagePfd.getFileDescriptor());
@@ -579,7 +533,6 @@ public class MainActivity extends AppCompatActivity {
             exifNew.setAttribute(ExifInterface.TAG_BRIGHTNESS_VALUE, exif.getAttribute(ExifInterface.TAG_BRIGHTNESS_VALUE));
             exifNew.setAttribute(ExifInterface.TAG_CFA_PATTERN, exif.getAttribute(ExifInterface.TAG_CFA_PATTERN));
             exifNew.setAttribute(ExifInterface.TAG_COLOR_SPACE, exif.getAttribute(ExifInterface.TAG_COLOR_SPACE));
-            //exifNew.setAttribute(ExifInterface.TAG_COMPONENTS_CONFIGURATION, exif.getAttribute(ExifInterface.TAG_COMPONENTS_CONFIGURATION));
             exifNew.setAttribute(ExifInterface.TAG_COMPRESSED_BITS_PER_PIXEL, exif.getAttribute(ExifInterface.TAG_COMPRESSED_BITS_PER_PIXEL));
             exifNew.setAttribute(ExifInterface.TAG_COMPRESSION, exif.getAttribute(ExifInterface.TAG_COMPRESSION));
             exifNew.setAttribute(ExifInterface.TAG_CONTRAST, exif.getAttribute(ExifInterface.TAG_CONTRAST));
@@ -590,7 +543,6 @@ public class MainActivity extends AppCompatActivity {
             exifNew.setAttribute(ExifInterface.TAG_DIGITAL_ZOOM_RATIO, exif.getAttribute(ExifInterface.TAG_DIGITAL_ZOOM_RATIO));
             exifNew.setAttribute(ExifInterface.TAG_DNG_VERSION, exif.getAttribute(ExifInterface.TAG_DNG_VERSION));
             exifNew.setAttribute(ExifInterface.TAG_EXPOSURE_BIAS_VALUE, exif.getAttribute(ExifInterface.TAG_EXPOSURE_BIAS_VALUE));
-            //exifNew.setAttribute(ExifInterface.TAG_EXIF_VERSION, exif.getAttribute(ExifInterface.TAG_EXIF_VERSION));
             exifNew.setAttribute(ExifInterface.TAG_EXPOSURE_INDEX, exif.getAttribute(ExifInterface.TAG_EXPOSURE_INDEX));
             exifNew.setAttribute(ExifInterface.TAG_EXPOSURE_MODE, exif.getAttribute(ExifInterface.TAG_EXPOSURE_MODE));
             exifNew.setAttribute(ExifInterface.TAG_EXPOSURE_PROGRAM, exif.getAttribute(ExifInterface.TAG_EXPOSURE_PROGRAM));
@@ -598,7 +550,6 @@ public class MainActivity extends AppCompatActivity {
             exifNew.setAttribute(ExifInterface.TAG_RECOMMENDED_EXPOSURE_INDEX, exif.getAttribute(ExifInterface.TAG_RECOMMENDED_EXPOSURE_INDEX));
             exifNew.setAttribute(ExifInterface.TAG_FILE_SOURCE, exif.getAttribute(ExifInterface.TAG_FILE_SOURCE));
             exifNew.setAttribute(ExifInterface.TAG_FLASH, exif.getAttribute(ExifInterface.TAG_FLASH));
-           // exifNew.setAttribute(ExifInterface.TAG_FLASHPIX_VERSION, exif.getAttribute(ExifInterface.TAG_FLASHPIX_VERSION));
             exifNew.setAttribute(ExifInterface.TAG_FOCAL_LENGTH, exif.getAttribute(ExifInterface.TAG_FOCAL_LENGTH));
             exifNew.setAttribute(ExifInterface.TAG_FOCAL_LENGTH_IN_35MM_FILM, exif.getAttribute(ExifInterface.TAG_FOCAL_LENGTH_IN_35MM_FILM));
             exifNew.setAttribute(ExifInterface.TAG_FOCAL_PLANE_RESOLUTION_UNIT, exif.getAttribute(ExifInterface.TAG_FOCAL_PLANE_RESOLUTION_UNIT));
@@ -677,9 +628,7 @@ public class MainActivity extends AppCompatActivity {
 
             exifNew.setAttribute(ExifInterface.TAG_THUMBNAIL_IMAGE_LENGTH, exif.getAttribute(ExifInterface.TAG_THUMBNAIL_IMAGE_LENGTH));
             exifNew.setAttribute(ExifInterface.TAG_THUMBNAIL_IMAGE_WIDTH, exif.getAttribute(ExifInterface.TAG_THUMBNAIL_IMAGE_WIDTH));
-            //exifNew.setAttribute(ExifInterface.TAG_THUMBNAIL_ORIENTATION, exif.getAttribute(ExifInterface.TAG_THUMBNAIL_ORIENTATION));
             exifNew.setAttribute(ExifInterface.TAG_TRANSFER_FUNCTION, exif.getAttribute(ExifInterface.TAG_TRANSFER_FUNCTION));
-            //exifNew.setAttribute(ExifInterface.TAG_USER_COMMENT, exif.getAttribute(ExifInterface.TAG_USER_COMMENT));
             exifNew.setAttribute(ExifInterface.TAG_WHITE_POINT, exif.getAttribute(ExifInterface.TAG_WHITE_POINT));
             exifNew.setAttribute(ExifInterface.TAG_WHITE_BALANCE, exif.getAttribute(ExifInterface.TAG_WHITE_BALANCE));
             exifNew.setAttribute(ExifInterface.TAG_X_RESOLUTION, exif.getAttribute(ExifInterface.TAG_X_RESOLUTION));
@@ -723,17 +672,15 @@ public class MainActivity extends AppCompatActivity {
             while (cursor.moveToNext()) {
                 int disName = cursor.getColumnIndex(MediaStore.MediaColumns.DISPLAY_NAME);
                 int disID = cursor.getColumnIndex(MediaStore.MediaColumns._ID);
-                //if(disName>=0 && disID>=0) {
-                //if(disName>=0){
-
-                    String fileName = cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DISPLAY_NAME));
+                if(disName>=0 && disID>=0) {
+                    String fileName = cursor.getString(disName);
                     if (fileName.equals(strLogFilename)) {
-                        long id = cursor.getLong(cursor.getColumnIndex(MediaStore.MediaColumns._ID));
+                        long id = cursor.getLong(disID);
 
                         uri = ContentUris.withAppendedId(contentUri, id);
                         break;
                     }
-               // }
+               }
             }
             if (uri == null) {
                 Toast.makeText(this, "\"" + strLogFilename + "\" not found", LENGTH_SHORT).show();
@@ -757,26 +704,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public static void copyStream(InputStream input, OutputStream output) throws IOException {
-        byte[] buffer = new byte[1024];
-        int bytesRead;
-        while ((bytesRead = input.read(buffer)) != -1) {
-            output.write(buffer, 0, bytesRead);
-        }
-    }
-
     private void writeArchons() {
-       // Log.i("Content ", "Write Archons");
         String jsonString = "{\"strPrefix\":\"cpast\",\"bTimestamp\":\"TRUE\",\"nCaptureCount\":\"0\",\"recentFiles\":[],\"data\":[{\"Repository\":\"Repository - GB0000\",\"Archon\":\"GB0000\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Archives and Cornish Studies Service\",\"Archon\":\"GB0021\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Bedfordshire Archives & Record Service\",\"Archon\":\"GB0004\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Berkshire Record Office\",\"Archon\":\"GB0005\",\"Enabled\":\"TRUE\"},{\"Repository\":\"British Library Manuscript Collections\",\"Archon\":\"GB0058\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Brotherton Library - Leeds University\",\"Archon\":\"GB1471\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Buckinghamshire Archives\",\"Archon\":\"GB0008\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Cambridge University Library: Department of Manuscripts and University Archives\",\"Archon\":\"GB0012\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Cambridgeshire Archives\",\"Archon\":\"GB0010\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Ceredigion Archives\",\"Archon\":\"GB0212\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Chester Archives and Local Studies\",\"Archon\":\"GB0017\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Coventry Archives and Local Record Office\",\"Archon\":\"GB0144\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Cumbria Archive Service (Barrow)\",\"Archon\":\"GB0025\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Cumbria Archive Service (Carlisle)\",\"Archon\":\"GB0023\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Cumbria Archive Service (Kendal)\",\"Archon\":\"GB0024\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Cumbria Archive Service (Whitehaven)\",\"Archon\":\"GB1831\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Derby Local Studies and Family History Library\",\"Archon\":\"GB1160\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Derbyshire Local Studies Library\",\"Archon\":\"GB1944\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Derbyshire Record Office\",\"Archon\":\"GB0026\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Devon Archives and Local Studies Service (South WestHeritage Trust)\",\"Archon\":\"GB0027\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Dorset History Centre\",\"Archon\":\"GB0031\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Dr Williams’s Library\",\"Archon\":\"GB0123\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Dudley Archives and Local History Centre\",\"Archon\":\"GB0145\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Durham County Record Office\",\"Archon\":\"GB0032\",\"Enabled\":\"TRUE\"},{\"Repository\":\"East Sussex and Brighton and Hove Record Office\",\"Archon\":\"GB0179\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Essex Record Office\",\"Archon\":\"GB0037\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Gloucestershire Archives\",\"Archon\":\"GB0040\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Hampshire Archives and Local Studies\",\"Archon\":\"GB0041\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Herefordshire Archives and Records Centre\",\"Archon\":\"GB0044\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Hertfordshire Archives and Local Studies\",\"Archon\":\"GB0046\",\"Enabled\":\"TRUE\"},{\"Repository\":\"John Rylands Library\",\"Archon\":\"GB3191\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Kent History and Library Centre\",\"Archon\":\"GB0051\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Lambeth Palace Library\",\"Archon\":\"GB0109\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Lincolnshire Archives\",\"Archon\":\"GB0057\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Liverpool Record Office\",\"Archon\":\"GB1623\",\"Enabled\":\"TRUE\"},{\"Repository\":\"London Metropolitan Archives\",\"Archon\":\"GB0074\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Manchester City Archives\",\"Archon\":\"GB0127\",\"Enabled\":\"TRUE\"},{\"Repository\":\"National Library of Scotland\",\"Archon\":\"GB0233\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Norfolk Record Office\",\"Archon\":\"GB0153\",\"Enabled\":\"TRUE\"},{\"Repository\":\"North Yorkshire County Record Office\",\"Archon\":\"GB0191\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Northamptonshire Archives\",\"Archon\":\"GB0154\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Northumberland Archives\",\"Archon\":\"GB0155\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Northumberland Record Office - Morpeth\",\"Archon\":\"GB1834\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Nottinghamshire Archives\",\"Archon\":\"GB0157\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Oxford University: Bodleian Library - Special Collections\",\"Archon\":\"GB0161\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Oxfordshire History Centre\",\"Archon\":\"GB0160\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Religious Society of Friends Library\",\"Archon\":\"GB0111\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Sheffield City Archives\",\"Archon\":\"GB1163\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Sheffield Local Studies Library\",\"Archon\":\"GB1783\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Shropshire Archives\",\"Archon\":\"GB0166\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Somerset Heritage Centre\",\"Archon\":\"GB0168\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Suffolk Record Office - Bury St Edmunds Branch\",\"Archon\":\"GB0174\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Suffolk Record Office - Ipswich Branch\",\"Archon\":\"GB0173\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Surrey History Centre\",\"Archon\":\"GB0176\",\"Enabled\":\"TRUE\"},{\"Repository\":\"The National Archives - Kew\",\"Archon\":\"GB0066\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Tyne & Wear Archives\",\"Archon\":\"GB0183\",\"Enabled\":\"TRUE\"},{\"Repository\":\"University of Birmingham: Cadbury Research Library\",\"Archon\":\"GB0150\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Ushaw College Library (Durham University Special Collections)\",\"Archon\":\"GB0033\",\"Enabled\":\"TRUE\"},{\"Repository\":\"WellcomeCollection\",\"Archon\":\"GB0120\",\"Enabled\":\"TRUE\"},{\"Repository\":\"West Sussex Record Office\",\"Archon\":\"GB0182\",\"Enabled\":\"TRUE\"},{\"Repository\":\"West Yorkshire Archive Service (Bradford)\",\"Archon\":\"GB0202\",\"Enabled\":\"TRUE\"},{\"Repository\":\"West Yorkshire Archive Service (Calderdale)\",\"Archon\":\"GB0203\",\"Enabled\":\"TRUE\"},{\"Repository\":\"West Yorkshire Archive Service (Kirklees)\",\"Archon\":\"GB0204\",\"Enabled\":\"TRUE\"},{\"Repository\":\"West Yorkshire Archive Service (Leeds)\",\"Archon\":\"GB0205\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Wiltshire and Swindon History Centre\",\"Archon\":\"GB0190\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Wolverhampton City Archives\",\"Archon\":\"GB0149\",\"Enabled\":\"TRUE\"},{\"Repository\":\"York City Archives\",\"Archon\":\"GBYORK\",\"Enabled\":\"TRUE\"}]}";
-        //String jsonString = "{\"strPrefix\":\"cpast\",\"bTimestamp\":\"TRUE\",\"nCaptureCount\":\"0\",\"data\":[{\"Repository\":\"Repository - GB0000\",\"Archon\":\"GB0000\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Archives and Cornish Studies Service\",\"Archon\":\"GB0021\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Bedfordshire Archives & Record Service\",\"Archon\":\"GB0004\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Berkshire Record Office\",\"Archon\":\"GB0005\",\"Enabled\":\"TRUE\"},{\"Repository\":\"British Library Manuscript Collections\",\"Archon\":\"GB0058\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Brotherton Library - Leeds University\",\"Archon\":\"GB1471\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Buckinghamshire Archives\",\"Archon\":\"GB0008\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Cambridge University Library: Department of Manuscripts and University Archives\",\"Archon\":\"GB0012\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Cambridgeshire Archives\",\"Archon\":\"GB0010\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Ceredigion Archives\",\"Archon\":\"GB0212\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Chester Archives and Local Studies\",\"Archon\":\"GB0017\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Coventry Archives and Local Record Office\",\"Archon\":\"GB0144\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Cumbria Archive Service (Barrow)\",\"Archon\":\"GB0025\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Cumbria Archive Service (Carlisle)\",\"Archon\":\"GB0023\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Cumbria Archive Service (Kendal)\",\"Archon\":\"GB0024\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Cumbria Archive Service (Whitehaven)\",\"Archon\":\"GB1831\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Derby Local Studies and Family History Library\",\"Archon\":\"GB1160\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Derbyshire Local Studies Library\",\"Archon\":\"GB1944\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Derbyshire Record Office\",\"Archon\":\"GB0026\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Devon Archives and Local Studies Service (South WestHeritage Trust)\",\"Archon\":\"GB0027\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Dorset History Centre\",\"Archon\":\"GB0031\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Dr Williams’s Library\",\"Archon\":\"GB0123\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Dudley Archives and Local History Centre\",\"Archon\":\"GB0145\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Durham County Record Office\",\"Archon\":\"GB0032\",\"Enabled\":\"TRUE\"},{\"Repository\":\"East Sussex and Brighton and Hove Record Office\",\"Archon\":\"GB0179\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Essex Record Office\",\"Archon\":\"GB0037\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Gloucestershire Archives\",\"Archon\":\"GB0040\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Hampshire Archives and Local Studies\",\"Archon\":\"GB0041\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Herefordshire Archives and Records Centre\",\"Archon\":\"GB0044\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Hertfordshire Archives and Local Studies\",\"Archon\":\"GB0046\",\"Enabled\":\"TRUE\"},{\"Repository\":\"John Rylands Library\",\"Archon\":\"GB3191\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Kent History and Library Centre\",\"Archon\":\"GB0051\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Lambeth Palace Library\",\"Archon\":\"GB0109\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Lincolnshire Archives\",\"Archon\":\"GB0057\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Liverpool Record Office\",\"Archon\":\"GB1623\",\"Enabled\":\"TRUE\"},{\"Repository\":\"London Metropolitan Archives\",\"Archon\":\"GB0074\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Manchester City Archives\",\"Archon\":\"GB0127\",\"Enabled\":\"TRUE\"},{\"Repository\":\"National Library of Scotland\",\"Archon\":\"GB0233\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Norfolk Record Office\",\"Archon\":\"GB0153\",\"Enabled\":\"TRUE\"},{\"Repository\":\"North Yorkshire County Record Office\",\"Archon\":\"GB0191\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Northamptonshire Archives\",\"Archon\":\"GB0154\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Northumberland Archives\",\"Archon\":\"GB0155\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Northumberland Record Office - Morpeth\",\"Archon\":\"GB1834\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Nottinghamshire Archives\",\"Archon\":\"GB0157\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Oxford University: Bodleian Library - Special Collections\",\"Archon\":\"GB0161\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Oxfordshire History Centre\",\"Archon\":\"GB0160\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Religious Society of Friends Library\",\"Archon\":\"GB0111\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Sheffield City Archives\",\"Archon\":\"GB1163\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Sheffield Local Studies Library\",\"Archon\":\"GB1783\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Shropshire Archives\",\"Archon\":\"GB0166\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Somerset Heritage Centre\",\"Archon\":\"GB0168\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Suffolk Record Office - Bury St Edmunds Branch\",\"Archon\":\"GB0174\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Suffolk Record Office - Ipswich Branch\",\"Archon\":\"GB0173\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Surrey History Centre\",\"Archon\":\"GB0176\",\"Enabled\":\"TRUE\"},{\"Repository\":\"The National Archives - Kew\",\"Archon\":\"GB0066\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Tyne & Wear Archives\",\"Archon\":\"GB0183\",\"Enabled\":\"TRUE\"},{\"Repository\":\"University of Birmingham: Cadbury Research Library\",\"Archon\":\"GB0150\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Ushaw College Library (Durham University Special Collections)\",\"Archon\":\"GB0033\",\"Enabled\":\"TRUE\"},{\"Repository\":\"WellcomeCollection\",\"Archon\":\"GB0120\",\"Enabled\":\"TRUE\"},{\"Repository\":\"West Sussex Record Office\",\"Archon\":\"GB0182\",\"Enabled\":\"TRUE\"},{\"Repository\":\"West Yorkshire Archive Service (Bradford)\",\"Archon\":\"GB0202\",\"Enabled\":\"TRUE\"},{\"Repository\":\"West Yorkshire Archive Service (Calderdale)\",\"Archon\":\"GB0203\",\"Enabled\":\"TRUE\"},{\"Repository\":\"West Yorkshire Archive Service (Kirklees)\",\"Archon\":\"GB0204\",\"Enabled\":\"TRUE\"},{\"Repository\":\"West Yorkshire Archive Service (Leeds)\",\"Archon\":\"GB0205\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Wiltshire and Swindon History Centre\",\"Archon\":\"GB0190\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Wolverhampton City Archives\",\"Archon\":\"GB0149\",\"Enabled\":\"TRUE\"},{\"Repository\":\"York City Archives\",\"Archon\":\"GBYORK\",\"Enabled\":\"TRUE\"}]}";
         createAndSaveFile(params, jsonString);
     }
 
     private void resetArchons(String str) {
         String jsonString = "{\"strPrefix\":\"cpast\",\"bTimestamp\":\"TRUE\",\"nCaptureCount\":\"0\",\"recentFiles\":[],\"data\":[{\"Repository\":\"Repository - GB0000\",\"Archon\":\"GB0000\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Archives and Cornish Studies Service\",\"Archon\":\"GB0021\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Bedfordshire Archives & Record Service\",\"Archon\":\"GB0004\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Berkshire Record Office\",\"Archon\":\"GB0005\",\"Enabled\":\"TRUE\"},{\"Repository\":\"British Library Manuscript Collections\",\"Archon\":\"GB0058\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Brotherton Library - Leeds University\",\"Archon\":\"GB1471\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Buckinghamshire Archives\",\"Archon\":\"GB0008\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Cambridge University Library: Department of Manuscripts and University Archives\",\"Archon\":\"GB0012\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Cambridgeshire Archives\",\"Archon\":\"GB0010\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Ceredigion Archives\",\"Archon\":\"GB0212\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Chester Archives and Local Studies\",\"Archon\":\"GB0017\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Coventry Archives and Local Record Office\",\"Archon\":\"GB0144\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Cumbria Archive Service (Barrow)\",\"Archon\":\"GB0025\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Cumbria Archive Service (Carlisle)\",\"Archon\":\"GB0023\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Cumbria Archive Service (Kendal)\",\"Archon\":\"GB0024\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Cumbria Archive Service (Whitehaven)\",\"Archon\":\"GB1831\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Derby Local Studies and Family History Library\",\"Archon\":\"GB1160\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Derbyshire Local Studies Library\",\"Archon\":\"GB1944\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Derbyshire Record Office\",\"Archon\":\"GB0026\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Devon Archives and Local Studies Service (South WestHeritage Trust)\",\"Archon\":\"GB0027\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Dorset History Centre\",\"Archon\":\"GB0031\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Dr Williams’s Library\",\"Archon\":\"GB0123\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Dudley Archives and Local History Centre\",\"Archon\":\"GB0145\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Durham County Record Office\",\"Archon\":\"GB0032\",\"Enabled\":\"TRUE\"},{\"Repository\":\"East Sussex and Brighton and Hove Record Office\",\"Archon\":\"GB0179\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Essex Record Office\",\"Archon\":\"GB0037\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Gloucestershire Archives\",\"Archon\":\"GB0040\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Hampshire Archives and Local Studies\",\"Archon\":\"GB0041\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Herefordshire Archives and Records Centre\",\"Archon\":\"GB0044\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Hertfordshire Archives and Local Studies\",\"Archon\":\"GB0046\",\"Enabled\":\"TRUE\"},{\"Repository\":\"John Rylands Library\",\"Archon\":\"GB3191\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Kent History and Library Centre\",\"Archon\":\"GB0051\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Lambeth Palace Library\",\"Archon\":\"GB0109\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Lincolnshire Archives\",\"Archon\":\"GB0057\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Liverpool Record Office\",\"Archon\":\"GB1623\",\"Enabled\":\"TRUE\"},{\"Repository\":\"London Metropolitan Archives\",\"Archon\":\"GB0074\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Manchester City Archives\",\"Archon\":\"GB0127\",\"Enabled\":\"TRUE\"},{\"Repository\":\"National Library of Scotland\",\"Archon\":\"GB0233\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Norfolk Record Office\",\"Archon\":\"GB0153\",\"Enabled\":\"TRUE\"},{\"Repository\":\"North Yorkshire County Record Office\",\"Archon\":\"GB0191\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Northamptonshire Archives\",\"Archon\":\"GB0154\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Northumberland Archives\",\"Archon\":\"GB0155\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Northumberland Record Office - Morpeth\",\"Archon\":\"GB1834\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Nottinghamshire Archives\",\"Archon\":\"GB0157\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Oxford University: Bodleian Library - Special Collections\",\"Archon\":\"GB0161\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Oxfordshire History Centre\",\"Archon\":\"GB0160\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Religious Society of Friends Library\",\"Archon\":\"GB0111\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Sheffield City Archives\",\"Archon\":\"GB1163\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Sheffield Local Studies Library\",\"Archon\":\"GB1783\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Shropshire Archives\",\"Archon\":\"GB0166\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Somerset Heritage Centre\",\"Archon\":\"GB0168\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Suffolk Record Office - Bury St Edmunds Branch\",\"Archon\":\"GB0174\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Suffolk Record Office - Ipswich Branch\",\"Archon\":\"GB0173\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Surrey History Centre\",\"Archon\":\"GB0176\",\"Enabled\":\"TRUE\"},{\"Repository\":\"The National Archives - Kew\",\"Archon\":\"GB0066\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Tyne & Wear Archives\",\"Archon\":\"GB0183\",\"Enabled\":\"TRUE\"},{\"Repository\":\"University of Birmingham: Cadbury Research Library\",\"Archon\":\"GB0150\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Ushaw College Library (Durham University Special Collections)\",\"Archon\":\"GB0033\",\"Enabled\":\"TRUE\"},{\"Repository\":\"WellcomeCollection\",\"Archon\":\"GB0120\",\"Enabled\":\"TRUE\"},{\"Repository\":\"West Sussex Record Office\",\"Archon\":\"GB0182\",\"Enabled\":\"TRUE\"},{\"Repository\":\"West Yorkshire Archive Service (Bradford)\",\"Archon\":\"GB0202\",\"Enabled\":\"TRUE\"},{\"Repository\":\"West Yorkshire Archive Service (Calderdale)\",\"Archon\":\"GB0203\",\"Enabled\":\"TRUE\"},{\"Repository\":\"West Yorkshire Archive Service (Kirklees)\",\"Archon\":\"GB0204\",\"Enabled\":\"TRUE\"},{\"Repository\":\"West Yorkshire Archive Service (Leeds)\",\"Archon\":\"GB0205\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Wiltshire and Swindon History Centre\",\"Archon\":\"GB0190\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Wolverhampton City Archives\",\"Archon\":\"GB0149\",\"Enabled\":\"TRUE\"},{\"Repository\":\"York City Archives\",\"Archon\":\"GBYORK\",\"Enabled\":\"TRUE\"}]}";
         if (str.equals("short")) {
-            //jsonString = "{\"strPrefix\":\"cpast\",\"bTimestamp\":\"TRUE\",\"nCaptureCount\":\"0\",\"recentFiles\":[],\"data\":[{\"Repository\":\"Repository - GB0000\",\"Archon\":\"GB0000\",\"Enabled\":\"TRUE\"},{\"Repository\":\"The National Archives - Kew\",\"Archon\":\"GB0066\",\"Enabled\":\"TRUE\"}]}";
-            //jsonString = "{\"strPrefix\":\"cpast\",\"bTimestamp\":\"TRUE\",\"nCaptureCount\":\"0\",\"recentFiles\":[],\"data\":[{\"Repository\":\"Default Repository - GB0000\",\"Archon\":\"GB0000\",\"Enabled\":\"TRUE\"},{\"Repository\":\"TNA\",\"Archon\":\"GB0066\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Cumbria\",\"Archon\":\"GB0023\",\"Enabled\":\"TRUE\"},{\"Repository\":\"East Sussex\",\"Archon\":\"GB0179\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Staffordshire\",\"Archon\":\"GB0169\",\"Enabled\":\"TRUE\"}]}";
             jsonString = "{\"strPrefix\":\"cpast\",\"bTimestamp\":\"TRUE\",\"nCaptureCount\":\"0\",\"recentFiles\":[],\"data\":[{\"Repository\":\"Default Repository - GB0000\",\"Archon\":\"GB0000\",\"Enabled\":\"TRUE\"},{\"Repository\":\"TNA\",\"Archon\":\"GB0066\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Cumbria\",\"Archon\":\"GB0023\",\"Enabled\":\"TRUE\"},{\"Repository\":\"East Sussex\",\"Archon\":\"GB0179\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Staffordshire\",\"Archon\":\"GB0169\",\"Enabled\":\"TRUE\"},{\"Repository\":\"St Bartholomew's Hospital Archives\",\"Archon\":\"GB0405\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Royal London Hospital Archives\",\"Archon\":\"GB0387\",\"Enabled\":\"TRUE\"}]}";
         }
         else if (str.equals("alternative")) {
@@ -793,7 +728,6 @@ public class MainActivity extends AppCompatActivity {
             file.close();
             readJsonData(params);
         } catch (IOException e) {
-            //Log.i("Content ", " JSON Writing Exception *******************************************************************************  JSON Writing Exception ");
             e.printStackTrace();
         }
     }
@@ -839,14 +773,12 @@ public class MainActivity extends AppCompatActivity {
                     nEnabled++;
                 }
             }
-            //Log.i("Content ", "AJS2 Apply bTimestamped=" + bTimestamped + "..strPrefix=" + strPrefix + "..-.." + length + " repos.." + nEnabled + " enabled - nCurrentRepo "+nCurrentRepo);
             Spinner dropdownd = findViewById(R.id.spinnerRepo);
             ArrayAdapter dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, repos);
             dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             dropdownd.setAdapter(dataAdapter);
         } catch (JSONException e) {
             writeArchons();
-           // Log.i("Content ", "AJS Exception xxxxx");
             e.printStackTrace();
         }
         try {
@@ -855,10 +787,8 @@ public class MainActivity extends AppCompatActivity {
             recentFiles = new ArrayList<>();//(recentFileStore);
             for (int j = 0; j < recentFileStore.length(); j++) {
                 recentFiles.add((String) recentFileStore.get(j));
-                //Log.i("Content ", "string " + recentFiles.get(j));
             }
         } catch (JSONException e) {
-            //Log.i("Content ", "AJS Secondary Exception xxxxx");
             e.printStackTrace();
         }
     }
@@ -879,7 +809,6 @@ public class MainActivity extends AppCompatActivity {
             createAndSaveFile(params, output);
         } catch (JSONException e) {
             e.printStackTrace();
-            //Log.i("Content ", "preference writing exception");
         }
     }
 
@@ -891,7 +820,6 @@ public class MainActivity extends AppCompatActivity {
         tvTitle.setMovementMethod(LinkMovementMethod.getInstance());
         tvTitle.setText(Html.fromHtml(tittleText, Html.FROM_HTML_MODE_LEGACY));
         TextView tvTip = new TextView(this);
-        //String sLink = " <a href=https://discovery.nationalarchives.gov.uk/browse/a/A >TNA's</a>";//String privacyLink = " and our <a href=file://"+currentFolderPath+"/>Privacy Policy</a>";
         String tipText = getString(R.string.tna_tip);
         tipText += getString(R.string.repo_tip);
         tvTip.setMovementMethod(LinkMovementMethod.getInstance());
@@ -913,41 +841,35 @@ public class MainActivity extends AppCompatActivity {
         linearLayout.addView(tvTip);
         linearLayout.setPadding(50, 80, 50, 10);
         alertDialog.setView(linearLayout);
-        alertDialog.setPositiveButton("Save", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                String strRepo = inputRepo.getText().toString();
-                String strArchon = inputArchon.getText().toString();
-                strArchon = strArchon.replaceAll("\\s+", "").toUpperCase();
-                strArchon = strArchon.replaceAll("/", "_");
-                JSONObject jsonObj = new JSONObject();
+        alertDialog.setPositiveButton("Save", (dialog, which) -> {
+            String strRepo = inputRepo.getText().toString();
+            String strArchon = inputArchon.getText().toString();
+            strArchon = strArchon.replaceAll("\\s+", "").toUpperCase();
+            strArchon = strArchon.replaceAll("/", "_");
+            JSONObject jsonObj = new JSONObject();
+            try {
+                jsonObj.put("Repository", strRepo);
+                jsonObj.put("Archon", strArchon);
+                jsonObj.put("Enabled", "TRUE");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            JSONArray list = new JSONArray();
+            list.put(jsonObj);
+            int len = repositories.length();
+            if (repositories != null) {
                 try {
-                    jsonObj.put("Repository", strRepo);
-                    jsonObj.put("Archon", strArchon);
-                    jsonObj.put("Enabled", "TRUE");
+                    for (int i = 0; i < len; i++) {
+                        list.put(repositories.get(i));
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                JSONArray list = new JSONArray();
-                list.put(jsonObj);
-                int len = repositories.length();
-                if (repositories != null) {
-                    try {
-                        for (int i = 0; i < len; i++) {
-                            list.put(repositories.get(i));
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-                repositories = list;
-                writePreferences();
             }
+            repositories = list;
+            writePreferences();
         });
-        alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
+        alertDialog.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
         alertDialog.show();
     }
 
@@ -1037,8 +959,7 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
-     //   Log.i("Content ", "SDE bTimestamped=" + bTimestamped
-//                + "..strPrefix=" + strPrefix + "..-.." + length[0] + " repos..");
+
         Spinner spinnerRepoSelect = new Spinner(this);
         ArrayAdapter dataAdapterR = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, repos);
         dataAdapterR.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -1051,9 +972,7 @@ public class MainActivity extends AppCompatActivity {
         lpset.setOrientation(LinearLayout.VERTICAL);
         LinearLayout btnRow = new LinearLayout(this);
         btnRow.setOrientation(LinearLayout.HORIZONTAL);
-        //tvPresetsLabel.setGravity(1);
         tvPresetsLabel.setTextSize(18f);
-        //btnRow.setGravity(1);
         lpset.addView(tvTitle);
         lpset.addView(spinnerRepoSelect);
         lpset.addView(deleteRepo);
@@ -1084,70 +1003,55 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        deleteRepo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //Log.i("Content ", "Repo Reset");
-                String strToast = "";
-                JSONObject jsonObj = null;
-                try {
-                    jsonObj = repositories.getJSONObject(selectedRepo[0]);
-                    strToast = jsonObj.getString("Repository");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                deleteRepository(selectedRepo[0]);
-                writePreferences();
-                spinnerRepoSelect.setAdapter(makeNewRemovalDropDown());
-                CharSequence text = getString(R.string.deleted)+ " - " + strToast;
-                int duration = 2000;//Toast.LENGTH_SHORT;
-                Snackbar snack = Snackbar.make(lpset, text, duration);
-                snack.show();
+        deleteRepo.setOnClickListener(view -> {
+            //Log.i("Content ", "Repo Reset");
+            String strToast = "";
+            JSONObject jsonObj = null;
+            try {
+                jsonObj = repositories.getJSONObject(selectedRepo[0]);
+                strToast = jsonObj.getString("Repository");
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
+            deleteRepository(selectedRepo[0]);
+            writePreferences();
+            spinnerRepoSelect.setAdapter(makeNewRemovalDropDown());
+            CharSequence text = getString(R.string.deleted)+ " - " + strToast;
+            int duration = 2000;//Toast.LENGTH_SHORT;
+            Snackbar snack = Snackbar.make(lpset, text, duration);
+            snack.show();
         });
 
-        loadReposDefault.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-               // Log.i("Content ", "Repo Reset");
-                bReset[0] = true;
-                resetArchons("default");
-                writePreferences();
-                spinnerRepoSelect.setAdapter(makeNewRemovalDropDown());
-                CharSequence text = getString(R.string.repository_default_presets_message);//"Default repository list loaded";
-                int duration = 2000;//Toast.LENGTH_SHORT;
-                Snackbar snack = Snackbar.make(lpset, text, duration);
-                snack.show();
-            }
+        loadReposDefault.setOnClickListener(view -> {
+            bReset[0] = true;
+            resetArchons("default");
+            writePreferences();
+            spinnerRepoSelect.setAdapter(makeNewRemovalDropDown());
+            CharSequence text = getString(R.string.repository_default_presets_message);//"Default repository list loaded";
+            int duration = 2000;//Toast.LENGTH_SHORT;
+            Snackbar snack = Snackbar.make(lpset, text, duration);
+            snack.show();
         });
 
-        loadReposShort.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-               // Log.i("Content ", "Repo Reset");
-                bReset[0] = true;
-                resetArchons("short");
-                writePreferences();
-                spinnerRepoSelect.setAdapter(makeNewRemovalDropDown());
-                CharSequence text = getString(R.string.repository_short_presets_message);//"Short repository list loaded";
-                int duration = 2000;//Toast.LENGTH_SHORT;
-                Snackbar snack = Snackbar.make(lpset, text, duration);
-                snack.show();
-            }
+        loadReposShort.setOnClickListener(view -> {
+            bReset[0] = true;
+            resetArchons("short");
+            writePreferences();
+            spinnerRepoSelect.setAdapter(makeNewRemovalDropDown());
+            CharSequence text = getString(R.string.repository_short_presets_message);//"Short repository list loaded";
+            int duration = 2000;//Toast.LENGTH_SHORT;
+            Snackbar snack = Snackbar.make(lpset, text, duration);
+            snack.show();
         });
-        loadReposAlt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-               // Log.i("Content ", "Repo Reset");
-                bReset[0] = true;
-                resetArchons("alternative");
-                writePreferences();
-                spinnerRepoSelect.setAdapter(makeNewRemovalDropDown());
-                CharSequence text = getString(R.string.repository_alternative_presets_message);//"Alternative repository list loaded";
-                int duration = 2000;//Toast.LENGTH_SHORT;
-                Snackbar snack = Snackbar.make(lpset, text, duration);
-                snack.show();
-            }
+        loadReposAlt.setOnClickListener(view -> {
+            bReset[0] = true;
+            resetArchons("alternative");
+            writePreferences();
+            spinnerRepoSelect.setAdapter(makeNewRemovalDropDown());
+            CharSequence text = getString(R.string.repository_alternative_presets_message);//"Alternative repository list loaded";
+            int duration = 2000;//Toast.LENGTH_SHORT;
+            Snackbar snack = Snackbar.make(lpset, text, duration);
+            snack.show();
         });
         alertDialog.setNegativeButton("Close", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
@@ -1198,23 +1102,12 @@ public class MainActivity extends AppCompatActivity {
         }
         nCaptureCounter = n;
         writePreferences();
-      //  Log.i("Content ", " Capture counter^^^^^^ " + nCaptureCounter);
     }
-
-//    private String getRecentCaptureList() {
-//        String str = "";
-//        for (int i = recentFiles.size() - 1; i >= 0; i--) {
-//            str += recentFiles.get(i) + "\n";
-//        }
-//        return str;
-//    }
 
     private void showFolderStatusMessage(String strMessage, String strReport) {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
         TextView tvTip = new TextView(this);
         String sLink = getString(R.string.resources_note);//"<h3>Resources</h3>"; //resources_note
-//        sLink += "<p><a href=https://blogs.sussex.ac.uk/capturing-the-past/about-us/ >Website</a></p>";
-//        sLink += "<p><a href=https://blogs.sussex.ac.uk/capturing-the-past/2021/11/04/hello-world/ >Instructions</a></p>";
         TextView tvLogInfo = new TextView(this);
         String strLogInfo = getString(R.string.log_information);//"<h3>Capture Log</h3><p>A log (called CapturingThePast) of all captures is saved in your Documents folder. " +
                 //"Delete the log to reset it, or rename it to preserve it and start a fresh one. " +
@@ -1263,24 +1156,13 @@ public class MainActivity extends AppCompatActivity {
         lpset.addView(tvHeader);
         lpset.setPadding(40, 40, 40, 16);
         alertDialog.setView(lpset);
-        alertDialog.setNegativeButton(getString(R.string.close), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-        btnResetCount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-               // Log.i("Content ", "Repo Counter");
-                setCaptureCounter(0, "");
-                String str = "<p>" + nCaptureCounter + "</p> ";
-
-                tvCaptureCount.setMovementMethod(LinkMovementMethod.getInstance());
-                tvCaptureCount.setText(Html.fromHtml(str, Html.FROM_HTML_MODE_LEGACY));
-
-            }
+        alertDialog.setNegativeButton(getString(R.string.close), (dialog, which) -> dialog.cancel());
+        btnResetCount.setOnClickListener(view -> {
+            setCaptureCounter(0, "");
+            String str = "<p>" + nCaptureCounter + "</p> ";
+            tvCaptureCount.setMovementMethod(LinkMovementMethod.getInstance());
+            tvCaptureCount.setText(Html.fromHtml(str, Html.FROM_HTML_MODE_LEGACY));
         });
         alertDialog.show();
     }
 }
-
