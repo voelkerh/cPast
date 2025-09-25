@@ -73,8 +73,6 @@ import capturingthepast.R;
 
 public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_ACTION_OPEN_DOCUMENT_TREE = 3;
-    private final int REQUEST_CODE_PERMISSIONS = 101;
-    private final String[] REQUIRED_PERMISSIONS = new String[]{"android.permission.CAMERA", "android.permission.WRITE_EXTERNAL_STORAGE"};
     private String catRef = "";
     private String strRef = "";
     private String strItem = "";
@@ -83,20 +81,17 @@ public class MainActivity extends AppCompatActivity {
     private String strArchon = "GB0000";
     private String strPrefix = "cpast";
     private String strNote = "";
-    private final String strLogFilename =  "CapturingThePastLog.csv";
     private int nCaptureCounter = 0;
     private int nCurrentRepo = 0;
     boolean bTimestamped = true;
     private String[] repos;
     private JSONArray repositories;
-    private ArrayList<String> recentFiles = new ArrayList<String>();
+    private ArrayList<String> recentFiles = new ArrayList<>();
     JSONArray recentFileStore = new JSONArray();
     char[] alphabet = new char[26];
     int nPart = 0;
     private final String params = "ArchonParams.json";
-    //private String paramsCSV = "CtpLog.csv";
-    private JSONObject preferences;
-    private String currentFolderPath = "";
+    private String currentFolderPath;
     //private File currentPhoto;
     private String currentPhotoPath;
     private Spinner dropdown;
@@ -218,7 +213,7 @@ public class MainActivity extends AppCompatActivity {
                     int n = Integer.parseInt(tvItemText.getText().toString());
                     tvItemText.setText("" + (n + 1));
                 } catch (NumberFormatException e) {
-                    if (tvItemText.getText().toString().equals("")) {
+                    if (tvItemText.getText().toString().isEmpty()) {
                         tvItemText.setText("" + 1);
                     } else {
                         tvItemText.setText("" + 1);
@@ -237,7 +232,7 @@ public class MainActivity extends AppCompatActivity {
                         tvSubItemText.setText("");
                     }
                 } catch (NumberFormatException e) {
-                    if (tvSubItemText.getText().toString().equals("")) {
+                    if (tvSubItemText.getText().toString().isEmpty()) {
                         tvSubItemText.setText("");
                     } else {
                         tvSubItemText.setText("" + 1);
@@ -252,7 +247,7 @@ public class MainActivity extends AppCompatActivity {
                     int n = Integer.parseInt(tvSubItemText.getText().toString());
                     tvSubItemText.setText("" + (n + 1));
                 } catch (NumberFormatException e) {
-                    if (tvSubItemText.getText().toString().equals("")) {
+                    if (tvSubItemText.getText().toString().isEmpty()) {
                         tvSubItemText.setText("" + 1);
                     } else {
                         tvSubItemText.setText("" + 1);
@@ -345,7 +340,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 strItem = tvItemText.getText().toString();
-                if (!strItem.equals("")) {
+                if (!strItem.isEmpty()) {
                     try {
                         Integer.parseInt(strItem);
                     } catch (Exception e) {
@@ -370,7 +365,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 strSubItem = tvSubItemText.getText().toString();
-                if (!strSubItem.equals("")) {
+                if (!strSubItem.isEmpty()) {
                     try {
                         Integer.parseInt(strSubItem);
                     } catch (Exception e) {
@@ -581,8 +576,6 @@ public class MainActivity extends AppCompatActivity {
         //Log.i("Content: ", "Image Legacy " + currentPhotoPath);
         return image;
     }
-
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd[' ']['T'][H:mm[:ss[.S]]][X]");
 
     private void saveImageToGallery(Bitmap bitmap, ExifInterface exif) {
         OutputStream fos;
@@ -813,6 +806,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "Fail to create log", LENGTH_SHORT).show();
             }
         } else {
+            String strLogFilename = "CapturingThePastLog.csv";
             while (cursor.moveToNext()) {
                 int disName = cursor.getColumnIndex(MediaStore.MediaColumns.DISPLAY_NAME);
                 int disID = cursor.getColumnIndex(MediaStore.MediaColumns._ID);
@@ -1285,7 +1279,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setCaptureCounter(int n, String fName) {
        // Log.i("Content ", " Capture counter^^^^^^ " + n);
-        if (!fName.equals("")) {
+        if (!fName.isEmpty()) {
             recentFiles.add(fName);
             if (recentFiles.size() > 5) {
                 recentFiles.remove(0);
@@ -1349,7 +1343,7 @@ public class MainActivity extends AppCompatActivity {
 
         tvCaptureCount.setWidth(150);
         tvCaptureCount.setGravity(1);
-        btnResetCount.setBackgroundColor(0000); //setHeight(50)
+        btnResetCount.setBackgroundColor(0); //setHeight(50)
         btnResetCount.setTextColor(Color.DKGRAY);
         counterReset.addView(tvCap);
         counterReset.addView(tvCaptureCount);
