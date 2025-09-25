@@ -72,10 +72,8 @@ import info.androidhive.fontawesome.FontDrawable;
 import capturingthepast.R;
 
 public class MainActivity extends AppCompatActivity {
-    private static final String TAG = MainActivity.class.getSimpleName();
-    public static final int REQUEST_CODE_OPEN_DIRECTORY = 2;
     private static final int REQUEST_ACTION_OPEN_DOCUMENT_TREE = 3;
-    private int REQUEST_CODE_PERMISSIONS = 101;
+    private final int REQUEST_CODE_PERMISSIONS = 101;
     private final String[] REQUIRED_PERMISSIONS = new String[]{"android.permission.CAMERA", "android.permission.WRITE_EXTERNAL_STORAGE"};
     private String catRef = "";
     private String strRef = "";
@@ -85,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
     private String strArchon = "GB0000";
     private String strPrefix = "cpast";
     private String strNote = "";
-    private String strLogFilename =  "CapturingThePastLog.csv";
+    private final String strLogFilename =  "CapturingThePastLog.csv";
     private int nCaptureCounter = 0;
     private int nCurrentRepo = 0;
     boolean bTimestamped = true;
@@ -95,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
     JSONArray recentFileStore = new JSONArray();
     char[] alphabet = new char[26];
     int nPart = 0;
-    private String params = "ArchonParams.json";
+    private final String params = "ArchonParams.json";
     //private String paramsCSV = "CtpLog.csv";
     private JSONObject preferences;
     private String currentFolderPath = "";
@@ -110,31 +108,31 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         dropdown = findViewById(R.id.spinnerRepo);
-        final EditText tvCatRef = (EditText) findViewById(R.id.editTextRef);
-        final EditText tvItemText = (EditText) findViewById(R.id.editTextItem);
-        final EditText tvSubItemText = (EditText) findViewById(R.id.editTextSubItem);
-        final EditText tvDetached = (EditText) findViewById(R.id.textViewPart);
-        final TextView refText = (TextView) findViewById(R.id.textViewRef);
-        final TextView noteText = (TextView) findViewById(R.id.textViewNote);
-        final TextView repoLabel = (TextView) findViewById(R.id.repoLabel);
-        final TextView refLabel = (TextView) findViewById(R.id.refLabel);
-        final TextView itemLabel = (TextView) findViewById(R.id.itemLabel);
-        final TextView subitemLabel = (TextView) findViewById(R.id.subItemLabel);
-        final TextView detachedLabel = (TextView) findViewById(R.id.detachedLabel);
+        final EditText tvCatRef = findViewById(R.id.editTextRef);
+        final EditText tvItemText = findViewById(R.id.editTextItem);
+        final EditText tvSubItemText = findViewById(R.id.editTextSubItem);
+        final EditText tvDetached = findViewById(R.id.textViewPart);
+        final TextView refText = findViewById(R.id.textViewRef);
+        final TextView noteText = findViewById(R.id.textViewNote);
+        final TextView repoLabel = findViewById(R.id.repoLabel);
+        final TextView refLabel = findViewById(R.id.refLabel);
+        final TextView itemLabel = findViewById(R.id.itemLabel);
+        final TextView subitemLabel = findViewById(R.id.subItemLabel);
+        final TextView detachedLabel = findViewById(R.id.detachedLabel);
         //final TextView repoPresetNote = (TextView) findViewById(R.id.repository_presets_note);cl
-        Button decItem = (Button) findViewById(R.id.buttonDecItem);
-        Button incItem = (Button) findViewById(R.id.buttonincItem);
-        Button decSubItem = (Button) findViewById(R.id.buttonDecSubItem);
-        Button incSubItem = (Button) findViewById(R.id.buttonincSubItem);
-        Button decPart = (Button) findViewById(R.id.buttonDecPart);
-        Button incDetached = (Button) findViewById(R.id.buttonIncPart);
-        Button camButton = (Button) findViewById(R.id.cameraButton);
-        Button filesButton = (Button) findViewById(R.id.filesButton);
-        Button addRepoButton = (Button) findViewById(R.id.addRepoButton);
-        Button deleteRepoButton = (Button) findViewById(R.id.deleteRepoButton);
-        Button infoButton = (Button) findViewById(R.id.infoButton);
-        final Button btnClearNote = (Button) findViewById(R.id.buttonClearNote);
-        final Button btnClearRef = (Button) findViewById(R.id.buttonClearRef);
+        Button decItem = findViewById(R.id.buttonDecItem);
+        Button incItem = findViewById(R.id.buttonincItem);
+        Button decSubItem = findViewById(R.id.buttonDecSubItem);
+        Button incSubItem = findViewById(R.id.buttonincSubItem);
+        Button decPart = findViewById(R.id.buttonDecPart);
+        Button incDetached = findViewById(R.id.buttonIncPart);
+        Button camButton = findViewById(R.id.cameraButton);
+        Button filesButton = findViewById(R.id.filesButton);
+        Button addRepoButton = findViewById(R.id.addRepoButton);
+        Button deleteRepoButton = findViewById(R.id.deleteRepoButton);
+        Button infoButton = findViewById(R.id.infoButton);
+        final Button btnClearNote = findViewById(R.id.buttonClearNote);
+        final Button btnClearRef = findViewById(R.id.buttonClearRef);
         FontDrawable drawable = new FontDrawable(this, R.string.fa_paper_plane_solid, true, false);
         drawable.setTextColor(ContextCompat.getColor(this, android.R.color.black));
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
@@ -495,7 +493,6 @@ public class MainActivity extends AppCompatActivity {
         uri = Uri.parse(scheme);
         intent.putExtra("android.provider.extra.INITIAL_URI", uri);
         ((Activity) this).startActivityForResult(intent, REQUEST_ACTION_OPEN_DOCUMENT_TREE);
-        return;
 
     }
 
@@ -585,12 +582,12 @@ public class MainActivity extends AppCompatActivity {
         return image;
     }
 
-    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd[' ']['T'][H:mm[:ss[.S]]][X]");
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd[' ']['T'][H:mm[:ss[.S]]][X]");
 
     private void saveImageToGallery(Bitmap bitmap, ExifInterface exif) {
         OutputStream fos;
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String humanisedTime = "" + DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM).format(LocalDateTime.now());
+        String humanisedTime = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM).format(LocalDateTime.now());
         String imageFileName = strPrefix + "_" + timeStamp + "_" + catRef + ".jpg";
         String strCSV = "\"" + humanisedTime + "\",\"" + catRef + "\",\"" + imageFileName + "\",\"" + strNote + "\"";
         writePublicLog(strCSV);
@@ -1156,7 +1153,7 @@ public class MainActivity extends AppCompatActivity {
         lpset.addView(deleteRepo);
 
         String repoPresetNote = getString(R.string.repository_presets_note); // "<p><br /><hr />Note: Presets overwrite repository list customisations.</p>";
-        String infoText = "" + repoPresetNote;
+        String infoText = repoPresetNote;
         TextView tvPresetTip = new TextView(this);
         tvPresetTip.setMovementMethod(LinkMovementMethod.getInstance());
         tvPresetTip.setText(Html.fromHtml(infoText, Html.FROM_HTML_MODE_LEGACY));
@@ -1322,7 +1319,7 @@ public class MainActivity extends AppCompatActivity {
         tvLogInfo.setMovementMethod(LinkMovementMethod.getInstance());
         tvLogInfo.setText(Html.fromHtml(strLogInfo, Html.FROM_HTML_MODE_LEGACY));
 
-        String infoText = "" + sLink;
+        String infoText = sLink;
         tvTip.setMovementMethod(LinkMovementMethod.getInstance());
         tvTip.setText(Html.fromHtml(infoText, Html.FROM_HTML_MODE_LEGACY));
         TextView tvList = new TextView(this);
