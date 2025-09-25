@@ -10,7 +10,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 
 import android.database.Cursor;
@@ -197,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     int n = Integer.parseInt(tvItemText.getText().toString());
                     if (n > 2) {
-                        tvItemText.setText("" + (n - 1));
+                        tvItemText.setText(String.valueOf(n - 1));
                     } else {
                         tvItemText.setText("");
                     }
@@ -211,13 +210,9 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 try {
                     int n = Integer.parseInt(tvItemText.getText().toString());
-                    tvItemText.setText("" + (n + 1));
+                    tvItemText.setText(String.valueOf(n + 1));
                 } catch (NumberFormatException e) {
-                    if (tvItemText.getText().toString().isEmpty()) {
-                        tvItemText.setText("" + 1);
-                    } else {
-                        tvItemText.setText("" + 1);
-                    }
+                    tvItemText.setText(String.valueOf(1));
                 }
             }
         });
@@ -227,7 +222,7 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     int n = Integer.parseInt(tvSubItemText.getText().toString());
                     if (n > 2) {
-                        tvSubItemText.setText("" + (n - 1));
+                        tvSubItemText.setText(String.valueOf(n - 1));
                     } else {
                         tvSubItemText.setText("");
                     }
@@ -235,7 +230,7 @@ public class MainActivity extends AppCompatActivity {
                     if (tvSubItemText.getText().toString().isEmpty()) {
                         tvSubItemText.setText("");
                     } else {
-                        tvSubItemText.setText("" + 1);
+                        tvSubItemText.setText(String.valueOf(1));
                     }
                 }
             }
@@ -245,12 +240,12 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 try {
                     int n = Integer.parseInt(tvSubItemText.getText().toString());
-                    tvSubItemText.setText("" + (n + 1));
+                    tvSubItemText.setText(String.valueOf(n + 1));
                 } catch (NumberFormatException e) {
                     if (tvSubItemText.getText().toString().isEmpty()) {
-                        tvSubItemText.setText("" + 1);
+                        tvSubItemText.setText(String.valueOf(1));
                     } else {
-                        tvSubItemText.setText("" + 1);
+                        tvSubItemText.setText(String.valueOf(1));
                     }
                 }
             }
@@ -294,7 +289,7 @@ public class MainActivity extends AppCompatActivity {
                     tvDetached.setText(strPart);
                 } else if (nPart < alphabet.length) {
                     strPart = "" + alphabet[nPart - 1];
-                    tvDetached.setText("" + alphabet[nPart - 1]);
+                    tvDetached.setText(String.valueOf(alphabet[nPart - 1]));
                 } else {
                     strPart = alphabet[nPart % alphabet.length] + ":" + nPart / alphabet.length;
                     tvDetached.setText(strPart);
@@ -405,7 +400,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         filesButton.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View v) {
                 try {
@@ -418,7 +412,6 @@ public class MainActivity extends AppCompatActivity {
 
         });
         infoButton.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.P)
             @Override
             public void onClick(View v) {
                 showInfo();
@@ -493,16 +486,16 @@ public class MainActivity extends AppCompatActivity {
 
     private String createCatRef() {
         catRef = strArchon;
-        if (strRef.length() > 0) {
+        if (!strRef.isEmpty()) {
             catRef += "/" + strRef;
         }
-        if (strItem.length() > 0) {
+        if (!strItem.isEmpty()) {
             catRef += "/" + strItem;
         }
-        if (strSubItem.length() > 0) {
+        if (!strSubItem.isEmpty()) {
             catRef += "/" + strSubItem;
         }
-        if (strPart.length() > 0) {
+        if (!strPart.isEmpty()) {
             catRef += strPart;
         }
         catRef = catRef.replaceAll("\\s+", "").toUpperCase();
@@ -906,7 +899,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void applyJsonSettings(String jsonString) {
-        String output = jsonString;
         JSONObject jsonObject = null;
         try {
             jsonObject = new JSONObject(jsonString);
@@ -940,7 +932,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             jsonObject = new JSONObject(jsonString);
             recentFileStore = jsonObject.getJSONArray("recentFiles");
-            recentFiles = new ArrayList<String>();//(recentFileStore);
+            recentFiles = new ArrayList<>();//(recentFileStore);
             for (int j = 0; j < recentFileStore.length(); j++) {
                 recentFiles.add((String) recentFileStore.get(j));
                 //Log.i("Content ", "string " + recentFiles.get(j));
@@ -1128,7 +1120,7 @@ public class MainActivity extends AppCompatActivity {
      //   Log.i("Content ", "SDE bTimestamped=" + bTimestamped
 //                + "..strPrefix=" + strPrefix + "..-.." + length[0] + " repos..");
         Spinner spinnerRepoSelect = new Spinner(this);
-        ArrayAdapter dataAdapterR = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, repos);
+        ArrayAdapter dataAdapterR = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, repos);
         dataAdapterR.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerRepoSelect.setAdapter(dataAdapterR);
         spinnerRepoSelect.setPadding(0, 8, 8, 24);
@@ -1146,8 +1138,7 @@ public class MainActivity extends AppCompatActivity {
         lpset.addView(spinnerRepoSelect);
         lpset.addView(deleteRepo);
 
-        String repoPresetNote = getString(R.string.repository_presets_note); // "<p><br /><hr />Note: Presets overwrite repository list customisations.</p>";
-        String infoText = repoPresetNote;
+        String infoText = getString(R.string.repository_presets_note); // "<p><br /><hr />Note: Presets overwrite repository list customisations.</p>";
         TextView tvPresetTip = new TextView(this);
         tvPresetTip.setMovementMethod(LinkMovementMethod.getInstance());
         tvPresetTip.setText(Html.fromHtml(infoText, Html.FROM_HTML_MODE_LEGACY));
@@ -1265,7 +1256,6 @@ public class MainActivity extends AppCompatActivity {
         return dataAdapterR;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.P)
     public void showInfo() {
         String str = "";
         for (int i = recentFiles.size() - 1; i >= 0; i--) {
@@ -1299,7 +1289,6 @@ public class MainActivity extends AppCompatActivity {
 //        return str;
 //    }
 
-    @RequiresApi(api = Build.VERSION_CODES.P)
     private void showFolderStatusMessage(String strMessage, String strReport) {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
         TextView tvTip = new TextView(this);
