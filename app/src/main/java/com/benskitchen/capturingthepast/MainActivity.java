@@ -521,6 +521,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // Domain logic - Move
     private void writeExif(Uri uri, ExifInterface exif) {
 
         try (ParcelFileDescriptor imagePfd = getContentResolver().openFileDescriptor(uri, "rw")) {
@@ -704,11 +705,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // Data layer - Move
     private void writeArchons() {
         String jsonString = "{\"strPrefix\":\"cpast\",\"bTimestamp\":\"TRUE\",\"nCaptureCount\":\"0\",\"recentFiles\":[],\"data\":[{\"Repository\":\"Repository - GB0000\",\"Archon\":\"GB0000\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Archives and Cornish Studies Service\",\"Archon\":\"GB0021\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Bedfordshire Archives & Record Service\",\"Archon\":\"GB0004\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Berkshire Record Office\",\"Archon\":\"GB0005\",\"Enabled\":\"TRUE\"},{\"Repository\":\"British Library Manuscript Collections\",\"Archon\":\"GB0058\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Brotherton Library - Leeds University\",\"Archon\":\"GB1471\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Buckinghamshire Archives\",\"Archon\":\"GB0008\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Cambridge University Library: Department of Manuscripts and University Archives\",\"Archon\":\"GB0012\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Cambridgeshire Archives\",\"Archon\":\"GB0010\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Ceredigion Archives\",\"Archon\":\"GB0212\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Chester Archives and Local Studies\",\"Archon\":\"GB0017\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Coventry Archives and Local Record Office\",\"Archon\":\"GB0144\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Cumbria Archive Service (Barrow)\",\"Archon\":\"GB0025\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Cumbria Archive Service (Carlisle)\",\"Archon\":\"GB0023\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Cumbria Archive Service (Kendal)\",\"Archon\":\"GB0024\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Cumbria Archive Service (Whitehaven)\",\"Archon\":\"GB1831\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Derby Local Studies and Family History Library\",\"Archon\":\"GB1160\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Derbyshire Local Studies Library\",\"Archon\":\"GB1944\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Derbyshire Record Office\",\"Archon\":\"GB0026\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Devon Archives and Local Studies Service (South WestHeritage Trust)\",\"Archon\":\"GB0027\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Dorset History Centre\",\"Archon\":\"GB0031\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Dr Williams’s Library\",\"Archon\":\"GB0123\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Dudley Archives and Local History Centre\",\"Archon\":\"GB0145\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Durham County Record Office\",\"Archon\":\"GB0032\",\"Enabled\":\"TRUE\"},{\"Repository\":\"East Sussex and Brighton and Hove Record Office\",\"Archon\":\"GB0179\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Essex Record Office\",\"Archon\":\"GB0037\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Gloucestershire Archives\",\"Archon\":\"GB0040\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Hampshire Archives and Local Studies\",\"Archon\":\"GB0041\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Herefordshire Archives and Records Centre\",\"Archon\":\"GB0044\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Hertfordshire Archives and Local Studies\",\"Archon\":\"GB0046\",\"Enabled\":\"TRUE\"},{\"Repository\":\"John Rylands Library\",\"Archon\":\"GB3191\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Kent History and Library Centre\",\"Archon\":\"GB0051\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Lambeth Palace Library\",\"Archon\":\"GB0109\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Lincolnshire Archives\",\"Archon\":\"GB0057\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Liverpool Record Office\",\"Archon\":\"GB1623\",\"Enabled\":\"TRUE\"},{\"Repository\":\"London Metropolitan Archives\",\"Archon\":\"GB0074\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Manchester City Archives\",\"Archon\":\"GB0127\",\"Enabled\":\"TRUE\"},{\"Repository\":\"National Library of Scotland\",\"Archon\":\"GB0233\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Norfolk Record Office\",\"Archon\":\"GB0153\",\"Enabled\":\"TRUE\"},{\"Repository\":\"North Yorkshire County Record Office\",\"Archon\":\"GB0191\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Northamptonshire Archives\",\"Archon\":\"GB0154\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Northumberland Archives\",\"Archon\":\"GB0155\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Northumberland Record Office - Morpeth\",\"Archon\":\"GB1834\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Nottinghamshire Archives\",\"Archon\":\"GB0157\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Oxford University: Bodleian Library - Special Collections\",\"Archon\":\"GB0161\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Oxfordshire History Centre\",\"Archon\":\"GB0160\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Religious Society of Friends Library\",\"Archon\":\"GB0111\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Sheffield City Archives\",\"Archon\":\"GB1163\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Sheffield Local Studies Library\",\"Archon\":\"GB1783\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Shropshire Archives\",\"Archon\":\"GB0166\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Somerset Heritage Centre\",\"Archon\":\"GB0168\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Suffolk Record Office - Bury St Edmunds Branch\",\"Archon\":\"GB0174\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Suffolk Record Office - Ipswich Branch\",\"Archon\":\"GB0173\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Surrey History Centre\",\"Archon\":\"GB0176\",\"Enabled\":\"TRUE\"},{\"Repository\":\"The National Archives - Kew\",\"Archon\":\"GB0066\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Tyne & Wear Archives\",\"Archon\":\"GB0183\",\"Enabled\":\"TRUE\"},{\"Repository\":\"University of Birmingham: Cadbury Research Library\",\"Archon\":\"GB0150\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Ushaw College Library (Durham University Special Collections)\",\"Archon\":\"GB0033\",\"Enabled\":\"TRUE\"},{\"Repository\":\"WellcomeCollection\",\"Archon\":\"GB0120\",\"Enabled\":\"TRUE\"},{\"Repository\":\"West Sussex Record Office\",\"Archon\":\"GB0182\",\"Enabled\":\"TRUE\"},{\"Repository\":\"West Yorkshire Archive Service (Bradford)\",\"Archon\":\"GB0202\",\"Enabled\":\"TRUE\"},{\"Repository\":\"West Yorkshire Archive Service (Calderdale)\",\"Archon\":\"GB0203\",\"Enabled\":\"TRUE\"},{\"Repository\":\"West Yorkshire Archive Service (Kirklees)\",\"Archon\":\"GB0204\",\"Enabled\":\"TRUE\"},{\"Repository\":\"West Yorkshire Archive Service (Leeds)\",\"Archon\":\"GB0205\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Wiltshire and Swindon History Centre\",\"Archon\":\"GB0190\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Wolverhampton City Archives\",\"Archon\":\"GB0149\",\"Enabled\":\"TRUE\"},{\"Repository\":\"York City Archives\",\"Archon\":\"GBYORK\",\"Enabled\":\"TRUE\"}]}";
         createAndSaveFile(params, jsonString);
     }
 
+    // Data layer - Move
     private void resetArchons(String str) {
         String jsonString = "{\"strPrefix\":\"cpast\",\"bTimestamp\":\"TRUE\",\"nCaptureCount\":\"0\",\"recentFiles\":[],\"data\":[{\"Repository\":\"Repository - GB0000\",\"Archon\":\"GB0000\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Archives and Cornish Studies Service\",\"Archon\":\"GB0021\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Bedfordshire Archives & Record Service\",\"Archon\":\"GB0004\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Berkshire Record Office\",\"Archon\":\"GB0005\",\"Enabled\":\"TRUE\"},{\"Repository\":\"British Library Manuscript Collections\",\"Archon\":\"GB0058\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Brotherton Library - Leeds University\",\"Archon\":\"GB1471\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Buckinghamshire Archives\",\"Archon\":\"GB0008\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Cambridge University Library: Department of Manuscripts and University Archives\",\"Archon\":\"GB0012\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Cambridgeshire Archives\",\"Archon\":\"GB0010\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Ceredigion Archives\",\"Archon\":\"GB0212\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Chester Archives and Local Studies\",\"Archon\":\"GB0017\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Coventry Archives and Local Record Office\",\"Archon\":\"GB0144\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Cumbria Archive Service (Barrow)\",\"Archon\":\"GB0025\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Cumbria Archive Service (Carlisle)\",\"Archon\":\"GB0023\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Cumbria Archive Service (Kendal)\",\"Archon\":\"GB0024\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Cumbria Archive Service (Whitehaven)\",\"Archon\":\"GB1831\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Derby Local Studies and Family History Library\",\"Archon\":\"GB1160\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Derbyshire Local Studies Library\",\"Archon\":\"GB1944\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Derbyshire Record Office\",\"Archon\":\"GB0026\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Devon Archives and Local Studies Service (South WestHeritage Trust)\",\"Archon\":\"GB0027\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Dorset History Centre\",\"Archon\":\"GB0031\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Dr Williams’s Library\",\"Archon\":\"GB0123\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Dudley Archives and Local History Centre\",\"Archon\":\"GB0145\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Durham County Record Office\",\"Archon\":\"GB0032\",\"Enabled\":\"TRUE\"},{\"Repository\":\"East Sussex and Brighton and Hove Record Office\",\"Archon\":\"GB0179\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Essex Record Office\",\"Archon\":\"GB0037\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Gloucestershire Archives\",\"Archon\":\"GB0040\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Hampshire Archives and Local Studies\",\"Archon\":\"GB0041\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Herefordshire Archives and Records Centre\",\"Archon\":\"GB0044\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Hertfordshire Archives and Local Studies\",\"Archon\":\"GB0046\",\"Enabled\":\"TRUE\"},{\"Repository\":\"John Rylands Library\",\"Archon\":\"GB3191\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Kent History and Library Centre\",\"Archon\":\"GB0051\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Lambeth Palace Library\",\"Archon\":\"GB0109\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Lincolnshire Archives\",\"Archon\":\"GB0057\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Liverpool Record Office\",\"Archon\":\"GB1623\",\"Enabled\":\"TRUE\"},{\"Repository\":\"London Metropolitan Archives\",\"Archon\":\"GB0074\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Manchester City Archives\",\"Archon\":\"GB0127\",\"Enabled\":\"TRUE\"},{\"Repository\":\"National Library of Scotland\",\"Archon\":\"GB0233\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Norfolk Record Office\",\"Archon\":\"GB0153\",\"Enabled\":\"TRUE\"},{\"Repository\":\"North Yorkshire County Record Office\",\"Archon\":\"GB0191\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Northamptonshire Archives\",\"Archon\":\"GB0154\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Northumberland Archives\",\"Archon\":\"GB0155\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Northumberland Record Office - Morpeth\",\"Archon\":\"GB1834\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Nottinghamshire Archives\",\"Archon\":\"GB0157\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Oxford University: Bodleian Library - Special Collections\",\"Archon\":\"GB0161\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Oxfordshire History Centre\",\"Archon\":\"GB0160\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Religious Society of Friends Library\",\"Archon\":\"GB0111\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Sheffield City Archives\",\"Archon\":\"GB1163\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Sheffield Local Studies Library\",\"Archon\":\"GB1783\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Shropshire Archives\",\"Archon\":\"GB0166\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Somerset Heritage Centre\",\"Archon\":\"GB0168\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Suffolk Record Office - Bury St Edmunds Branch\",\"Archon\":\"GB0174\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Suffolk Record Office - Ipswich Branch\",\"Archon\":\"GB0173\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Surrey History Centre\",\"Archon\":\"GB0176\",\"Enabled\":\"TRUE\"},{\"Repository\":\"The National Archives - Kew\",\"Archon\":\"GB0066\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Tyne & Wear Archives\",\"Archon\":\"GB0183\",\"Enabled\":\"TRUE\"},{\"Repository\":\"University of Birmingham: Cadbury Research Library\",\"Archon\":\"GB0150\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Ushaw College Library (Durham University Special Collections)\",\"Archon\":\"GB0033\",\"Enabled\":\"TRUE\"},{\"Repository\":\"WellcomeCollection\",\"Archon\":\"GB0120\",\"Enabled\":\"TRUE\"},{\"Repository\":\"West Sussex Record Office\",\"Archon\":\"GB0182\",\"Enabled\":\"TRUE\"},{\"Repository\":\"West Yorkshire Archive Service (Bradford)\",\"Archon\":\"GB0202\",\"Enabled\":\"TRUE\"},{\"Repository\":\"West Yorkshire Archive Service (Calderdale)\",\"Archon\":\"GB0203\",\"Enabled\":\"TRUE\"},{\"Repository\":\"West Yorkshire Archive Service (Kirklees)\",\"Archon\":\"GB0204\",\"Enabled\":\"TRUE\"},{\"Repository\":\"West Yorkshire Archive Service (Leeds)\",\"Archon\":\"GB0205\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Wiltshire and Swindon History Centre\",\"Archon\":\"GB0190\",\"Enabled\":\"TRUE\"},{\"Repository\":\"Wolverhampton City Archives\",\"Archon\":\"GB0149\",\"Enabled\":\"TRUE\"},{\"Repository\":\"York City Archives\",\"Archon\":\"GBYORK\",\"Enabled\":\"TRUE\"}]}";
         if (str.equals("short")) {
@@ -720,6 +723,7 @@ public class MainActivity extends AppCompatActivity {
         createAndSaveFile(params, jsonString);
     }
 
+    // Data layer - Move
     public void createAndSaveFile(String params, String jsonString) {
         try {
             FileWriter file = new FileWriter("/data/data/" + getApplicationContext().getPackageName() + "/" + params);
@@ -732,6 +736,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // Data layer - Move
     public void readJsonData(String params) {
         try {
             File f = new File("/data/data/" + getPackageName() + "/" + params);
@@ -793,6 +798,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // Data layer - Move
     private void writePreferences() {
         try {
             JSONObject jsonObj = new JSONObject();
@@ -812,6 +818,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // Split UI / data layer
     private void addRepo() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
         TextView tvTitle = new TextView(this);
@@ -873,6 +880,7 @@ public class MainActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
+    // Data layer - Move
     private void deleteRepository(int n) {
         try {
             JSONArray list = new JSONArray();
@@ -897,7 +905,6 @@ public class MainActivity extends AppCompatActivity {
             jsonObj.put("nCaptureCount", nCaptureCounter);
             jsonObj.put("recentFiles", recentFileStore);
             String output = jsonObj.toString();
-      //      Log.i("Content ", "Delete Repo " + n);
             createAndSaveFile(params, output);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -1081,9 +1088,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void showInfo() {
-        String str = "";
+        StringBuilder str = new StringBuilder();
         for (int i = recentFiles.size() - 1; i >= 0; i--) {
-            str += recentFiles.get(i) + "\n";
+            str.append(recentFiles.get(i)).append("\n");
         }
         String folderStatus = getString(R.string.latest_captures_message) + str; //"Latest captures (Most recent first):\n" + str;
         String strMessage = "";
@@ -1091,8 +1098,8 @@ public class MainActivity extends AppCompatActivity {
         showFolderStatusMessage(strMessage, folderStatus);
     }
 
+    // Domain Logic - Move
     private void setCaptureCounter(int n, String fName) {
-       // Log.i("Content ", " Capture counter^^^^^^ " + n);
         if (!fName.isEmpty()) {
             recentFiles.add(fName);
             if (recentFiles.size() > 5) {
