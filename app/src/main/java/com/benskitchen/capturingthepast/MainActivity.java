@@ -91,66 +91,97 @@ public class MainActivity extends AppCompatActivity {
     int nPart = 0;
     private final String params = "ArchonParams.json";
     private String currentFolderPath;
-    //private File currentPhoto;
     private String currentPhotoPath;
     private Spinner dropdown;
+    private EditText tvCatRef;
+    private EditText tvItemText;
+    private EditText tvSubItemText;
+    private EditText tvDetached;
+    private TextView refText;
+    private TextView noteText;
+    private TextView repoLabel;
+    private TextView refLabel;
+    private TextView itemLabel;
+    private TextView subitemLabel;
+    private TextView detachedLabel;
+    private Button decItem;
+    private Button incItem;
+    private Button decSubItem;
+    private Button incSubItem;
+    private Button decPart;
+    private Button incDetached;
+    private Button camButton;
+    private Button filesButton;
+    private Button addRepoButton;
+    private Button deleteRepoButton;
+    private Button infoButton;
+    private Button btnClearNote;
+    private Button btnClearRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-       // Log.i("Content ", " on create " );
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        initViews();
+        initState();
+        setupListeners();
+    }
+
+    private void initViews(){
         dropdown = findViewById(R.id.spinnerRepo);
-        final EditText tvCatRef = findViewById(R.id.editTextRef);
-        final EditText tvItemText = findViewById(R.id.editTextItem);
-        final EditText tvSubItemText = findViewById(R.id.editTextSubItem);
-        final EditText tvDetached = findViewById(R.id.textViewPart);
-        final TextView refText = findViewById(R.id.textViewRef);
-        final TextView noteText = findViewById(R.id.textViewNote);
-        final TextView repoLabel = findViewById(R.id.repoLabel);
-        final TextView refLabel = findViewById(R.id.refLabel);
-        final TextView itemLabel = findViewById(R.id.itemLabel);
-        final TextView subitemLabel = findViewById(R.id.subItemLabel);
-        final TextView detachedLabel = findViewById(R.id.detachedLabel);
-        //final TextView repoPresetNote = (TextView) findViewById(R.id.repository_presets_note);cl
-        Button decItem = findViewById(R.id.buttonDecItem);
-        Button incItem = findViewById(R.id.buttonincItem);
-        Button decSubItem = findViewById(R.id.buttonDecSubItem);
-        Button incSubItem = findViewById(R.id.buttonincSubItem);
-        Button decPart = findViewById(R.id.buttonDecPart);
-        Button incDetached = findViewById(R.id.buttonIncPart);
-        Button camButton = findViewById(R.id.cameraButton);
-        Button filesButton = findViewById(R.id.filesButton);
-        Button addRepoButton = findViewById(R.id.addRepoButton);
-        Button deleteRepoButton = findViewById(R.id.deleteRepoButton);
-        Button infoButton = findViewById(R.id.infoButton);
-        final Button btnClearNote = findViewById(R.id.buttonClearNote);
-        final Button btnClearRef = findViewById(R.id.buttonClearRef);
+        tvCatRef = findViewById(R.id.editTextRef);
+        tvItemText = findViewById(R.id.editTextItem);
+        tvSubItemText = findViewById(R.id.editTextSubItem);
+        tvDetached = findViewById(R.id.textViewPart);
+        refText = findViewById(R.id.textViewRef);
+        noteText = findViewById(R.id.textViewNote);
+        repoLabel = findViewById(R.id.repoLabel);
+        refLabel = findViewById(R.id.refLabel);
+        itemLabel = findViewById(R.id.itemLabel);
+        subitemLabel = findViewById(R.id.subItemLabel);
+        detachedLabel = findViewById(R.id.detachedLabel);
+        decItem = findViewById(R.id.buttonDecItem);
+        incItem = findViewById(R.id.buttonincItem);
+        decSubItem = findViewById(R.id.buttonDecSubItem);
+        incSubItem = findViewById(R.id.buttonincSubItem);
+        decPart = findViewById(R.id.buttonDecPart);
+        incDetached = findViewById(R.id.buttonIncPart);
+        camButton = findViewById(R.id.cameraButton);
+        filesButton = findViewById(R.id.filesButton);
+        addRepoButton = findViewById(R.id.addRepoButton);
+        deleteRepoButton = findViewById(R.id.deleteRepoButton);
+        infoButton = findViewById(R.id.infoButton);
+        btnClearNote = findViewById(R.id.buttonClearNote);
+        btnClearRef = findViewById(R.id.buttonClearRef);
         FontDrawable drawable = new FontDrawable(this, R.string.fa_paper_plane_solid, true, false);
         drawable.setTextColor(ContextCompat.getColor(this, android.R.color.black));
+    }
+
+    private void initState(){
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         currentFolderPath = storageDir.getAbsolutePath();
+
         int i = 0;
         for (char letter = 'a'; letter <= 'z'; letter++) {
             alphabet[i++] = letter;
         }
-        //writeArchons();
+
         readJsonData(params);
         try {
             strArchon = repositories.getJSONObject(dropdown.getSelectedItemPosition()).getString("Archon");
-
-            //Log.i("Content ", "create pos "+ nCurrentRepo+ " " +strArchon );
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    private void setupListeners() {
         dropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 try {
                     strArchon = repositories.getJSONObject(position).getString("Archon");
                     nCurrentRepo = position;
-                    //Log.i("Content ", "Current pos "+ nCurrentRepo);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -160,142 +191,85 @@ public class MainActivity extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
-        repoLabel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showEntryTips(getString(R.string.repo_description_heading), getString(R.string.repo_description_text));
-            }
-        });
-        refLabel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showEntryTips(getString(R.string.ref_description_heading), getString(R.string.ref_description_text));
-            }
-        });
-        itemLabel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showEntryTips(getString(R.string.item_description_heading), getString(R.string.item_descript_text));
-            }
-        });
-        subitemLabel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showEntryTips(getString(R.string.sub_item_description_heading), getString(R.string.sub_item_description_text));
-            }
-        });
-        detachedLabel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showEntryTips(getString(R.string.detached_description_heading), getString(R.string.detached_description_text));
-            }
-        });
-        decItem.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    int n = Integer.parseInt(tvItemText.getText().toString());
-                    if (n > 2) {
-                        tvItemText.setText(String.valueOf(n - 1));
-                    } else {
-                        tvItemText.setText("");
-                    }
-                } catch (NumberFormatException e) {
+        repoLabel.setOnClickListener(view -> showEntryTips(getString(R.string.repo_description_heading), getString(R.string.repo_description_text)));
+        refLabel.setOnClickListener(view -> showEntryTips(getString(R.string.ref_description_heading), getString(R.string.ref_description_text)));
+        itemLabel.setOnClickListener(view -> showEntryTips(getString(R.string.item_description_heading), getString(R.string.item_descript_text)));
+        subitemLabel.setOnClickListener(view -> showEntryTips(getString(R.string.sub_item_description_heading), getString(R.string.sub_item_description_text)));
+        detachedLabel.setOnClickListener(view -> showEntryTips(getString(R.string.detached_description_heading), getString(R.string.detached_description_text)));
+        decItem.setOnClickListener(v -> {
+            try {
+                int n = Integer.parseInt(tvItemText.getText().toString());
+                if (n > 2) {
+                    tvItemText.setText(String.valueOf(n - 1));
+                } else {
                     tvItemText.setText("");
                 }
+            } catch (NumberFormatException e) {
+                tvItemText.setText("");
             }
         });
-        incItem.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    int n = Integer.parseInt(tvItemText.getText().toString());
-                    tvItemText.setText(String.valueOf(n + 1));
-                } catch (NumberFormatException e) {
-                    tvItemText.setText(String.valueOf(1));
-                }
+        incItem.setOnClickListener(v -> {
+            try {
+                int n = Integer.parseInt(tvItemText.getText().toString());
+                tvItemText.setText(String.valueOf(n + 1));
+            } catch (NumberFormatException e) {
+                tvItemText.setText(String.valueOf(1));
             }
         });
-        decSubItem.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    int n = Integer.parseInt(tvSubItemText.getText().toString());
-                    if (n > 2) {
-                        tvSubItemText.setText(String.valueOf(n - 1));
-                    } else {
-                        tvSubItemText.setText("");
-                    }
-                } catch (NumberFormatException e) {
-                    if (tvSubItemText.getText().toString().isEmpty()) {
-                        tvSubItemText.setText("");
-                    } else {
-                        tvSubItemText.setText(String.valueOf(1));
-                    }
-                }
-            }
-        });
-        incSubItem.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    int n = Integer.parseInt(tvSubItemText.getText().toString());
-                    tvSubItemText.setText(String.valueOf(n + 1));
-                } catch (NumberFormatException e) {
-                    if (tvSubItemText.getText().toString().isEmpty()) {
-                        tvSubItemText.setText(String.valueOf(1));
-                    } else {
-                        tvSubItemText.setText(String.valueOf(1));
-                    }
-                }
-            }
-        });
-        decPart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                nPart--;
-                if (nPart < 1) {
-                    nPart = 0;
-                    strPart = "";
-                    tvDetached.setText(strPart);
-                } else if (nPart < alphabet.length) {
-                    strPart = "" + alphabet[nPart - 1];
-                    tvDetached.setText(strPart);
+        decSubItem.setOnClickListener(v -> {
+            try {
+                int n = Integer.parseInt(tvSubItemText.getText().toString());
+                if (n > 2) {
+                    tvSubItemText.setText(String.valueOf(n - 1));
                 } else {
-                    strPart = alphabet[nPart % alphabet.length] + ":" + nPart / alphabet.length;
-                    tvDetached.setText(strPart);
+                    tvSubItemText.setText("");
                 }
-                refText.setText(createCatRef());
-            }
-        });
-        btnClearNote.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                noteText.setText("");
-            }
-        });
-        btnClearRef.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                tvCatRef.setText("");
-            }
-        });
-        incDetached.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                nPart++;
-                if (nPart < 1) {
-                    strPart = "";
-                    tvDetached.setText(strPart);
-                } else if (nPart < alphabet.length) {
-                    strPart = "" + alphabet[nPart - 1];
-                    tvDetached.setText(String.valueOf(alphabet[nPart - 1]));
+            } catch (NumberFormatException e) {
+                if (tvSubItemText.getText().toString().isEmpty()) {
+                    tvSubItemText.setText("");
                 } else {
-                    strPart = alphabet[nPart % alphabet.length] + ":" + nPart / alphabet.length;
-                    tvDetached.setText(strPart);
+                    tvSubItemText.setText(String.valueOf(1));
                 }
-                refText.setText(createCatRef());
             }
+        });
+        incSubItem.setOnClickListener(v -> {
+            try {
+                int n = Integer.parseInt(tvSubItemText.getText().toString());
+                tvSubItemText.setText(String.valueOf(n + 1));
+            } catch (NumberFormatException e) {
+                tvSubItemText.setText(String.valueOf(1));
+            }
+        });
+        decPart.setOnClickListener(v -> {
+            nPart--;
+            if (nPart < 1) {
+                nPart = 0;
+                strPart = "";
+                tvDetached.setText(strPart);
+            } else if (nPart < alphabet.length) {
+                strPart = "" + alphabet[nPart - 1];
+                tvDetached.setText(strPart);
+            } else {
+                strPart = alphabet[nPart % alphabet.length] + ":" + nPart / alphabet.length;
+                tvDetached.setText(strPart);
+            }
+            refText.setText(createCatRef());
+        });
+        btnClearNote.setOnClickListener(v -> noteText.setText(""));
+        btnClearRef.setOnClickListener(v -> tvCatRef.setText(""));
+        incDetached.setOnClickListener(v -> {
+            nPart++;
+            if (nPart < 1) {
+                strPart = "";
+                tvDetached.setText(strPart);
+            } else if (nPart < alphabet.length) {
+                strPart = "" + alphabet[nPart - 1];
+                tvDetached.setText(String.valueOf(alphabet[nPart - 1]));
+            } else {
+                strPart = alphabet[nPart % alphabet.length] + ":" + nPart / alphabet.length;
+                tvDetached.setText(strPart);
+            }
+            refText.setText(createCatRef());
         });
         tvDetached.addTextChangedListener(new TextWatcher() {
             @Override
@@ -391,61 +365,32 @@ public class MainActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
             }
         });
-        camButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Log.i("Content ", "Cam ");
-                dispatchTakePictureIntent();
+        camButton.setOnClickListener(v -> {
+            dispatchTakePictureIntent();
+        });
+        filesButton.setOnClickListener(v -> {
+            try {
+                openGallery();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         });
-
-        filesButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    //openFolder();
-                    openGallery();
-                } catch (Exception e) {
-                  //  Log.e("Content", "Folder does not exist!", e);
-                }
-            }
-
-        });
-        infoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showInfo();
-            }
-        });
-        addRepoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addRepo();
-            }
-        });
-        deleteRepoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                deleteRepoGui();
-            }
-        });
+        infoButton.setOnClickListener(v -> showInfo());
+        addRepoButton.setOnClickListener(v -> addRepo());
+        deleteRepoButton.setOnClickListener(v -> deleteRepoGui());
     }
 
     private void showMessage(String str) {
         Toast.makeText(this, str, LENGTH_SHORT).show();
     }
 
+    // Tool tip template for data entry when clicked on labels
     private void showEntryTips(String heading, String message) {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
         TextView tvTip = new TextView(this);
         String tipText = "<h4>" + heading + "</h4><p>" + message + "</p>";
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            tvTip.setMovementMethod(LinkMovementMethod.getInstance());
-            tvTip.setText(Html.fromHtml(tipText, Html.FROM_HTML_MODE_LEGACY));
-        } else {
-            tvTip.setMovementMethod(LinkMovementMethod.getInstance());
-            tvTip.setText(Html.fromHtml(tipText));
-        }
+        tvTip.setMovementMethod(LinkMovementMethod.getInstance());
+        tvTip.setText(Html.fromHtml(tipText, Html.FROM_HTML_MODE_LEGACY));
         LinearLayout lpset = new LinearLayout(this);
         lpset.setOrientation(LinearLayout.VERTICAL);
         lpset.addView(tvTip);
