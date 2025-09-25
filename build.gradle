@@ -17,8 +17,7 @@ buildscript {
 allprojects {
     repositories {
         google()
-        jcenter()
-        
+        maven { url 'https://artifactory.appodeal.com/appodeal-public' } // to resolve "Could not find info.androidhive:fontawesome:0.0.5."
     }
 }
 
