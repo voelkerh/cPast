@@ -54,6 +54,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -406,32 +407,24 @@ public class MainActivity extends AppCompatActivity {
 
     // Domain Logic - move
     private String createCatRef() {
+        // Build reference
         catRef = strArchon;
-        if (!strRef.isEmpty()) {
-            catRef += "/" + strRef;
-        }
-        if (!strItem.isEmpty()) {
-            catRef += "/" + strItem;
-        }
-        if (!strSubItem.isEmpty()) {
-            catRef += "/" + strSubItem;
-        }
-        if (!strPart.isEmpty()) {
-            catRef += strPart;
-        }
+        if (!strRef.isEmpty()) catRef += "/" + strRef;
+        if (!strItem.isEmpty()) catRef += "/" + strItem;
+        if (!strSubItem.isEmpty()) catRef += "/" + strSubItem;
+        if (!strPart.isEmpty()) catRef += strPart;
+
+        // Clean reference
         catRef = catRef.replaceAll("\\s+", "").toUpperCase();
         catRef = catRef.replaceAll("//", "/");
         catRef = catRef.replaceAll("/", "_");
         catRef = catRef.replaceAll("[!@#$%^&*]", "_");
         catRef = catRef.replaceAll("\\\\\\\\", "\\\\");
         catRef = catRef.replaceAll("\\\\", "_");
-        if (catRef.equals("GB0000")) {
-            catRef = "Ref";
-        }
+
+        if (catRef.equals("GB0000")) catRef = "Ref";
         catRef = catRef.replaceAll("_{2,}", "_");
-        if (catRef.length() > 128) {
-            Toast.makeText(this, "Your catalogue reference is very long and may result in unusable file names.", LENGTH_SHORT).show();
-        }
+        if (catRef.length() > 128) showMessage("Your catalogue reference is very long and may result in unusable file names.");
         return catRef;
     }
 
@@ -522,124 +515,28 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Domain logic - Move
+    // Writes Metadata from temp image to new image in gallery
     private void writeExif(Uri uri, ExifInterface exif) {
 
         try (ParcelFileDescriptor imagePfd = getContentResolver().openFileDescriptor(uri, "rw")) {
             ExifInterface exifNew = new ExifInterface(imagePfd.getFileDescriptor());
+
+            // Copy existing tags
+            Field[] fields = ExifInterface.class.getFields();
+            for (Field field : fields) {
+                if (field.getName().startsWith("TAG")) {
+                    try {
+                        String tag = (String) field.get(null);
+                        String value = exif.getAttribute(tag);
+                        if (value != null) exifNew.setAttribute(tag, value);
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            // Add user comment
             final String userComment = "Capturing the Past image " +catRef+ " " + strNote;
-            exifNew.setAttribute(ExifInterface.TAG_F_NUMBER, exif.getAttribute(ExifInterface.TAG_F_NUMBER));
-            exifNew.setAttribute(ExifInterface.TAG_APERTURE_VALUE, exif.getAttribute(ExifInterface.TAG_APERTURE_VALUE));
-            exifNew.setAttribute(ExifInterface.TAG_ARTIST, exif.getAttribute(ExifInterface.TAG_ARTIST));
-            exifNew.setAttribute(ExifInterface.TAG_BITS_PER_SAMPLE, exif.getAttribute(ExifInterface.TAG_BITS_PER_SAMPLE));
-            exifNew.setAttribute(ExifInterface.TAG_BRIGHTNESS_VALUE, exif.getAttribute(ExifInterface.TAG_BRIGHTNESS_VALUE));
-            exifNew.setAttribute(ExifInterface.TAG_CFA_PATTERN, exif.getAttribute(ExifInterface.TAG_CFA_PATTERN));
-            exifNew.setAttribute(ExifInterface.TAG_COLOR_SPACE, exif.getAttribute(ExifInterface.TAG_COLOR_SPACE));
-            exifNew.setAttribute(ExifInterface.TAG_COMPRESSED_BITS_PER_PIXEL, exif.getAttribute(ExifInterface.TAG_COMPRESSED_BITS_PER_PIXEL));
-            exifNew.setAttribute(ExifInterface.TAG_COMPRESSION, exif.getAttribute(ExifInterface.TAG_COMPRESSION));
-            exifNew.setAttribute(ExifInterface.TAG_CONTRAST, exif.getAttribute(ExifInterface.TAG_CONTRAST));
-            exifNew.setAttribute(ExifInterface.TAG_COPYRIGHT, exif.getAttribute(ExifInterface.TAG_COPYRIGHT));
-            exifNew.setAttribute(ExifInterface.TAG_CUSTOM_RENDERED, exif.getAttribute(ExifInterface.TAG_CUSTOM_RENDERED));
-            exifNew.setAttribute(ExifInterface.TAG_DATETIME, exif.getAttribute(ExifInterface.TAG_DATETIME));
-            exifNew.setAttribute(ExifInterface.TAG_DEVICE_SETTING_DESCRIPTION, exif.getAttribute(ExifInterface.TAG_DEVICE_SETTING_DESCRIPTION));
-            exifNew.setAttribute(ExifInterface.TAG_DIGITAL_ZOOM_RATIO, exif.getAttribute(ExifInterface.TAG_DIGITAL_ZOOM_RATIO));
-            exifNew.setAttribute(ExifInterface.TAG_DNG_VERSION, exif.getAttribute(ExifInterface.TAG_DNG_VERSION));
-            exifNew.setAttribute(ExifInterface.TAG_EXPOSURE_BIAS_VALUE, exif.getAttribute(ExifInterface.TAG_EXPOSURE_BIAS_VALUE));
-            exifNew.setAttribute(ExifInterface.TAG_EXPOSURE_INDEX, exif.getAttribute(ExifInterface.TAG_EXPOSURE_INDEX));
-            exifNew.setAttribute(ExifInterface.TAG_EXPOSURE_MODE, exif.getAttribute(ExifInterface.TAG_EXPOSURE_MODE));
-            exifNew.setAttribute(ExifInterface.TAG_EXPOSURE_PROGRAM, exif.getAttribute(ExifInterface.TAG_EXPOSURE_PROGRAM));
-            exifNew.setAttribute(ExifInterface.TAG_EXPOSURE_TIME, exif.getAttribute(ExifInterface.TAG_EXPOSURE_TIME));
-            exifNew.setAttribute(ExifInterface.TAG_RECOMMENDED_EXPOSURE_INDEX, exif.getAttribute(ExifInterface.TAG_RECOMMENDED_EXPOSURE_INDEX));
-            exifNew.setAttribute(ExifInterface.TAG_FILE_SOURCE, exif.getAttribute(ExifInterface.TAG_FILE_SOURCE));
-            exifNew.setAttribute(ExifInterface.TAG_FLASH, exif.getAttribute(ExifInterface.TAG_FLASH));
-            exifNew.setAttribute(ExifInterface.TAG_FOCAL_LENGTH, exif.getAttribute(ExifInterface.TAG_FOCAL_LENGTH));
-            exifNew.setAttribute(ExifInterface.TAG_FOCAL_LENGTH_IN_35MM_FILM, exif.getAttribute(ExifInterface.TAG_FOCAL_LENGTH_IN_35MM_FILM));
-            exifNew.setAttribute(ExifInterface.TAG_FOCAL_PLANE_RESOLUTION_UNIT, exif.getAttribute(ExifInterface.TAG_FOCAL_PLANE_RESOLUTION_UNIT));
-            exifNew.setAttribute(ExifInterface.TAG_FOCAL_PLANE_X_RESOLUTION, exif.getAttribute(ExifInterface.TAG_FOCAL_PLANE_X_RESOLUTION));
-            exifNew.setAttribute(ExifInterface.TAG_FOCAL_PLANE_Y_RESOLUTION, exif.getAttribute(ExifInterface.TAG_FOCAL_PLANE_Y_RESOLUTION));
-            exifNew.setAttribute(ExifInterface.TAG_GAIN_CONTROL, exif.getAttribute(ExifInterface.TAG_GAIN_CONTROL));
-            exifNew.setAttribute(ExifInterface.TAG_GAMMA, exif.getAttribute(ExifInterface.TAG_GAMMA));
-            exifNew.setAttribute(ExifInterface.TAG_GPS_ALTITUDE, exif.getAttribute(ExifInterface.TAG_GPS_ALTITUDE));
-            exifNew.setAttribute(ExifInterface.TAG_GPS_ALTITUDE_REF, exif.getAttribute(ExifInterface.TAG_GPS_ALTITUDE_REF));
-            exifNew.setAttribute(ExifInterface.TAG_GPS_AREA_INFORMATION, exif.getAttribute(ExifInterface.TAG_GPS_DATESTAMP));
-            exifNew.setAttribute(ExifInterface.TAG_GPS_DEST_BEARING, exif.getAttribute(ExifInterface.TAG_GPS_DEST_BEARING));
-            exifNew.setAttribute(ExifInterface.TAG_GPS_DEST_DISTANCE, exif.getAttribute(ExifInterface.TAG_GPS_DEST_DISTANCE));
-            exifNew.setAttribute(ExifInterface.TAG_GPS_DEST_DISTANCE_REF, exif.getAttribute(ExifInterface.TAG_GPS_DEST_DISTANCE_REF));
-            exifNew.setAttribute(ExifInterface.TAG_GPS_DEST_LATITUDE, exif.getAttribute(ExifInterface.TAG_GPS_DEST_LATITUDE));
-            exifNew.setAttribute(ExifInterface.TAG_GPS_DEST_LATITUDE_REF, exif.getAttribute(ExifInterface.TAG_GPS_DEST_LATITUDE_REF));
-            exifNew.setAttribute(ExifInterface.TAG_GPS_DEST_BEARING_REF, exif.getAttribute((ExifInterface.TAG_GPS_DEST_BEARING_REF)));
-            exifNew.setAttribute(ExifInterface.TAG_GPS_DEST_LONGITUDE, exif.getAttribute(ExifInterface.TAG_GPS_DEST_LONGITUDE));
-            exifNew.setAttribute(ExifInterface.TAG_GPS_DEST_LONGITUDE_REF, exif.getAttribute(ExifInterface.TAG_GPS_DEST_LONGITUDE_REF));
-            exifNew.setAttribute(ExifInterface.TAG_GPS_DOP, exif.getAttribute(ExifInterface.TAG_GPS_DOP));
-            exifNew.setAttribute(ExifInterface.TAG_GPS_DIFFERENTIAL, exif.getAttribute(ExifInterface.TAG_GPS_DIFFERENTIAL));
-            exifNew.setAttribute(ExifInterface.TAG_GPS_H_POSITIONING_ERROR, exif.getAttribute(ExifInterface.TAG_GPS_H_POSITIONING_ERROR));
-            exifNew.setAttribute(ExifInterface.TAG_GPS_IMG_DIRECTION, exif.getAttribute(ExifInterface.TAG_GPS_IMG_DIRECTION));
-            exifNew.setAttribute(ExifInterface.TAG_GPS_IMG_DIRECTION_REF, exif.getAttribute(ExifInterface.TAG_GPS_IMG_DIRECTION_REF));
-            exifNew.setAttribute(ExifInterface.TAG_GPS_MAP_DATUM, exif.getAttribute(ExifInterface.TAG_GPS_MAP_DATUM));
-            exifNew.setAttribute(ExifInterface.TAG_GPS_MEASURE_MODE, exif.getAttribute(ExifInterface.TAG_GPS_MEASURE_MODE));
-            exifNew.setAttribute(ExifInterface.TAG_GPS_PROCESSING_METHOD, exif.getAttribute(ExifInterface.TAG_GPS_PROCESSING_METHOD));
-            exifNew.setAttribute(ExifInterface.TAG_GPS_SATELLITES, exif.getAttribute(ExifInterface.TAG_GPS_SATELLITES));
-            exifNew.setAttribute(ExifInterface.TAG_GPS_SPEED, exif.getAttribute((ExifInterface.TAG_GPS_SPEED)));
-            exifNew.setAttribute(ExifInterface.TAG_GPS_SPEED_REF, exif.getAttribute(ExifInterface.TAG_GPS_SPEED_REF));
-            exifNew.setAttribute(ExifInterface.TAG_GPS_STATUS, exif.getAttribute(ExifInterface.TAG_GPS_STATUS));
-            exifNew.setAttribute(ExifInterface.TAG_GPS_TIMESTAMP, exif.getAttribute(ExifInterface.TAG_GPS_TIMESTAMP));
-            exifNew.setAttribute(ExifInterface.TAG_GPS_TRACK, exif.getAttribute(ExifInterface.TAG_GPS_TRACK));
-            exifNew.setAttribute(ExifInterface.TAG_GPS_TRACK_REF, exif.getAttribute(ExifInterface.TAG_GPS_TRACK_REF));
-            exifNew.setAttribute(ExifInterface.TAG_GPS_VERSION_ID, exif.getAttribute(ExifInterface.TAG_GPS_VERSION_ID));
-            exifNew.setAttribute(ExifInterface.TAG_ISO_SPEED, exif.getAttribute(ExifInterface.TAG_ISO_SPEED));
-            exifNew.setAttribute(ExifInterface.TAG_IMAGE_DESCRIPTION, exif.getAttribute(userComment)); //ExifInterface.TAG_IMAGE_DESCRIPTION));
-            exifNew.setAttribute(ExifInterface.TAG_IMAGE_LENGTH, exif.getAttribute(ExifInterface.TAG_IMAGE_LENGTH));
-            exifNew.setAttribute(ExifInterface.TAG_IMAGE_WIDTH, exif.getAttribute(ExifInterface.TAG_IMAGE_WIDTH));
-            exifNew.setAttribute(ExifInterface.TAG_JPEG_INTERCHANGE_FORMAT, exif.getAttribute(ExifInterface.TAG_JPEG_INTERCHANGE_FORMAT));
-            exifNew.setAttribute(ExifInterface.TAG_JPEG_INTERCHANGE_FORMAT_LENGTH, exif.getAttribute(ExifInterface.TAG_JPEG_INTERCHANGE_FORMAT_LENGTH));
-            exifNew.setAttribute(ExifInterface.TAG_LENS_MAKE, exif.getAttribute(ExifInterface.TAG_LENS_MAKE));
-            exifNew.setAttribute(ExifInterface.TAG_LENS_SPECIFICATION, exif.getAttribute(ExifInterface.TAG_LENS_SPECIFICATION));
-            exifNew.setAttribute(ExifInterface.TAG_LENS_MODEL, exif.getAttribute(ExifInterface.TAG_LENS_MODEL));
-            exifNew.setAttribute(ExifInterface.TAG_LIGHT_SOURCE, exif.getAttribute(ExifInterface.TAG_LIGHT_SOURCE));
-            exifNew.setAttribute(ExifInterface.TAG_MAKE, exif.getAttribute(ExifInterface.TAG_MAKE));
-            exifNew.setAttribute(ExifInterface.TAG_MODEL, exif.getAttribute(ExifInterface.TAG_MODEL));
-            exifNew.setAttribute(ExifInterface.TAG_MAKER_NOTE, exif.getAttribute(ExifInterface.TAG_MAKER_NOTE));
-            exifNew.setAttribute(ExifInterface.TAG_MAX_APERTURE_VALUE, exif.getAttribute(ExifInterface.TAG_MAX_APERTURE_VALUE));
-            exifNew.setAttribute(ExifInterface.TAG_NEW_SUBFILE_TYPE, exif.getAttribute(ExifInterface.TAG_NEW_SUBFILE_TYPE));
-            exifNew.setAttribute(ExifInterface.TAG_OECF, exif.getAttribute(ExifInterface.TAG_OECF));
-            exifNew.setAttribute((ExifInterface.TAG_ORIENTATION), exif.getAttribute(ExifInterface.TAG_ORIENTATION));
-            exifNew.setAttribute(ExifInterface.TAG_OFFSET_TIME, exif.getAttribute(ExifInterface.TAG_OFFSET_TIME));
-            exifNew.setAttribute(ExifInterface.TAG_OFFSET_TIME_DIGITIZED, exif.getAttribute(ExifInterface.TAG_OFFSET_TIME_DIGITIZED));
-            exifNew.setAttribute(ExifInterface.TAG_OFFSET_TIME_ORIGINAL, exif.getAttribute(ExifInterface.TAG_OFFSET_TIME_ORIGINAL));
-            exifNew.setAttribute(ExifInterface.TAG_ORF_ASPECT_FRAME, exif.getAttribute(ExifInterface.TAG_ORF_ASPECT_FRAME));
-            exifNew.setAttribute(ExifInterface.TAG_ORF_PREVIEW_IMAGE_LENGTH, exif.getAttribute(ExifInterface.TAG_ORF_PREVIEW_IMAGE_LENGTH));
-            exifNew.setAttribute(ExifInterface.TAG_ORF_PREVIEW_IMAGE_START, exif.getAttribute(ExifInterface.TAG_ORF_PREVIEW_IMAGE_START));
-            exifNew.setAttribute(ExifInterface.TAG_ORF_THUMBNAIL_IMAGE, exif.getAttribute(ExifInterface.TAG_ORF_THUMBNAIL_IMAGE));
-            exifNew.setAttribute(ExifInterface.TAG_PHOTOGRAPHIC_SENSITIVITY, exif.getAttribute(ExifInterface.TAG_PHOTOGRAPHIC_SENSITIVITY));
-            exifNew.setAttribute(ExifInterface.TAG_PHOTOMETRIC_INTERPRETATION, exif.getAttribute(ExifInterface.TAG_PHOTOMETRIC_INTERPRETATION));
-            exifNew.setAttribute(ExifInterface.TAG_PIXEL_X_DIMENSION, exif.getAttribute(ExifInterface.TAG_PIXEL_X_DIMENSION));
-            exifNew.setAttribute(ExifInterface.TAG_PIXEL_Y_DIMENSION, exif.getAttribute(ExifInterface.TAG_PIXEL_Y_DIMENSION));
-            exifNew.setAttribute(ExifInterface.TAG_REFERENCE_BLACK_WHITE, exif.getAttribute(ExifInterface.TAG_REFERENCE_BLACK_WHITE));
-            exifNew.setAttribute(ExifInterface.TAG_RELATED_SOUND_FILE, exif.getAttribute(ExifInterface.TAG_RELATED_SOUND_FILE));
-            exifNew.setAttribute(ExifInterface.TAG_RESOLUTION_UNIT, exif.getAttribute(ExifInterface.TAG_RESOLUTION_UNIT));
-            exifNew.setAttribute(ExifInterface.TAG_ROWS_PER_STRIP, exif.getAttribute(ExifInterface.TAG_ROWS_PER_STRIP));
-            exifNew.setAttribute(ExifInterface.TAG_RW2_SENSOR_BOTTOM_BORDER, exif.getAttribute(ExifInterface.TAG_RW2_SENSOR_BOTTOM_BORDER));
-            exifNew.setAttribute(ExifInterface.TAG_RW2_SENSOR_LEFT_BORDER, exif.getAttribute(ExifInterface.TAG_RW2_SENSOR_LEFT_BORDER));
-            exifNew.setAttribute(ExifInterface.TAG_RW2_SENSOR_RIGHT_BORDER, exif.getAttribute(ExifInterface.TAG_RW2_SENSOR_RIGHT_BORDER));
-            exifNew.setAttribute(ExifInterface.TAG_RW2_SENSOR_TOP_BORDER, exif.getAttribute(ExifInterface.TAG_RW2_SENSOR_TOP_BORDER));
-
-
-            exifNew.setAttribute(ExifInterface.TAG_RW2_JPG_FROM_RAW, exif.getAttribute(ExifInterface.TAG_RW2_JPG_FROM_RAW));
-            exifNew.setAttribute(ExifInterface.TAG_RW2_ISO, exif.getAttribute(ExifInterface.TAG_RW2_ISO));
-
-
-            exifNew.setAttribute(ExifInterface.TAG_THUMBNAIL_IMAGE_LENGTH, exif.getAttribute(ExifInterface.TAG_THUMBNAIL_IMAGE_LENGTH));
-            exifNew.setAttribute(ExifInterface.TAG_THUMBNAIL_IMAGE_WIDTH, exif.getAttribute(ExifInterface.TAG_THUMBNAIL_IMAGE_WIDTH));
-            exifNew.setAttribute(ExifInterface.TAG_TRANSFER_FUNCTION, exif.getAttribute(ExifInterface.TAG_TRANSFER_FUNCTION));
-            exifNew.setAttribute(ExifInterface.TAG_WHITE_POINT, exif.getAttribute(ExifInterface.TAG_WHITE_POINT));
-            exifNew.setAttribute(ExifInterface.TAG_WHITE_BALANCE, exif.getAttribute(ExifInterface.TAG_WHITE_BALANCE));
-            exifNew.setAttribute(ExifInterface.TAG_X_RESOLUTION, exif.getAttribute(ExifInterface.TAG_X_RESOLUTION));
-            exifNew.setAttribute(ExifInterface.TAG_XMP, exif.getAttribute(ExifInterface.TAG_XMP));
-            exifNew.setAttribute(ExifInterface.TAG_Y_RESOLUTION, exif.getAttribute(ExifInterface.TAG_Y_RESOLUTION));
-            exifNew.setAttribute(ExifInterface.TAG_Y_CB_CR_COEFFICIENTS, exif.getAttribute(ExifInterface.TAG_Y_CB_CR_COEFFICIENTS));
-            exifNew.setAttribute(ExifInterface.TAG_Y_CB_CR_POSITIONING, exif.getAttribute(ExifInterface.TAG_Y_CB_CR_POSITIONING));
-            exifNew.setAttribute(ExifInterface.TAG_Y_CB_CR_SUB_SAMPLING, exif.getAttribute(ExifInterface.TAG_Y_CB_CR_SUB_SAMPLING));
-            exifNew.setAttribute(ExifInterface.TAG_ISO_SPEED_LATITUDE_ZZZ, exif.getAttribute(ExifInterface.TAG_ISO_SPEED_LATITUDE_ZZZ));
-            exifNew.setAttribute(ExifInterface.TAG_ISO_SPEED_LATITUDE_YYY, exif.getAttribute(ExifInterface.TAG_ISO_SPEED_LATITUDE_YYY));
             exifNew.setAttribute(ExifInterface.TAG_USER_COMMENT, userComment);
 
             exifNew.saveAttributes();
