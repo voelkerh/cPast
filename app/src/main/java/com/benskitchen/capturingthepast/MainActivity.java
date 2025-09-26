@@ -40,6 +40,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.benskitchen.capturingthepast.domainLogic.CatRefCreator;
 import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONArray;
@@ -400,30 +401,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void openGallery() {
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(
-                "content://media/internal/images/media"));
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("content://media/internal/images/media"));
         startActivity(intent);
     }
 
     // Domain Logic - move
     private String createCatRef() {
-        // Build reference
-        catRef = strArchon;
-        if (!strRef.isEmpty()) catRef += "/" + strRef;
-        if (!strItem.isEmpty()) catRef += "/" + strItem;
-        if (!strSubItem.isEmpty()) catRef += "/" + strSubItem;
-        if (!strPart.isEmpty()) catRef += strPart;
-
-        // Clean reference
-        catRef = catRef.replaceAll("\\s+", "").toUpperCase();
-        catRef = catRef.replaceAll("//", "/");
-        catRef = catRef.replaceAll("/", "_");
-        catRef = catRef.replaceAll("[!@#$%^&*]", "_");
-        catRef = catRef.replaceAll("\\\\\\\\", "\\\\");
-        catRef = catRef.replaceAll("\\\\", "_");
-
-        if (catRef.equals("GB0000")) catRef = "Ref";
-        catRef = catRef.replaceAll("_{2,}", "_");
+        String catRef = CatRefCreator.createCatRef(strArchon, strRef, strItem, strSubItem, strPart);
         if (catRef.length() > 128) showMessage("Your catalogue reference is very long and may result in unusable file names.");
         return catRef;
     }
