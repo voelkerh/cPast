@@ -2,7 +2,6 @@ package com.benskitchen.capturingthepast;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 
 import androidx.appcompat.app.AlertDialog;
@@ -37,10 +36,6 @@ import com.benskitchen.capturingthepast.domainLogic.CaptureCounter;
 import com.benskitchen.capturingthepast.domainLogic.CatRefCreator;
 import com.google.android.material.snackbar.Snackbar;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -67,34 +62,6 @@ public class MainActivity extends AppCompatActivity {
     char[] alphabet = new char[26];
     int nPart = 0;
 
-    // UI Elements
-    private Spinner dropdown;
-    private EditText tvCatRef;
-    private EditText tvItemText;
-    private EditText tvSubItemText;
-    private EditText tvPart;
-    private TextView refText;
-    private TextView noteText;
-    private TextView repoLabel;
-    private TextView refLabel;
-    private TextView itemLabel;
-    private TextView subitemLabel;
-    private TextView partLabel;
-    private Button decItem;
-    private Button incItem;
-    private Button decSubItem;
-    private Button incSubItem;
-    private Button decPart;
-    private Button incPart;
-    private Button camButton;
-    private Button filesButton;
-    private Button addRepoButton;
-    private Button deleteRepoButton;
-    private Button infoButton;
-    private Button btnClearNote;
-    private Button btnClearRef;
-
-
     // Domain logic dependencies
     private CaptureCounter captureCounter;
 
@@ -111,7 +78,6 @@ public class MainActivity extends AppCompatActivity {
         initAppRepos();
         initState();
         initViews();
-        setupListeners();
     }
 
     private void initAppRepos(){
@@ -130,31 +96,31 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initViews(){
-        dropdown = findViewById(R.id.spinnerRepo);
-        tvCatRef = findViewById(R.id.editTextRef);
-        tvItemText = findViewById(R.id.editTextItem);
-        tvSubItemText = findViewById(R.id.editTextSubItem);
-        tvPart = findViewById(R.id.textViewPart);
-        refText = findViewById(R.id.textViewRef);
-        noteText = findViewById(R.id.textViewNote);
-        repoLabel = findViewById(R.id.repoLabel);
-        refLabel = findViewById(R.id.refLabel);
-        itemLabel = findViewById(R.id.itemLabel);
-        subitemLabel = findViewById(R.id.subItemLabel);
-        partLabel = findViewById(R.id.detachedLabel);
-        decItem = findViewById(R.id.buttonDecItem);
-        incItem = findViewById(R.id.buttonincItem);
-        decSubItem = findViewById(R.id.buttonDecSubItem);
-        incSubItem = findViewById(R.id.buttonincSubItem);
-        decPart = findViewById(R.id.buttonDecPart);
-        incPart = findViewById(R.id.buttonIncPart);
-        camButton = findViewById(R.id.cameraButton);
-        filesButton = findViewById(R.id.filesButton);
-        addRepoButton = findViewById(R.id.addRepoButton);
-        deleteRepoButton = findViewById(R.id.deleteRepoButton);
-        infoButton = findViewById(R.id.infoButton);
-        btnClearNote = findViewById(R.id.buttonClearNote);
-        btnClearRef = findViewById(R.id.buttonClearRef);
+        Spinner dropdown = findViewById(R.id.spinnerRepo);
+        EditText tvCatRef = findViewById(R.id.editTextRef);
+        EditText tvItemText = findViewById(R.id.editTextItem);
+        EditText tvSubItemText = findViewById(R.id.editTextSubItem);
+        EditText tvPart = findViewById(R.id.textViewPart);
+        TextView refText = findViewById(R.id.textViewRef);
+        TextView noteText = findViewById(R.id.textViewNote);
+        TextView repoLabel = findViewById(R.id.repoLabel);
+        TextView refLabel = findViewById(R.id.refLabel);
+        TextView itemLabel = findViewById(R.id.itemLabel);
+        TextView subitemLabel = findViewById(R.id.subItemLabel);
+        TextView partLabel = findViewById(R.id.detachedLabel);
+        Button decItem = findViewById(R.id.buttonDecItem);
+        Button incItem = findViewById(R.id.buttonincItem);
+        Button decSubItem = findViewById(R.id.buttonDecSubItem);
+        Button incSubItem = findViewById(R.id.buttonincSubItem);
+        Button decPart = findViewById(R.id.buttonDecPart);
+        Button incPart = findViewById(R.id.buttonIncPart);
+        Button camButton = findViewById(R.id.cameraButton);
+        Button filesButton = findViewById(R.id.filesButton);
+        Button addRepoButton = findViewById(R.id.addRepoButton);
+        Button deleteRepoButton = findViewById(R.id.deleteRepoButton);
+        Button infoButton = findViewById(R.id.infoButton);
+        Button btnClearNote = findViewById(R.id.buttonClearNote);
+        Button btnClearRef = findViewById(R.id.buttonClearRef);
         FontDrawable drawable = new FontDrawable(this, R.string.fa_paper_plane_solid, true, false);
         drawable.setTextColor(ContextCompat.getColor(this, android.R.color.black));
 
@@ -164,9 +130,7 @@ public class MainActivity extends AppCompatActivity {
         dropdown.setAdapter(dataAdapter);
         strArchon = settingsRepository.getArchonAt(0);
         dropdown.setSelection(0);
-    }
 
-    private void setupListeners() {
         dropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -178,8 +142,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         repoLabel.setOnClickListener(view -> showDataEntryToolTips(getString(R.string.repo_description_heading), getString(R.string.repo_description_text)));
-        addRepoButton.setOnClickListener(v -> addRepo());
-        deleteRepoButton.setOnClickListener(v -> deleteRepoGui());
+        addRepoButton.setOnClickListener(v -> showAddRepoDialog());
+        deleteRepoButton.setOnClickListener(v -> showDeleteRepoDialog());
 
         itemLabel.setOnClickListener(view -> showDataEntryToolTips(getString(R.string.item_description_heading), getString(R.string.item_descript_text)));
         subitemLabel.setOnClickListener(view -> showDataEntryToolTips(getString(R.string.sub_item_description_heading), getString(R.string.sub_item_description_text)));
@@ -348,9 +312,7 @@ public class MainActivity extends AppCompatActivity {
         });
         btnClearRef.setOnClickListener(v -> tvCatRef.setText(""));
 
-        camButton.setOnClickListener(v -> {
-            dispatchTakePictureIntent();
-        });
+        camButton.setOnClickListener(v -> dispatchTakePictureIntent());
         filesButton.setOnClickListener(v -> {
             try {
                 openGallery();
@@ -376,11 +338,7 @@ public class MainActivity extends AppCompatActivity {
         lpset.addView(tvTip);
         lpset.setPadding(50, 80, 50, 10);
         alertDialog.setView(lpset);
-        alertDialog.setNegativeButton("Close", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
+        alertDialog.setNegativeButton("Close", (dialog, which) -> dialog.cancel());
         alertDialog.show();
     }
 
@@ -433,27 +391,31 @@ public class MainActivity extends AppCompatActivity {
         if (!message.isEmpty()) Toast.makeText(this, message, LENGTH_SHORT).show();
     }
 
-    // Split UI / data layer
-    private void addRepo() {
+    private void showAddRepoDialog() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
+
         TextView tvTitle = new TextView(this);
-        String tittleText = "";
-        tittleText += getString(R.string.add_repo_heading);
+        String titleText = "";
+        titleText += getString(R.string.add_repo_heading);
         tvTitle.setMovementMethod(LinkMovementMethod.getInstance());
-        tvTitle.setText(Html.fromHtml(tittleText, Html.FROM_HTML_MODE_LEGACY));
+        tvTitle.setText(Html.fromHtml(titleText, Html.FROM_HTML_MODE_LEGACY));
+
         TextView tvTip = new TextView(this);
         String tipText = getString(R.string.tna_tip);
         tipText += getString(R.string.repo_tip);
         tvTip.setMovementMethod(LinkMovementMethod.getInstance());
         tvTip.setText(Html.fromHtml(tipText, Html.FROM_HTML_MODE_LEGACY));
+        tvTip.setTextSize(18f);
+
         TextView textView = new TextView(this);
         textView.setText(R.string.repo_name_hint);
         textView.setTextSize(18f);
-        tvTip.setTextSize(18f);
+
         final EditText inputRepo = new EditText(MainActivity.this);
         inputRepo.setHint(R.string.repo_hint);
         final EditText inputArchon = new EditText(MainActivity.this);
         inputArchon.setHint(R.string.archon_hint);
+
         LinearLayout linearLayout = new LinearLayout(this);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         linearLayout.addView(tvTitle);
@@ -462,89 +424,74 @@ public class MainActivity extends AppCompatActivity {
         linearLayout.addView(inputArchon);
         linearLayout.addView(tvTip);
         linearLayout.setPadding(50, 80, 50, 10);
+
         alertDialog.setView(linearLayout);
         alertDialog.setPositiveButton("Save", (dialog, which) -> {
             String strRepo = inputRepo.getText().toString();
             String strArchon = inputArchon.getText().toString();
-            strArchon = strArchon.replaceAll("\\s+", "").toUpperCase();
-            strArchon = strArchon.replaceAll("/", "_");
-            JSONObject jsonObj = new JSONObject();
-            try {
-                jsonObj.put("Repository", strRepo);
-                jsonObj.put("Archon", strArchon);
-                jsonObj.put("Enabled", "TRUE");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            JSONArray list = new JSONArray();
-            list.put(jsonObj);
-            int len = settingsRepository.getRepositories().length();
-            if (len > 0) {
-                try {
-                    for (int i = 0; i < len; i++) {
-                        list.put(settingsRepository.getRepositories().get(i));
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-            settingsRepository.setRepositories(list);
-            settingsRepository.writePreferences();
+            settingsRepository.addRepository(strRepo, strArchon);
         });
         alertDialog.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
         alertDialog.show();
     }
 
-    private void deleteRepoGui() {
+    private void showDeleteRepoDialog() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
+
         TextView tvTip = new TextView(this);
         tvTip.setText(R.string.set_prefix);
+
         TextView tvTitle = new TextView(this);
-        String tittleText = getString(R.string.heading_select_repo);
+        String titleText = getString(R.string.heading_select_repo);
         tvTitle.setMovementMethod(LinkMovementMethod.getInstance());
-        tvTitle.setText(Html.fromHtml(tittleText, Html.FROM_HTML_MODE_LEGACY));
+        tvTitle.setText(Html.fromHtml(titleText, Html.FROM_HTML_MODE_LEGACY));
 
         TextView labelSelect = new TextView(this);
         labelSelect.setText(R.string.select_repo);
         labelSelect.setPadding(20, 20, 0, 20);
         labelSelect.setTextSize(20f);
+
         TextView tvPresetsLabel = new TextView(this);
         tvPresetsLabel.setText(R.string.repo_presets);
-        final EditText inputPrefix = new EditText(MainActivity.this);
+
+        EditText inputPrefix = new EditText(MainActivity.this);
         inputPrefix.setText(strPrefix);
         inputPrefix.setHint(R.string.prefix);
-        final Switch switchTimestamp = new Switch(this);
+
+        Switch switchTimestamp = new Switch(this);
         switchTimestamp.setChecked(settingsRepository.isTimestamped());
         switchTimestamp.setText(R.string.include_timestamp);
-        final Button loadReposDefault = new Button(this);
+
+        Button loadReposDefault = new Button(this);
         loadReposDefault.setText(R.string.default_repo_list);
         loadReposDefault.setAllCaps(false);
         loadReposDefault.setBackgroundColor(Color.DKGRAY);
         loadReposDefault.setTextColor(Color.WHITE);
-        final Button loadReposShort = new Button(this);
+
+        Button loadReposShort = new Button(this);
         loadReposShort.setText(R.string.short_repo_list);
         loadReposShort.setAllCaps(false);
         loadReposShort.setBackgroundColor(Color.DKGRAY);
         loadReposShort.setTextColor(Color.WHITE);
-        final Button loadReposAlt = new Button(this);
+
+        Button loadReposAlt = new Button(this);
         loadReposAlt.setText(R.string.alternative);
         loadReposAlt.setTextColor(Color.WHITE);
         loadReposAlt.setBackgroundColor(Color.DKGRAY);
         loadReposAlt.setAllCaps(false);
-        final Button deleteRepo = new Button(this);
+
+        Button deleteRepo = new Button(this);
         deleteRepo.setText(R.string.delete_selected_repository);
         deleteRepo.setAllCaps(false);
         deleteRepo.setBackgroundColor(Color.DKGRAY);
         deleteRepo.setTextColor(Color.WHITE);
 
         Spinner spinnerRepoSelect = new Spinner(this);
-        ArrayAdapter dataAdapterR = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, settingsRepository.getRepos());
+        ArrayAdapter<String> dataAdapterR = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, settingsRepository.getRepos());
         dataAdapterR.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerRepoSelect.setAdapter(dataAdapterR);
         spinnerRepoSelect.setPadding(0, 8, 8, 24);
 
-        final int[] selectedRepo = {-1};
-        final boolean[] bReset = {false};
         LinearLayout lpset = new LinearLayout(this);
         lpset.setOrientation(LinearLayout.VERTICAL);
         LinearLayout btnRow = new LinearLayout(this);
@@ -569,6 +516,8 @@ public class MainActivity extends AppCompatActivity {
 
         lpset.setPadding(50, 80, 50, 10);
         alertDialog.setView(lpset);
+
+        int[] selectedRepo = {-1};
         spinnerRepoSelect.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -581,65 +530,42 @@ public class MainActivity extends AppCompatActivity {
         });
 
         deleteRepo.setOnClickListener(view -> {
-            String strToast = "";
-            JSONObject jsonObj;
-            try {
-                jsonObj = settingsRepository.getRepositories().getJSONObject(selectedRepo[0]);
-                strToast = jsonObj.getString("Repository");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            settingsRepository.deleteRepository(selectedRepo[0]);
-            settingsRepository.writePreferences();
+            if(selectedRepo[0] < 0) return;
+            String strDeletedRepo = settingsRepository.deleteRepository(selectedRepo[0]);
             spinnerRepoSelect.setAdapter(makeNewRemovalDropDown());
-            CharSequence text = getString(R.string.deleted)+ " - " + strToast;
-            int duration = 2000;//Toast.LENGTH_SHORT;
-            Snackbar snack = Snackbar.make(lpset, text, duration);
+            Snackbar snack = Snackbar.make(lpset, getString(R.string.deleted)+ " - " + strDeletedRepo, Snackbar.LENGTH_SHORT);
             snack.show();
         });
 
         loadReposDefault.setOnClickListener(view -> {
-            bReset[0] = true;
             settingsRepository.resetArchons("default");
-            settingsRepository.writePreferences();
             spinnerRepoSelect.setAdapter(makeNewRemovalDropDown());
             CharSequence text = getString(R.string.repository_default_presets_message);//"Default repository list loaded";
-            int duration = 2000;//Toast.LENGTH_SHORT;
-            Snackbar snack = Snackbar.make(lpset, text, duration);
+            Snackbar snack = Snackbar.make(lpset, text, Snackbar.LENGTH_SHORT);
             snack.show();
         });
 
         loadReposShort.setOnClickListener(view -> {
-            bReset[0] = true;
             settingsRepository.resetArchons("short");
-            settingsRepository.writePreferences();
             spinnerRepoSelect.setAdapter(makeNewRemovalDropDown());
             CharSequence text = getString(R.string.repository_short_presets_message);//"Short repository list loaded";
-            int duration = 2000;//Toast.LENGTH_SHORT;
-            Snackbar snack = Snackbar.make(lpset, text, duration);
+            Snackbar snack = Snackbar.make(lpset, text, Snackbar.LENGTH_SHORT);
             snack.show();
         });
+
         loadReposAlt.setOnClickListener(view -> {
-            bReset[0] = true;
             settingsRepository.resetArchons("alternative");
-            settingsRepository.writePreferences();
             spinnerRepoSelect.setAdapter(makeNewRemovalDropDown());
             CharSequence text = getString(R.string.repository_alternative_presets_message);//"Alternative repository list loaded";
-            int duration = 2000;//Toast.LENGTH_SHORT;
-            Snackbar snack = Snackbar.make(lpset, text, duration);
+            Snackbar snack = Snackbar.make(lpset, text, 2000);
             snack.show();
         });
-        alertDialog.setNegativeButton("Close", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
+        alertDialog.setNegativeButton("Close", (dialog, which) -> dialog.cancel());
         alertDialog.show();
     }
 
-    private ArrayAdapter makeNewRemovalDropDown() {
-        String[] repos = settingsRepository.getRepos();
-        ArrayAdapter dataAdapterR = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, repos);
+    private ArrayAdapter<String> makeNewRemovalDropDown() {
+        ArrayAdapter<String> dataAdapterR = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, settingsRepository.getRepos());
         dataAdapterR.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         return dataAdapterR;
     }
@@ -651,8 +577,7 @@ public class MainActivity extends AppCompatActivity {
             sb.append(recentFiles.get(i)).append("\n");
         }
         String folderStatus = getString(R.string.latest_captures_message) + sb; //"Latest captures (Most recent first):\n" + sb;
-        String strMessage = "";
-        strMessage = "<p>" + captureCounter.getCaptureCount() + "</p> ";
+        String strMessage = "<p>" + captureCounter.getCaptureCount() + "</p> ";
         showFolderStatusMessage(strMessage, folderStatus);
     }
 
@@ -667,9 +592,8 @@ public class MainActivity extends AppCompatActivity {
         tvLogInfo.setMovementMethod(LinkMovementMethod.getInstance());
         tvLogInfo.setText(Html.fromHtml(strLogInfo, Html.FROM_HTML_MODE_LEGACY));
 
-        String infoText = sLink;
         tvTip.setMovementMethod(LinkMovementMethod.getInstance());
-        tvTip.setText(Html.fromHtml(infoText, Html.FROM_HTML_MODE_LEGACY));
+        tvTip.setText(Html.fromHtml(sLink, Html.FROM_HTML_MODE_LEGACY));
         TextView tvList = new TextView(this);
         tvList.setText(strReport);
         TextView tvCaptureCount = new TextView(this);
@@ -712,14 +636,13 @@ public class MainActivity extends AppCompatActivity {
         btnResetCount.setOnClickListener(view -> {
             captureCounter.setCaptureCount(0);
             settingsRepository.addFileToRecentFiles("");
-            String str = "<p>" + captureCounter.getCaptureCount() + "</p> ";
+            String strCaptureCount = "<p>" + captureCounter.getCaptureCount() + "</p> ";
             tvCaptureCount.setMovementMethod(LinkMovementMethod.getInstance());
-            tvCaptureCount.setText(Html.fromHtml(str, Html.FROM_HTML_MODE_LEGACY));
+            tvCaptureCount.setText(Html.fromHtml(strCaptureCount, Html.FROM_HTML_MODE_LEGACY));
         });
         alertDialog.show();
     }
 
-    // Domain Logic - move TODO
     private String createCatRef() {
         String catRef = CatRefCreator.createCatRef(strArchon, strRef, strItem, strSubItem, strPart);
         if (catRef.length() > 128) showMessage("Your catalogue reference is very long and may result in unusable file names.");
