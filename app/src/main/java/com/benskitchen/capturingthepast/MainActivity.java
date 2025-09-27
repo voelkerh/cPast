@@ -2,25 +2,17 @@ package com.benskitchen.capturingthepast;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
-import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 
 import androidx.appcompat.app.AlertDialog;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.Environment;
-import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 
 import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.exifinterface.media.ExifInterface;
 
 import android.os.Bundle;
 import android.text.Editable;
@@ -49,12 +41,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
-import java.io.FileDescriptor;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -79,9 +66,6 @@ public class MainActivity extends AppCompatActivity {
     private String strNote = "";
     char[] alphabet = new char[26];
     int nPart = 0;
-
-
-    private String currentPhotoPath;
 
     // UI Elements
     private Spinner dropdown;
@@ -193,13 +177,13 @@ public class MainActivity extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
-        repoLabel.setOnClickListener(view -> showEntryTips(getString(R.string.repo_description_heading), getString(R.string.repo_description_text)));
+        repoLabel.setOnClickListener(view -> showDataEntryToolTips(getString(R.string.repo_description_heading), getString(R.string.repo_description_text)));
         addRepoButton.setOnClickListener(v -> addRepo());
         deleteRepoButton.setOnClickListener(v -> deleteRepoGui());
 
-        itemLabel.setOnClickListener(view -> showEntryTips(getString(R.string.item_description_heading), getString(R.string.item_descript_text)));
-        subitemLabel.setOnClickListener(view -> showEntryTips(getString(R.string.sub_item_description_heading), getString(R.string.sub_item_description_text)));
-        partLabel.setOnClickListener(view -> showEntryTips(getString(R.string.detached_description_heading), getString(R.string.detached_description_text)));
+        itemLabel.setOnClickListener(view -> showDataEntryToolTips(getString(R.string.item_description_heading), getString(R.string.item_descript_text)));
+        subitemLabel.setOnClickListener(view -> showDataEntryToolTips(getString(R.string.sub_item_description_heading), getString(R.string.sub_item_description_text)));
+        partLabel.setOnClickListener(view -> showDataEntryToolTips(getString(R.string.detached_description_heading), getString(R.string.detached_description_text)));
         tvItemText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -346,7 +330,7 @@ public class MainActivity extends AppCompatActivity {
         });
         btnClearNote.setOnClickListener(v -> noteText.setText(""));
 
-        refLabel.setOnClickListener(view -> showEntryTips(getString(R.string.ref_description_heading), getString(R.string.ref_description_text)));
+        refLabel.setOnClickListener(view -> showDataEntryToolTips(getString(R.string.ref_description_heading), getString(R.string.ref_description_text)));
         tvCatRef.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -381,8 +365,7 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this, str, LENGTH_SHORT).show();
     }
 
-    // Tool tip template for data entry when clicked on labels
-    private void showEntryTips(String heading, String message) {
+    private void showDataEntryToolTips(String heading, String message) {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
         TextView tvTip = new TextView(this);
         String tipText = "<h4>" + heading + "</h4><p>" + message + "</p>";
@@ -393,7 +376,7 @@ public class MainActivity extends AppCompatActivity {
         lpset.addView(tvTip);
         lpset.setPadding(50, 80, 50, 10);
         alertDialog.setView(lpset);
-        alertDialog.setNegativeButton("CLose", new DialogInterface.OnClickListener() {
+        alertDialog.setNegativeButton("Close", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
             }
@@ -406,32 +389,14 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    // Domain Logic - move
-    private String createCatRef() {
-        String catRef = CatRefCreator.createCatRef(strArchon, strRef, strItem, strSubItem, strPart);
-        if (catRef.length() > 128) showMessage("Your catalogue reference is very long and may result in unusable file names.");
-        return catRef;
-    }
-
     static final int REQUEST_IMAGE_CAPTURE = 1;
 
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         // Ensure that there's a camera activity to handle the intent
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            // Create the File where the photo should go
-            File photoFile = null;
-            try {
-                photoFile = imageRepository.createTempImageFile();
-            } catch (IOException e) {
-                // Error occurred while creating the File
-                e.printStackTrace();
-            }
-            // Continue only if the File was successfully created
-            if (photoFile != null) {
-                Uri photoURI = FileProvider.getUriForFile(this,
-                        "com.benskitchen.capturingthepast.fileprovider",
-                        photoFile);
+            Uri photoURI = imageRepository.getTempImageFileUri();
+            if (photoURI != null) {
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
             }
@@ -442,85 +407,30 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath);
-            try {
-                ExifInterface exif = new ExifInterface(currentPhotoPath);
-                saveImageToGallery(bitmap, exif);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+            String catRef = createCatRef();
+            String imageFileName = strPrefix + "_" + timeStamp + "_" + catRef + ".jpg";
+            saveImageToGallery(catRef, imageFileName);
+            triggerWriteLog(catRef, imageFileName);
         }
     }
 
-    private void saveImageToGallery(Bitmap bitmap, ExifInterface exif) {
-        OutputStream fos;
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String humanisedTime = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM).format(LocalDateTime.now());
-        String catRef = createCatRef();
-        String imageFileName = strPrefix + "_" + timeStamp + "_" + catRef + ".jpg";
-        String strCSV = "\"" + humanisedTime + "\",\"" + catRef + "\",\"" + imageFileName + "\",\"" + strNote + "\"";
-        String message = logWriter.writePublicLog(strCSV);
-        if (message.length() > 0) Toast.makeText(this, message, LENGTH_SHORT).show();
-
-        ContentResolver contentResolver = getContentResolver();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, imageFileName);
-        contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "image/jpg");
-        contentValues.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + File.separator + "CapturingThePast");
-        Uri imageUri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
-
-
-        try (ParcelFileDescriptor pfd = contentResolver.openFileDescriptor(imageUri, "w")) {
-            FileDescriptor fd = pfd.getFileDescriptor();
-
-            try (OutputStream stream = new FileOutputStream(fd)) {
-                // Perform operations on "stream".
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-            }
-
-            // Sync data with disk. It's mandatory to be able later to call writeExif
-            fd.sync();    // <---- HERE THE SOLUTION
+    private void saveImageToGallery(String catRef, String imageFileName) {
+        try {
+            imageRepository.saveImageToGallery(imageFileName, catRef, strNote);
             captureCounter.incrementCaptureCount();
             settingsRepository.addFileToRecentFiles(catRef);
-            String strToastMessage = "Image saved";
-            Toast.makeText(this, strToastMessage, LENGTH_SHORT).show();
-            writeExif(imageUri, exif);
-
+            Toast.makeText(this, "Image saved", LENGTH_SHORT).show();
         } catch (IOException e) {
-            Toast.makeText(this, "Image not saved\n" + e.getMessage(), LENGTH_SHORT).show();
-            e.printStackTrace();
+            Toast.makeText(this, "Error: Image not saved.\n" + e.getMessage(), LENGTH_SHORT).show();
         }
     }
 
-    // Domain logic - Move
-    // Writes Metadata from temp image to new image in gallery
-    private void writeExif(Uri uri, ExifInterface exif) {
-
-        try (ParcelFileDescriptor imagePfd = getContentResolver().openFileDescriptor(uri, "rw")) {
-            ExifInterface exifNew = new ExifInterface(imagePfd.getFileDescriptor());
-
-            // Copy existing tags
-            Field[] fields = ExifInterface.class.getFields();
-            for (Field field : fields) {
-                if (field.getName().startsWith("TAG")) {
-                    try {
-                        String tag = (String) field.get(null);
-                        String value = exif.getAttribute(tag);
-                        if (value != null) exifNew.setAttribute(tag, value);
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-
-            // Add user comment
-            final String userComment = "Capturing the Past image " +createCatRef()+ " " + strNote;
-            exifNew.setAttribute(ExifInterface.TAG_USER_COMMENT, userComment);
-
-            exifNew.saveAttributes();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public void triggerWriteLog(String catRef, String imageFileName) {
+        String humanisedTime = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM).format(LocalDateTime.now());
+        String strCSV = "\"" + humanisedTime + "\",\"" + catRef + "\",\"" + imageFileName + "\",\"" + strNote + "\"";
+        String message = logWriter.writePublicLog(strCSV);
+        if (!message.isEmpty()) Toast.makeText(this, message, LENGTH_SHORT).show();
     }
 
     // Split UI / data layer
@@ -735,12 +645,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void showInfo() {
-        StringBuilder str = new StringBuilder();
+        StringBuilder sb = new StringBuilder();
         List<String> recentFiles = settingsRepository.getRecentFiles();
         for (int i = recentFiles.size() - 1; i >= 0; i--) {
-            str.append(recentFiles.get(i)).append("\n");
+            sb.append(recentFiles.get(i)).append("\n");
         }
-        String folderStatus = getString(R.string.latest_captures_message) + str; //"Latest captures (Most recent first):\n" + str;
+        String folderStatus = getString(R.string.latest_captures_message) + sb; //"Latest captures (Most recent first):\n" + sb;
         String strMessage = "";
         strMessage = "<p>" + captureCounter.getCaptureCount() + "</p> ";
         showFolderStatusMessage(strMessage, folderStatus);
@@ -807,5 +717,12 @@ public class MainActivity extends AppCompatActivity {
             tvCaptureCount.setText(Html.fromHtml(str, Html.FROM_HTML_MODE_LEGACY));
         });
         alertDialog.show();
+    }
+
+    // Domain Logic - move TODO
+    private String createCatRef() {
+        String catRef = CatRefCreator.createCatRef(strArchon, strRef, strItem, strSubItem, strPart);
+        if (catRef.length() > 128) showMessage("Your catalogue reference is very long and may result in unusable file names.");
+        return catRef;
     }
 }
