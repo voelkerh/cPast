@@ -38,6 +38,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.benskitchen.capturingthepast.data.ImageRepository;
 import com.benskitchen.capturingthepast.data.LogWriter;
 import com.benskitchen.capturingthepast.data.SettingsRepository;
 import com.benskitchen.capturingthepast.domainLogic.CaptureCounter;
@@ -58,7 +59,6 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -77,12 +77,10 @@ public class MainActivity extends AppCompatActivity {
     // Variables needed for file names and metadata
     private final String strPrefix = "cpast";
     private String strNote = "";
-
-    // TODO: Hier weiter
-
     char[] alphabet = new char[26];
     int nPart = 0;
-    private String currentFolderPath;
+
+
     private String currentPhotoPath;
 
     // UI Elements
@@ -90,20 +88,20 @@ public class MainActivity extends AppCompatActivity {
     private EditText tvCatRef;
     private EditText tvItemText;
     private EditText tvSubItemText;
-    private EditText tvDetached;
+    private EditText tvPart;
     private TextView refText;
     private TextView noteText;
     private TextView repoLabel;
     private TextView refLabel;
     private TextView itemLabel;
     private TextView subitemLabel;
-    private TextView detachedLabel;
+    private TextView partLabel;
     private Button decItem;
     private Button incItem;
     private Button decSubItem;
     private Button incSubItem;
     private Button decPart;
-    private Button incDetached;
+    private Button incPart;
     private Button camButton;
     private Button filesButton;
     private Button addRepoButton;
@@ -118,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Data layer dependencies
     SettingsRepository settingsRepository;
+    ImageRepository imageRepository;
     LogWriter logWriter;
 
     @Override
@@ -125,20 +124,18 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        initRepos();
+        initAppRepos();
         initState();
         initViews();
         setupListeners();
     }
 
-    private void initRepos(){
+    private void initAppRepos(){
         settingsRepository = new SettingsRepository(this);
+        imageRepository = new ImageRepository(this);
     }
 
     private void initState(){
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        currentFolderPath = storageDir.getAbsolutePath();
-
         int i = 0;
         for (char letter = 'a'; letter <= 'z'; letter++) {
             alphabet[i++] = letter;
@@ -153,20 +150,20 @@ public class MainActivity extends AppCompatActivity {
         tvCatRef = findViewById(R.id.editTextRef);
         tvItemText = findViewById(R.id.editTextItem);
         tvSubItemText = findViewById(R.id.editTextSubItem);
-        tvDetached = findViewById(R.id.textViewPart);
+        tvPart = findViewById(R.id.textViewPart);
         refText = findViewById(R.id.textViewRef);
         noteText = findViewById(R.id.textViewNote);
         repoLabel = findViewById(R.id.repoLabel);
         refLabel = findViewById(R.id.refLabel);
         itemLabel = findViewById(R.id.itemLabel);
         subitemLabel = findViewById(R.id.subItemLabel);
-        detachedLabel = findViewById(R.id.detachedLabel);
+        partLabel = findViewById(R.id.detachedLabel);
         decItem = findViewById(R.id.buttonDecItem);
         incItem = findViewById(R.id.buttonincItem);
         decSubItem = findViewById(R.id.buttonDecSubItem);
         incSubItem = findViewById(R.id.buttonincSubItem);
         decPart = findViewById(R.id.buttonDecPart);
-        incDetached = findViewById(R.id.buttonIncPart);
+        incPart = findViewById(R.id.buttonIncPart);
         camButton = findViewById(R.id.cameraButton);
         filesButton = findViewById(R.id.filesButton);
         addRepoButton = findViewById(R.id.addRepoButton);
@@ -197,115 +194,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         repoLabel.setOnClickListener(view -> showEntryTips(getString(R.string.repo_description_heading), getString(R.string.repo_description_text)));
-        refLabel.setOnClickListener(view -> showEntryTips(getString(R.string.ref_description_heading), getString(R.string.ref_description_text)));
+        addRepoButton.setOnClickListener(v -> addRepo());
+        deleteRepoButton.setOnClickListener(v -> deleteRepoGui());
+
         itemLabel.setOnClickListener(view -> showEntryTips(getString(R.string.item_description_heading), getString(R.string.item_descript_text)));
         subitemLabel.setOnClickListener(view -> showEntryTips(getString(R.string.sub_item_description_heading), getString(R.string.sub_item_description_text)));
-        detachedLabel.setOnClickListener(view -> showEntryTips(getString(R.string.detached_description_heading), getString(R.string.detached_description_text)));
-        decItem.setOnClickListener(v -> {
-            try {
-                int n = Integer.parseInt(tvItemText.getText().toString());
-                if (n > 2) {
-                    tvItemText.setText(String.valueOf(n - 1));
-                } else {
-                    tvItemText.setText("");
-                }
-            } catch (NumberFormatException e) {
-                tvItemText.setText("");
-            }
-        });
-        incItem.setOnClickListener(v -> {
-            try {
-                int n = Integer.parseInt(tvItemText.getText().toString());
-                tvItemText.setText(String.valueOf(n + 1));
-            } catch (NumberFormatException e) {
-                tvItemText.setText(String.valueOf(1));
-            }
-        });
-        decSubItem.setOnClickListener(v -> {
-            try {
-                int n = Integer.parseInt(tvSubItemText.getText().toString());
-                if (n > 2) {
-                    tvSubItemText.setText(String.valueOf(n - 1));
-                } else {
-                    tvSubItemText.setText("");
-                }
-            } catch (NumberFormatException e) {
-                if (tvSubItemText.getText().toString().isEmpty()) {
-                    tvSubItemText.setText("");
-                } else {
-                    tvSubItemText.setText(String.valueOf(1));
-                }
-            }
-        });
-        incSubItem.setOnClickListener(v -> {
-            try {
-                int n = Integer.parseInt(tvSubItemText.getText().toString());
-                tvSubItemText.setText(String.valueOf(n + 1));
-            } catch (NumberFormatException e) {
-                tvSubItemText.setText(String.valueOf(1));
-            }
-        });
-        decPart.setOnClickListener(v -> {
-            nPart--;
-            if (nPart < 1) {
-                nPart = 0;
-                strPart = "";
-                tvDetached.setText(strPart);
-            } else if (nPart < alphabet.length) {
-                strPart = "" + alphabet[nPart - 1];
-                tvDetached.setText(strPart);
-            } else {
-                strPart = alphabet[nPart % alphabet.length] + ":" + nPart / alphabet.length;
-                tvDetached.setText(strPart);
-            }
-            refText.setText(createCatRef());
-        });
-        btnClearNote.setOnClickListener(v -> noteText.setText(""));
-        btnClearRef.setOnClickListener(v -> tvCatRef.setText(""));
-        incDetached.setOnClickListener(v -> {
-            nPart++;
-            if (nPart < 1) {
-                strPart = "";
-                tvDetached.setText(strPart);
-            } else if (nPart < alphabet.length) {
-                strPart = "" + alphabet[nPart - 1];
-                tvDetached.setText(String.valueOf(alphabet[nPart - 1]));
-            } else {
-                strPart = alphabet[nPart % alphabet.length] + ":" + nPart / alphabet.length;
-                tvDetached.setText(strPart);
-            }
-            refText.setText(createCatRef());
-        });
-        tvDetached.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                strPart = tvDetached.getText().toString();
-                refText.setText(createCatRef());
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
-        tvCatRef.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                strRef = tvCatRef.getText().toString();
-                refText.setText(createCatRef());
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
+        partLabel.setOnClickListener(view -> showEntryTips(getString(R.string.detached_description_heading), getString(R.string.detached_description_text)));
         tvItemText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -356,6 +250,86 @@ public class MainActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
             }
         });
+        tvPart.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                strPart = tvPart.getText().toString();
+                refText.setText(createCatRef());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+        decItem.setOnClickListener(v -> {
+            try {
+                int n = Integer.parseInt(tvItemText.getText().toString());
+                if (n > 2) tvItemText.setText(String.valueOf(n - 1));
+                else tvItemText.setText("");
+            } catch (NumberFormatException e) {
+                tvItemText.setText("");
+            }
+        });
+        incItem.setOnClickListener(v -> {
+            try {
+                int n = Integer.parseInt(tvItemText.getText().toString());
+                tvItemText.setText(String.valueOf(n + 1));
+            } catch (NumberFormatException e) {
+                tvItemText.setText(String.valueOf(1));
+            }
+        });
+        decSubItem.setOnClickListener(v -> {
+            try {
+                int n = Integer.parseInt(tvSubItemText.getText().toString());
+                if (n > 2) tvSubItemText.setText(String.valueOf(n - 1));
+                else tvSubItemText.setText("");
+            } catch (NumberFormatException e) {
+                if (tvSubItemText.getText().toString().isEmpty()) tvSubItemText.setText("");
+                else tvSubItemText.setText(String.valueOf(1));
+            }
+        });
+        incSubItem.setOnClickListener(v -> {
+            try {
+                int n = Integer.parseInt(tvSubItemText.getText().toString());
+                tvSubItemText.setText(String.valueOf(n + 1));
+            } catch (NumberFormatException e) {
+                tvSubItemText.setText(String.valueOf(1));
+            }
+        });
+        decPart.setOnClickListener(v -> {
+            nPart--;
+            if (nPart < 1) {
+                nPart = 0;
+                strPart = "";
+                tvPart.setText(strPart);
+            } else if (nPart < alphabet.length) {
+                strPart = "" + alphabet[nPart - 1];
+                tvPart.setText(strPart);
+            } else {
+                strPart = alphabet[nPart % alphabet.length] + ":" + nPart / alphabet.length;
+                tvPart.setText(strPart);
+            }
+            refText.setText(createCatRef());
+        });
+        incPart.setOnClickListener(v -> {
+            nPart++;
+            if (nPart < 1) {
+                strPart = "";
+                tvPart.setText(strPart);
+            } else if (nPart < alphabet.length) {
+                strPart = "" + alphabet[nPart - 1];
+                tvPart.setText(String.valueOf(alphabet[nPart - 1]));
+            } else {
+                strPart = alphabet[nPart % alphabet.length] + ":" + nPart / alphabet.length;
+                tvPart.setText(strPart);
+            }
+            refText.setText(createCatRef());
+        });
+
         noteText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -370,6 +344,26 @@ public class MainActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
             }
         });
+        btnClearNote.setOnClickListener(v -> noteText.setText(""));
+
+        refLabel.setOnClickListener(view -> showEntryTips(getString(R.string.ref_description_heading), getString(R.string.ref_description_text)));
+        tvCatRef.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                strRef = tvCatRef.getText().toString();
+                refText.setText(createCatRef());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+        btnClearRef.setOnClickListener(v -> tvCatRef.setText(""));
+
         camButton.setOnClickListener(v -> {
             dispatchTakePictureIntent();
         });
@@ -381,8 +375,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         infoButton.setOnClickListener(v -> showInfo());
-        addRepoButton.setOnClickListener(v -> addRepo());
-        deleteRepoButton.setOnClickListener(v -> deleteRepoGui());
     }
 
     private void showMessage(String str) {
@@ -430,7 +422,7 @@ public class MainActivity extends AppCompatActivity {
             // Create the File where the photo should go
             File photoFile = null;
             try {
-                photoFile = createImageFile();
+                photoFile = imageRepository.createTempImageFile();
             } catch (IOException e) {
                 // Error occurred while creating the File
                 e.printStackTrace();
@@ -458,14 +450,6 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
-    }
-
-    private File createImageFile() throws IOException {
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = new File(storageDir, "temp.jpg");
-        currentFolderPath = storageDir.getAbsolutePath();
-        currentPhotoPath = image.getAbsolutePath();
-        return image;
     }
 
     private void saveImageToGallery(Bitmap bitmap, ExifInterface exif) {
