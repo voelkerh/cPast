@@ -239,4 +239,8 @@ public class SettingsRepository {
     public List<String> getRecentFiles() {
         return List.copyOf(recentFiles);
     }
+
+    public String getStrPrefix() {
+        return strPrefix;
+    }
 }

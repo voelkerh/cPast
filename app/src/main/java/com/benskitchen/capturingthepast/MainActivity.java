@@ -57,7 +57,6 @@ public class MainActivity extends AppCompatActivity {
     private String strArchon = "GB0000";
 
     // Variables needed for file names and metadata
-    private final String strPrefix = "cpast";
     private String strNote = "";
     char[] alphabet = new char[26];
     int nPart = 0;
@@ -357,6 +356,8 @@ public class MainActivity extends AppCompatActivity {
             if (photoURI != null) {
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+            } else {
+                showMessage("No photoURI to capture image");
             }
         }
     }
@@ -367,6 +368,7 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
             String catRef = createCatRef();
+            String strPrefix = settingsRepository.getStrPrefix();
             String imageFileName = strPrefix + "_" + timeStamp + "_" + catRef + ".jpg";
             saveImageToGallery(catRef, imageFileName);
             triggerWriteLog(catRef, imageFileName);
@@ -455,7 +457,7 @@ public class MainActivity extends AppCompatActivity {
         tvPresetsLabel.setText(R.string.repo_presets);
 
         EditText inputPrefix = new EditText(MainActivity.this);
-        inputPrefix.setText(strPrefix);
+        inputPrefix.setText(settingsRepository.getStrPrefix());
         inputPrefix.setHint(R.string.prefix);
 
         Switch switchTimestamp = new Switch(this);
