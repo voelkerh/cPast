@@ -3,14 +3,12 @@ package com.benskitchen.capturingthepast;
 import static android.widget.Toast.LENGTH_SHORT;
 
 import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 
 import androidx.appcompat.app.AlertDialog;
 
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -40,6 +38,9 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.benskitchen.capturingthepast.data.LogWriter;
+import com.benskitchen.capturingthepast.data.SettingsRepository;
+import com.benskitchen.capturingthepast.domainLogic.CaptureCounter;
 import com.benskitchen.capturingthepast.domainLogic.CatRefCreator;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -49,45 +50,42 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileDescriptor;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
-import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import info.androidhive.fontawesome.FontDrawable;
 import capturingthepast.R;
 
 public class MainActivity extends AppCompatActivity {
-    private String catRef = "";
+
+    // Variables needed to call reference creator
     private String strRef = "";
     private String strItem = "";
     private String strSubItem = "";
     private String strPart = "";
     private String strArchon = "GB0000";
-    private String strPrefix = "cpast";
+
+    // Variables needed for file names and metadata
+    private final String strPrefix = "cpast";
     private String strNote = "";
-    private int nCaptureCounter = 0;
-    private int nCurrentRepo = 0;
-    boolean bTimestamped = true;
-    private String[] repos;
-    private JSONArray repositories;
-    private ArrayList<String> recentFiles = new ArrayList<>();
-    JSONArray recentFileStore = new JSONArray();
+
+    // TODO: Hier weiter
+
     char[] alphabet = new char[26];
     int nPart = 0;
-    private final String params = "ArchonParams.json";
     private String currentFolderPath;
     private String currentPhotoPath;
+
+    // UI Elements
     private Spinner dropdown;
     private EditText tvCatRef;
     private EditText tvItemText;
@@ -113,6 +111,12 @@ public class MainActivity extends AppCompatActivity {
     private Button infoButton;
     private Button btnClearNote;
     private Button btnClearRef;
+
+
+    // Domain logic dependencies
+    private CaptureCounter captureCounter;
+
+    // Data layer dependencies
     SettingsRepository settingsRepository;
     LogWriter logWriter;
 
@@ -121,9 +125,27 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        initViews();
+        initRepos();
         initState();
+        initViews();
         setupListeners();
+    }
+
+    private void initRepos(){
+        settingsRepository = new SettingsRepository(this);
+    }
+
+    private void initState(){
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        currentFolderPath = storageDir.getAbsolutePath();
+
+        int i = 0;
+        for (char letter = 'a'; letter <= 'z'; letter++) {
+            alphabet[i++] = letter;
+        }
+
+        logWriter = new LogWriter(this);
+        captureCounter = new CaptureCounter(settingsRepository);
     }
 
     private void initViews(){
@@ -154,36 +176,20 @@ public class MainActivity extends AppCompatActivity {
         btnClearRef = findViewById(R.id.buttonClearRef);
         FontDrawable drawable = new FontDrawable(this, R.string.fa_paper_plane_solid, true, false);
         drawable.setTextColor(ContextCompat.getColor(this, android.R.color.black));
-    }
 
-    private void initState(){
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        currentFolderPath = storageDir.getAbsolutePath();
-
-        int i = 0;
-        for (char letter = 'a'; letter <= 'z'; letter++) {
-            alphabet[i++] = letter;
-        }
-
-        logWriter = new LogWriter(this);
-
-        try {
-            strArchon = repositories.getJSONObject(dropdown.getSelectedItemPosition()).getString("Archon");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        ArrayAdapter<String> dataAdapter =
+                new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, settingsRepository.getRepos());
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        dropdown.setAdapter(dataAdapter);
+        strArchon = settingsRepository.getArchonAt(0);
+        dropdown.setSelection(0);
     }
 
     private void setupListeners() {
         dropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                try {
-                    strArchon = repositories.getJSONObject(position).getString("Archon");
-                    nCurrentRepo = position;
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                strArchon = settingsRepository.getArchonAt(position);
                 refText.setText(createCatRef());
             }
             @Override
@@ -448,7 +454,6 @@ public class MainActivity extends AppCompatActivity {
             try {
                 ExifInterface exif = new ExifInterface(currentPhotoPath);
                 saveImageToGallery(bitmap, exif);
-                dropdown.setSelection(nCurrentRepo);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -467,6 +472,7 @@ public class MainActivity extends AppCompatActivity {
         OutputStream fos;
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String humanisedTime = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM).format(LocalDateTime.now());
+        String catRef = createCatRef();
         String imageFileName = strPrefix + "_" + timeStamp + "_" + catRef + ".jpg";
         String strCSV = "\"" + humanisedTime + "\",\"" + catRef + "\",\"" + imageFileName + "\",\"" + strNote + "\"";
         String message = logWriter.writePublicLog(strCSV);
@@ -490,8 +496,8 @@ public class MainActivity extends AppCompatActivity {
 
             // Sync data with disk. It's mandatory to be able later to call writeExif
             fd.sync();    // <---- HERE THE SOLUTION
-            int n = nCaptureCounter + 1;
-            setCaptureCounter(n, catRef);
+            captureCounter.incrementCaptureCount();
+            settingsRepository.addFileToRecentFiles(catRef);
             String strToastMessage = "Image saved";
             Toast.makeText(this, strToastMessage, LENGTH_SHORT).show();
             writeExif(imageUri, exif);
@@ -524,7 +530,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             // Add user comment
-            final String userComment = "Capturing the Past image " +catRef+ " " + strNote;
+            final String userComment = "Capturing the Past image " +createCatRef()+ " " + strNote;
             exifNew.setAttribute(ExifInterface.TAG_USER_COMMENT, userComment);
 
             exifNew.saveAttributes();
@@ -578,52 +584,21 @@ public class MainActivity extends AppCompatActivity {
             }
             JSONArray list = new JSONArray();
             list.put(jsonObj);
-            int len = repositories.length();
-            if (repositories != null) {
+            int len = settingsRepository.getRepositories().length();
+            if (len > 0) {
                 try {
                     for (int i = 0; i < len; i++) {
-                        list.put(repositories.get(i));
+                        list.put(settingsRepository.getRepositories().get(i));
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
-            repositories = list;
-            writePreferences();
+            settingsRepository.setRepositories(list);
+            settingsRepository.writePreferences();
         });
         alertDialog.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
         alertDialog.show();
-    }
-
-    // Data layer - Move
-    private void deleteRepository(int n) {
-        try {
-            JSONArray list = new JSONArray();
-            int len = repositories.length();
-            if (repositories != null) {
-                for (int i = 0; i < len; i++) {
-                    //Excluding the item at position
-                    if (i != n) {
-                        list.put(repositories.get(i));
-                    }
-                }
-            }
-            repositories = list;
-            JSONObject jsonObj = new JSONObject();
-            jsonObj.put("strPrefix", strPrefix);
-            String strTimeStamped = "FALSE";
-            if (bTimestamped) {
-                strTimeStamped = "TRUE";
-            }
-            jsonObj.put("bTimestamp", strTimeStamped);
-            jsonObj.put("data", repositories);
-            jsonObj.put("nCaptureCount", nCaptureCounter);
-            jsonObj.put("recentFiles", recentFileStore);
-            String output = jsonObj.toString();
-            createAndSaveFile(params, output);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
     }
 
     private void deleteRepoGui() {
@@ -645,7 +620,7 @@ public class MainActivity extends AppCompatActivity {
         inputPrefix.setText(strPrefix);
         inputPrefix.setHint(R.string.prefix);
         final Switch switchTimestamp = new Switch(this);
-        switchTimestamp.setChecked(bTimestamped);
+        switchTimestamp.setChecked(settingsRepository.isTimestamped());
         switchTimestamp.setText(R.string.include_timestamp);
         final Button loadReposDefault = new Button(this);
         loadReposDefault.setText(R.string.default_repo_list);
@@ -668,22 +643,8 @@ public class MainActivity extends AppCompatActivity {
         deleteRepo.setBackgroundColor(Color.DKGRAY);
         deleteRepo.setTextColor(Color.WHITE);
 
-        repos = new String[repositories.length()];
-        final int[] length = {repositories.length()};
-
-        for (int i = 0; i < length[0]; i++) {
-            JSONObject jo;
-            try {
-                jo = repositories.getJSONObject(i);
-                repos[i] = jo.getString("Repository");
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-
         Spinner spinnerRepoSelect = new Spinner(this);
-        ArrayAdapter dataAdapterR = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, repos);
+        ArrayAdapter dataAdapterR = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, settingsRepository.getRepos());
         dataAdapterR.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerRepoSelect.setAdapter(dataAdapterR);
         spinnerRepoSelect.setPadding(0, 8, 8, 24);
@@ -726,17 +687,16 @@ public class MainActivity extends AppCompatActivity {
         });
 
         deleteRepo.setOnClickListener(view -> {
-            //Log.i("Content ", "Repo Reset");
             String strToast = "";
-            JSONObject jsonObj = null;
+            JSONObject jsonObj;
             try {
-                jsonObj = repositories.getJSONObject(selectedRepo[0]);
+                jsonObj = settingsRepository.getRepositories().getJSONObject(selectedRepo[0]);
                 strToast = jsonObj.getString("Repository");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            deleteRepository(selectedRepo[0]);
-            writePreferences();
+            settingsRepository.deleteRepository(selectedRepo[0]);
+            settingsRepository.writePreferences();
             spinnerRepoSelect.setAdapter(makeNewRemovalDropDown());
             CharSequence text = getString(R.string.deleted)+ " - " + strToast;
             int duration = 2000;//Toast.LENGTH_SHORT;
@@ -746,8 +706,8 @@ public class MainActivity extends AppCompatActivity {
 
         loadReposDefault.setOnClickListener(view -> {
             bReset[0] = true;
-            resetArchons("default");
-            writePreferences();
+            settingsRepository.resetArchons("default");
+            settingsRepository.writePreferences();
             spinnerRepoSelect.setAdapter(makeNewRemovalDropDown());
             CharSequence text = getString(R.string.repository_default_presets_message);//"Default repository list loaded";
             int duration = 2000;//Toast.LENGTH_SHORT;
@@ -757,8 +717,8 @@ public class MainActivity extends AppCompatActivity {
 
         loadReposShort.setOnClickListener(view -> {
             bReset[0] = true;
-            resetArchons("short");
-            writePreferences();
+            settingsRepository.resetArchons("short");
+            settingsRepository.writePreferences();
             spinnerRepoSelect.setAdapter(makeNewRemovalDropDown());
             CharSequence text = getString(R.string.repository_short_presets_message);//"Short repository list loaded";
             int duration = 2000;//Toast.LENGTH_SHORT;
@@ -767,8 +727,8 @@ public class MainActivity extends AppCompatActivity {
         });
         loadReposAlt.setOnClickListener(view -> {
             bReset[0] = true;
-            resetArchons("alternative");
-            writePreferences();
+            settingsRepository.resetArchons("alternative");
+            settingsRepository.writePreferences();
             spinnerRepoSelect.setAdapter(makeNewRemovalDropDown());
             CharSequence text = getString(R.string.repository_alternative_presets_message);//"Alternative repository list loaded";
             int duration = 2000;//Toast.LENGTH_SHORT;
@@ -784,46 +744,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private ArrayAdapter makeNewRemovalDropDown() {
-        repos = new String[repositories.length()];
-        final int[] length = {repositories.length()};
-
-        for (int i = 0; i < length[0]; i++) {
-            JSONObject jsonObject;
-            try {
-                jsonObject = repositories.getJSONObject(i);
-                repos[i] = jsonObject.getString("Repository");
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-        ArrayAdapter dataAdapterR = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, repos);
+        String[] repos = settingsRepository.getRepos();
+        ArrayAdapter dataAdapterR = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, repos);
         dataAdapterR.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         return dataAdapterR;
     }
 
     public void showInfo() {
         StringBuilder str = new StringBuilder();
+        List<String> recentFiles = settingsRepository.getRecentFiles();
         for (int i = recentFiles.size() - 1; i >= 0; i--) {
             str.append(recentFiles.get(i)).append("\n");
         }
         String folderStatus = getString(R.string.latest_captures_message) + str; //"Latest captures (Most recent first):\n" + str;
         String strMessage = "";
-        strMessage = "<p>" + nCaptureCounter + "</p> ";
+        strMessage = "<p>" + captureCounter.getCaptureCount() + "</p> ";
         showFolderStatusMessage(strMessage, folderStatus);
-    }
-
-    // Domain Logic - Move
-    private void setCaptureCounter(int n, String fName) {
-        if (!fName.isEmpty()) {
-            recentFiles.add(fName);
-            if (recentFiles.size() > 5) {
-                recentFiles.remove(0);
-            }
-            recentFileStore = new JSONArray(recentFiles);
-        }
-        nCaptureCounter = n;
-        writePreferences();
     }
 
     private void showFolderStatusMessage(String strMessage, String strReport) {
@@ -832,8 +768,8 @@ public class MainActivity extends AppCompatActivity {
         String sLink = getString(R.string.resources_note);//"<h3>Resources</h3>"; //resources_note
         TextView tvLogInfo = new TextView(this);
         String strLogInfo = getString(R.string.log_information);//"<h3>Capture Log</h3><p>A log (called CapturingThePast) of all captures is saved in your Documents folder. " +
-                //"Delete the log to reset it, or rename it to preserve it and start a fresh one. " +
-                //"</p>"; //log_information
+        //"Delete the log to reset it, or rename it to preserve it and start a fresh one. " +
+        //"</p>"; //log_information
         tvLogInfo.setMovementMethod(LinkMovementMethod.getInstance());
         tvLogInfo.setText(Html.fromHtml(strLogInfo, Html.FROM_HTML_MODE_LEGACY));
 
@@ -880,8 +816,9 @@ public class MainActivity extends AppCompatActivity {
         alertDialog.setView(lpset);
         alertDialog.setNegativeButton(getString(R.string.close), (dialog, which) -> dialog.cancel());
         btnResetCount.setOnClickListener(view -> {
-            setCaptureCounter(0, "");
-            String str = "<p>" + nCaptureCounter + "</p> ";
+            captureCounter.setCaptureCount(0);
+            settingsRepository.addFileToRecentFiles("");
+            String str = "<p>" + captureCounter.getCaptureCount() + "</p> ";
             tvCaptureCount.setMovementMethod(LinkMovementMethod.getInstance());
             tvCaptureCount.setText(Html.fromHtml(str, Html.FROM_HTML_MODE_LEGACY));
         });
