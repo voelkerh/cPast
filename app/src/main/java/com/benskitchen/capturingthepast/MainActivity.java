@@ -102,7 +102,6 @@ public class MainActivity extends AppCompatActivity {
         EditText tvPart = findViewById(R.id.textViewPart);
         TextView refText = findViewById(R.id.textViewRef);
         TextView noteText = findViewById(R.id.textViewNote);
-        TextView repoLabel = findViewById(R.id.repoLabel);
         TextView refLabel = findViewById(R.id.refLabel);
         TextView itemLabel = findViewById(R.id.itemLabel);
         TextView subitemLabel = findViewById(R.id.subItemLabel);
@@ -140,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
-        repoLabel.setOnClickListener(view -> showDataEntryToolTips(getString(R.string.repo_description_heading), getString(R.string.repo_description_text)));
+        // Tooltips
         addRepoButton.setOnClickListener(v -> showAddRepoDialog());
         deleteRepoButton.setOnClickListener(v -> showDeleteRepoDialog());
 
@@ -396,42 +395,39 @@ public class MainActivity extends AppCompatActivity {
     private void showAddRepoDialog() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
 
-        TextView tvTitle = new TextView(this);
-        String titleText = "";
-        titleText += getString(R.string.add_repo_heading);
-        tvTitle.setMovementMethod(LinkMovementMethod.getInstance());
-        tvTitle.setText(Html.fromHtml(titleText, Html.FROM_HTML_MODE_LEGACY));
+        TextView addArchiveHeading = new TextView(this);
+        addArchiveHeading.setMovementMethod(LinkMovementMethod.getInstance());
+        addArchiveHeading.setText(Html.fromHtml(getString(R.string.add_repo_heading), Html.FROM_HTML_MODE_LEGACY));
 
-        TextView tvTip = new TextView(this);
-        String tipText = getString(R.string.tna_tip);
-        tipText += getString(R.string.repo_tip);
-        tvTip.setMovementMethod(LinkMovementMethod.getInstance());
-        tvTip.setText(Html.fromHtml(tipText, Html.FROM_HTML_MODE_LEGACY));
-        tvTip.setTextSize(18f);
+        TextView fullArchiveNameLabel = new TextView(this);
+        fullArchiveNameLabel.setText(R.string.full_archive_name_label);
+        fullArchiveNameLabel.setTextSize(18f);
 
-        TextView textView = new TextView(this);
-        textView.setText(R.string.repo_name_hint);
-        textView.setTextSize(18f);
+        EditText fullArchiveNameInput = new EditText(MainActivity.this);
+        fullArchiveNameInput.setHint(R.string.full_archive_name_hint);
 
-        final EditText inputRepo = new EditText(MainActivity.this);
-        inputRepo.setHint(R.string.repo_hint);
-        final EditText inputArchon = new EditText(MainActivity.this);
-        inputArchon.setHint(R.string.archon_hint);
+        TextView shortArchiveNameLabel = new TextView(this);
+        shortArchiveNameLabel.setMovementMethod(LinkMovementMethod.getInstance());
+        shortArchiveNameLabel.setText(Html.fromHtml(getString(R.string.short_archive_name_label), Html.FROM_HTML_MODE_LEGACY));
+        shortArchiveNameLabel.setTextSize(18f);
+
+        EditText shortArchiveNameInput = new EditText(MainActivity.this);
+        shortArchiveNameInput.setHint(R.string.short_archive_name_hint);
 
         LinearLayout linearLayout = new LinearLayout(this);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
-        linearLayout.addView(tvTitle);
-        linearLayout.addView(inputRepo);
-        linearLayout.addView(textView);
-        linearLayout.addView(inputArchon);
-        linearLayout.addView(tvTip);
+        linearLayout.addView(addArchiveHeading);
+        linearLayout.addView(fullArchiveNameLabel);
+        linearLayout.addView(fullArchiveNameInput);
+        linearLayout.addView(shortArchiveNameLabel);
+        linearLayout.addView(shortArchiveNameInput);
         linearLayout.setPadding(50, 80, 50, 10);
 
         alertDialog.setView(linearLayout);
         alertDialog.setPositiveButton("Save", (dialog, which) -> {
-            String strRepo = inputRepo.getText().toString();
-            String strArchon = inputArchon.getText().toString();
-            settingsRepository.addRepository(strRepo, strArchon);
+            String fullArchiveName = fullArchiveNameInput.getText().toString();
+            String shortArchiveName = shortArchiveNameInput.getText().toString();
+            settingsRepository.addRepository(fullArchiveName, shortArchiveName);
         });
         alertDialog.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
         alertDialog.show();
