@@ -1,6 +1,6 @@
 package com.benskitchen.capturingthepast.domainLogic;
 
-import com.benskitchen.capturingthepast.data.SettingsRepository;
+import com.benskitchen.capturingthepast.persistence.SettingsRepository;
 
 public class CaptureCounter {
 

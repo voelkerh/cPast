@@ -29,9 +29,9 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.benskitchen.capturingthepast.data.ImageRepository;
-import com.benskitchen.capturingthepast.data.LogWriter;
-import com.benskitchen.capturingthepast.data.SettingsRepository;
+import com.benskitchen.capturingthepast.persistence.ImageRepository;
+import com.benskitchen.capturingthepast.persistence.LogWriter;
+import com.benskitchen.capturingthepast.persistence.SettingsRepository;
 import com.benskitchen.capturingthepast.domainLogic.CaptureCounter;
 import com.benskitchen.capturingthepast.domainLogic.CatRefCreator;
 import com.google.android.material.snackbar.Snackbar;

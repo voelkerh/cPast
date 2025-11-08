@@ -1,4 +1,4 @@
-package com.benskitchen.capturingthepast.data;
+package com.benskitchen.capturingthepast.persistence;
 
 import android.content.ContentUris;
 import android.content.ContentValues;
