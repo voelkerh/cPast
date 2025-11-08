@@ -36,7 +36,7 @@
     <string name="launch_the_camera">Launch the camera</string>
     <string name="open_the_file_manager">Open the file manager</string>
     <string name="show_the_information_panel">Show the information panel</string>
-    <string name="repository">Repository Selector</string>
+    <string name="repository">Current Archive</string>
     <string name="catalogue_reference">Catalogue Reference</string>
     <string name="reference_preview">Reference number preview </string>
     <string name="description_optional_saved_in_the_capture_log">Description</string>
@@ -68,7 +68,7 @@
     <string name="add_repo_heading"><![CDATA[<H2>Add repository</H2>]]></string>
     <string name="repo_description_text"><![CDATA[The repository selector sets the first segment of the catalogue reference. Normally this is a country code followed an Archon code. <br /><br />The numbering scheme is used in The National Archive\'s Discovery Catalogue. The segment is inserted in the file name to associate the image with the source institution. <br /><br />Add custom Archon Codes to identify other sources.]]></string>
     <string name="ref_description_text"><![CDATA[Enter the catalogue number to associate photos with a specific document in a catalogue.<br /> <br />When working with sequences such as entire collections it may be convenient to use the optional controls below to increment the final levels of the catalogue reference. E.g. books or letters. Non sequential entry of reference numbers may be easier using a single text field. <br /> <br />The character limit for filenames is accumulated across all input fields though is not restricted as you may have a valid reason for creating filenames that do not work in common file systems. Instead a warning message is shown when 128 characters is exceeded, this would be a really long file name. Actual limits vary for according to file system, but 255 characters is likely to work.]]></string>
-    <string name="repo_description_heading">Repository Selector</string>
+    <string name="repo_description_heading">Current Archive</string>
     <string name="ref_description_heading">Catalogue Reference</string>
     <string name="item_descript_text">Optional - The incrementing and decrementing buttons are intended to help with sequential capture tasks such as working through a series or collection. The input is restricted to numeric values</string>
     <string name="item_description_heading">Item Level</string>
