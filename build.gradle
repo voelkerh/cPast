@@ -3,7 +3,7 @@
 buildscript {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
         
     }
     dependencies {
@@ -17,10 +17,11 @@ buildscript {
 allprojects {
     repositories {
         google()
+        mavenCentral()
         maven { url 'https://artifactory.appodeal.com/appodeal-public' } // to resolve "Could not find info.androidhive:fontawesome:0.0.5."
     }
 }
 
-task clean(type: Delete) {
+tasks.register('clean', Delete) {
     delete rootProject.buildDir
 }
