@@ -436,11 +436,8 @@ public class MainActivity extends AppCompatActivity {
     private void showDeleteRepoDialog() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
 
-        TextView tvTip = new TextView(this);
-        tvTip.setText(R.string.set_prefix);
-
         TextView tvTitle = new TextView(this);
-        String titleText = getString(R.string.heading_select_repo);
+        String titleText = getString(R.string.heading_delete_archive);
         tvTitle.setMovementMethod(LinkMovementMethod.getInstance());
         tvTitle.setText(Html.fromHtml(titleText, Html.FROM_HTML_MODE_LEGACY));
 
@@ -448,41 +445,6 @@ public class MainActivity extends AppCompatActivity {
         labelSelect.setText(R.string.select_repo);
         labelSelect.setPadding(20, 20, 0, 20);
         labelSelect.setTextSize(20f);
-
-        TextView tvPresetsLabel = new TextView(this);
-        tvPresetsLabel.setText(R.string.repo_presets);
-
-        EditText inputPrefix = new EditText(MainActivity.this);
-        inputPrefix.setText(settingsRepository.getStrPrefix());
-        inputPrefix.setHint(R.string.prefix);
-
-        Switch switchTimestamp = new Switch(this);
-        switchTimestamp.setChecked(settingsRepository.isTimestamped());
-        switchTimestamp.setText(R.string.include_timestamp);
-
-        Button loadReposDefault = new Button(this);
-        loadReposDefault.setText(R.string.default_repo_list);
-        loadReposDefault.setAllCaps(false);
-        loadReposDefault.setBackgroundColor(Color.DKGRAY);
-        loadReposDefault.setTextColor(Color.WHITE);
-
-        Button loadReposShort = new Button(this);
-        loadReposShort.setText(R.string.short_repo_list);
-        loadReposShort.setAllCaps(false);
-        loadReposShort.setBackgroundColor(Color.DKGRAY);
-        loadReposShort.setTextColor(Color.WHITE);
-
-        Button loadReposAlt = new Button(this);
-        loadReposAlt.setText(R.string.alternative);
-        loadReposAlt.setTextColor(Color.WHITE);
-        loadReposAlt.setBackgroundColor(Color.DKGRAY);
-        loadReposAlt.setAllCaps(false);
-
-        Button deleteRepo = new Button(this);
-        deleteRepo.setText(R.string.delete_selected_repository);
-        deleteRepo.setAllCaps(false);
-        deleteRepo.setBackgroundColor(Color.DKGRAY);
-        deleteRepo.setTextColor(Color.WHITE);
 
         Spinner spinnerRepoSelect = new Spinner(this);
         ArrayAdapter<String> dataAdapterR = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, settingsRepository.getRepos());
@@ -492,25 +454,8 @@ public class MainActivity extends AppCompatActivity {
 
         LinearLayout lpset = new LinearLayout(this);
         lpset.setOrientation(LinearLayout.VERTICAL);
-        LinearLayout btnRow = new LinearLayout(this);
-        btnRow.setOrientation(LinearLayout.HORIZONTAL);
-        tvPresetsLabel.setTextSize(18f);
         lpset.addView(tvTitle);
         lpset.addView(spinnerRepoSelect);
-        lpset.addView(deleteRepo);
-
-        String infoText = getString(R.string.repository_presets_note); // "<p><br /><hr />Note: Presets overwrite repository list customisations.</p>";
-        TextView tvPresetTip = new TextView(this);
-        tvPresetTip.setMovementMethod(LinkMovementMethod.getInstance());
-        tvPresetTip.setText(Html.fromHtml(infoText, Html.FROM_HTML_MODE_LEGACY));
-        tvPresetTip.setTextSize(16f);
-        lpset.addView(tvPresetTip);
-
-        lpset.addView(tvPresetsLabel);
-        btnRow.addView(loadReposDefault);
-        btnRow.addView(loadReposShort);
-        btnRow.addView(loadReposAlt);
-        lpset.addView(btnRow);
 
         lpset.setPadding(50, 80, 50, 10);
         alertDialog.setView(lpset);
@@ -527,7 +472,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        deleteRepo.setOnClickListener(view -> {
+        // TODO: Add delete confirmation
+        alertDialog.setPositiveButton("Delete", (dialog, which) -> {
             if(selectedRepo[0] < 0) return;
             String strDeletedRepo = settingsRepository.deleteRepository(selectedRepo[0]);
             spinnerRepoSelect.setAdapter(makeNewRemovalDropDown());
@@ -535,30 +481,7 @@ public class MainActivity extends AppCompatActivity {
             snack.show();
         });
 
-        loadReposDefault.setOnClickListener(view -> {
-            settingsRepository.resetArchons("default");
-            spinnerRepoSelect.setAdapter(makeNewRemovalDropDown());
-            CharSequence text = getString(R.string.repository_default_presets_message);//"Default repository list loaded";
-            Snackbar snack = Snackbar.make(lpset, text, Snackbar.LENGTH_SHORT);
-            snack.show();
-        });
-
-        loadReposShort.setOnClickListener(view -> {
-            settingsRepository.resetArchons("short");
-            spinnerRepoSelect.setAdapter(makeNewRemovalDropDown());
-            CharSequence text = getString(R.string.repository_short_presets_message);//"Short repository list loaded";
-            Snackbar snack = Snackbar.make(lpset, text, Snackbar.LENGTH_SHORT);
-            snack.show();
-        });
-
-        loadReposAlt.setOnClickListener(view -> {
-            settingsRepository.resetArchons("alternative");
-            spinnerRepoSelect.setAdapter(makeNewRemovalDropDown());
-            CharSequence text = getString(R.string.repository_alternative_presets_message);//"Alternative repository list loaded";
-            Snackbar snack = Snackbar.make(lpset, text, 2000);
-            snack.show();
-        });
-        alertDialog.setNegativeButton("Close", (dialog, which) -> dialog.cancel());
+        alertDialog.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
         alertDialog.show();
     }
 

@@ -51,15 +51,9 @@
     <string name="default_repo_list">Default</string>
     <string name="include_timestamp">Include timestamp in filename</string>
     <string name="prefix">Project prefix</string>
-    <string name="repo_presets">Repository list presets</string>
     <string name="select_repo">Select repository</string>
-    <string name="heading_select_repo"><![CDATA[<H2>Select repository</H2>]]></string>
-    <string name="repository_presets_note"><![CDATA[<p><br /><hr />Note: Presets overwrite repository list customisations.<br /></p>]]></string>
-    <string name="repository_default_presets_message">"Default repository list loaded"</string>
-    <string name="repository_short_presets_message">Short repository list loaded"</string>
-    <string name="repository_alternative_presets_message">Alternative repository list loaded</string>
+    <string name="heading_delete_archive"><![CDATA[<H2>Delete Archive</H2>]]></string>
     <string name="latest_captures_message">Latest captures (Most recent first):\n</string>
-    <string name="set_prefix">Set project prefix\n</string>
     <string name="add_repo_heading"><![CDATA[<H2>Add Archive</H2>]]></string>
     <string name="full_archive_name_label">Full name</string>
     <string name="full_archive_name_hint">E.g. Bundesarchiv</string>
