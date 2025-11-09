@@ -1,17 +1,9 @@
 <resources>
     <string name="app_name">Capturing the Past</string>
-    <string name="item">1-999</string>
-    <string name="sub_item">1-999</string>
-    <string name="inc_item">+</string>
-    <string name="dec_item">-</string>
-    <string name="dec_part">-</string>
-    <string name="part">a-z</string>
     <string name="bundle_ref">Catalogue Reference</string>
-    <string name="inc_part">+</string>
     <string name="ref_text">Ref#</string>
     <string name="camera">Camera</string>
     <string name="files">Files</string>
-    <string name="emailaddress">Email Address</string>
     <string name="repo">Repo#</string>
     <string name="fa_minus"></string>
     <string name="fa_plus"></string>
@@ -24,14 +16,6 @@
     <string name="repo_dropdown">Repository selection dropdown</string>
     <string name="add_items_to_the_repository_list">Add items to the repository list</string>
     <string name="remove_items_or_reset_the_repository_list">Manage the repository list</string>
-    <string name="enter_the_catalogue_number">Enter the catalogue number</string>
-    <string name="decrement_the_sub_item_number">Decrement the sub-item number</string>
-    <string name="enter_the_sub_item_number">Enter the sub-item number</string>
-    <string name="increment_the_item_number">Increment the item number</string>
-    <string name="decrement_the_item_number">Decrement the item number</string>
-    <string name="increment_the_sub_item_number">Increment the sub-item number</string>
-    <string name="decrement_the_detached_part_number">Decrement the detached part number</string>
-    <string name="increment_the_detached_part_number">Increment the detached part number</string>
     <string name="preview_of_the_current_catalogue_number">Preview of the current catalogue number</string>
     <string name="launch_the_camera">Launch the camera</string>
     <string name="open_the_file_manager">Open the file manager</string>

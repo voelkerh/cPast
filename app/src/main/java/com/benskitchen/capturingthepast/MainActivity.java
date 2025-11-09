@@ -55,15 +55,10 @@ public class MainActivity extends AppCompatActivity {
 
     // Variables needed to call reference creator
     private String strRef = "";
-    private String strItem = "";
-    private String strSubItem = "";
-    private String strPart = "";
-    private String strArchon = "GB0000";
 
     // Variables needed for file names and metadata
     private String strNote = "";
     char[] alphabet = new char[26];
-    int nPart = 0;
 
     // Domain logic dependencies
     private CaptureCounter captureCounter;
@@ -104,21 +99,9 @@ public class MainActivity extends AppCompatActivity {
     private void initViews(){
         dropdown = findViewById(R.id.spinnerRepo);
         EditText tvCatRef = findViewById(R.id.editTextRef);
-        EditText tvItemText = findViewById(R.id.editTextItem);
-        EditText tvSubItemText = findViewById(R.id.editTextSubItem);
-        EditText tvPart = findViewById(R.id.textViewPart);
         TextView refText = findViewById(R.id.textViewRef);
         TextView noteText = findViewById(R.id.textViewNote);
         TextView refLabel = findViewById(R.id.refLabel);
-        TextView itemLabel = findViewById(R.id.itemLabel);
-        TextView subitemLabel = findViewById(R.id.subItemLabel);
-        TextView partLabel = findViewById(R.id.detachedLabel);
-        Button decItem = findViewById(R.id.buttonDecItem);
-        Button incItem = findViewById(R.id.buttonincItem);
-        Button decSubItem = findViewById(R.id.buttonDecSubItem);
-        Button incSubItem = findViewById(R.id.buttonincSubItem);
-        Button decPart = findViewById(R.id.buttonDecPart);
-        Button incPart = findViewById(R.id.buttonIncPart);
         Button camButton = findViewById(R.id.cameraButton);
         Button filesButton = findViewById(R.id.filesButton);
         Button addRepoButton = findViewById(R.id.addRepoButton);
@@ -147,139 +130,6 @@ public class MainActivity extends AppCompatActivity {
         // Tooltips
         addRepoButton.setOnClickListener(v -> showAddRepoDialog());
         deleteRepoButton.setOnClickListener(v -> showDeleteRepoDialog());
-
-        itemLabel.setOnClickListener(view -> showDataEntryToolTips(getString(R.string.item_description_heading), getString(R.string.item_descript_text)));
-        subitemLabel.setOnClickListener(view -> showDataEntryToolTips(getString(R.string.sub_item_description_heading), getString(R.string.sub_item_description_text)));
-        partLabel.setOnClickListener(view -> showDataEntryToolTips(getString(R.string.detached_description_heading), getString(R.string.detached_description_text)));
-        tvItemText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                strItem = tvItemText.getText().toString();
-                if (!strItem.isEmpty()) {
-                    try {
-                        Integer.parseInt(strItem);
-                    } catch (Exception e) {
-                        showMessage("This control accepts numeric input. All other characters are removed");
-                        strItem = strItem.replaceAll("[^\\d.]", "");
-                        tvItemText.setText(strItem);
-                        tvItemText.setSelection(tvItemText.length());
-                    }
-                }
-                refText.setText(createCatRef());
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
-        tvSubItemText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                strSubItem = tvSubItemText.getText().toString();
-                if (!strSubItem.isEmpty()) {
-                    try {
-                        Integer.parseInt(strSubItem);
-                    } catch (Exception e) {
-                        strSubItem = strSubItem.replaceAll("[^\\d.]", "");
-                        tvSubItemText.setText(strSubItem);
-                        tvSubItemText.setSelection(tvSubItemText.length());
-                        showMessage("This control accepts numeric input. All other characters are removed");
-                    }
-                }
-                refText.setText(createCatRef());
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
-        tvPart.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                strPart = tvPart.getText().toString();
-                refText.setText(createCatRef());
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
-        decItem.setOnClickListener(v -> {
-            try {
-                int n = Integer.parseInt(tvItemText.getText().toString());
-                if (n > 2) tvItemText.setText(String.valueOf(n - 1));
-                else tvItemText.setText("");
-            } catch (NumberFormatException e) {
-                tvItemText.setText("");
-            }
-        });
-        incItem.setOnClickListener(v -> {
-            try {
-                int n = Integer.parseInt(tvItemText.getText().toString());
-                tvItemText.setText(String.valueOf(n + 1));
-            } catch (NumberFormatException e) {
-                tvItemText.setText(String.valueOf(1));
-            }
-        });
-        decSubItem.setOnClickListener(v -> {
-            try {
-                int n = Integer.parseInt(tvSubItemText.getText().toString());
-                if (n > 2) tvSubItemText.setText(String.valueOf(n - 1));
-                else tvSubItemText.setText("");
-            } catch (NumberFormatException e) {
-                if (tvSubItemText.getText().toString().isEmpty()) tvSubItemText.setText("");
-                else tvSubItemText.setText(String.valueOf(1));
-            }
-        });
-        incSubItem.setOnClickListener(v -> {
-            try {
-                int n = Integer.parseInt(tvSubItemText.getText().toString());
-                tvSubItemText.setText(String.valueOf(n + 1));
-            } catch (NumberFormatException e) {
-                tvSubItemText.setText(String.valueOf(1));
-            }
-        });
-        decPart.setOnClickListener(v -> {
-            nPart--;
-            if (nPart < 1) {
-                nPart = 0;
-                strPart = "";
-                tvPart.setText(strPart);
-            } else if (nPart < alphabet.length) {
-                strPart = "" + alphabet[nPart - 1];
-                tvPart.setText(strPart);
-            } else {
-                strPart = alphabet[nPart % alphabet.length] + ":" + nPart / alphabet.length;
-                tvPart.setText(strPart);
-            }
-            refText.setText(createCatRef());
-        });
-        incPart.setOnClickListener(v -> {
-            nPart++;
-            if (nPart < 1) {
-                strPart = "";
-                tvPart.setText(strPart);
-            } else if (nPart < alphabet.length) {
-                strPart = "" + alphabet[nPart - 1];
-                tvPart.setText(String.valueOf(alphabet[nPart - 1]));
-            } else {
-                strPart = alphabet[nPart % alphabet.length] + ":" + nPart / alphabet.length;
-                tvPart.setText(strPart);
-            }
-            refText.setText(createCatRef());
-        });
 
         noteText.addTextChangedListener(new TextWatcher() {
             @Override
