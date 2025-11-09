@@ -575,7 +575,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private String createCatRef() {
-        String catRef = CatRefCreator.createCatRef(strArchon, strRef, strItem, strSubItem, strPart);
+        String strArchon = "GB0000";
+        String catRef = CatRefCreator.createCatRef(strArchon, strRef);
         if (catRef.length() > 128) showMessage("Your catalogue reference is very long and may result in unusable file names.");
         return catRef;
     }
