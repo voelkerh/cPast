@@ -25,11 +25,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.benskitchen.capturingthepast.domainLogic.ArchiveRepository;
 import com.benskitchen.capturingthepast.persistence.ImageRepository;
+import com.benskitchen.capturingthepast.persistence.JsonArchiveStore;
 import com.benskitchen.capturingthepast.persistence.LogWriter;
 import com.benskitchen.capturingthepast.persistence.SettingsRepository;
 import com.benskitchen.capturingthepast.domainLogic.CaptureCounter;
@@ -49,6 +50,9 @@ import capturingthepast.R;
 
 public class MainActivity extends AppCompatActivity {
 
+    // UI variables
+    Spinner dropdown;
+
     // Variables needed to call reference creator
     private String strRef = "";
     private String strItem = "";
@@ -63,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Domain logic dependencies
     private CaptureCounter captureCounter;
+    private ArchiveRepository archiveRepository;
 
     // Data layer dependencies
     SettingsRepository settingsRepository;
@@ -80,6 +85,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initAppRepos(){
+        JsonArchiveStore jsonArchiveStore = new JsonArchiveStore(getApplicationContext());
+        archiveRepository = new ArchiveRepository(jsonArchiveStore);
         settingsRepository = new SettingsRepository(this);
         imageRepository = new ImageRepository(this);
     }
@@ -95,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initViews(){
-        Spinner dropdown = findViewById(R.id.spinnerRepo);
+        dropdown = findViewById(R.id.spinnerRepo);
         EditText tvCatRef = findViewById(R.id.editTextRef);
         EditText tvItemText = findViewById(R.id.editTextItem);
         EditText tvSubItemText = findViewById(R.id.editTextSubItem);
@@ -123,16 +130,14 @@ public class MainActivity extends AppCompatActivity {
         drawable.setTextColor(ContextCompat.getColor(this, android.R.color.black));
 
         ArrayAdapter<String> dataAdapter =
-                new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, settingsRepository.getRepos());
+                new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, archiveRepository.readArchives());
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         dropdown.setAdapter(dataAdapter);
-        strArchon = settingsRepository.getArchonAt(0);
         dropdown.setSelection(0);
 
         dropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                strArchon = settingsRepository.getArchonAt(position);
                 refText.setText(createCatRef());
             }
             @Override
@@ -367,8 +372,7 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
             String catRef = createCatRef();
-            String strPrefix = settingsRepository.getStrPrefix();
-            String imageFileName = strPrefix + "_" + timeStamp + "_" + catRef + ".jpg";
+            String imageFileName = timeStamp + "_" + catRef + ".jpg";
             saveImageToGallery(catRef, imageFileName);
             triggerWriteLog(catRef, imageFileName);
         }
@@ -427,10 +431,21 @@ public class MainActivity extends AppCompatActivity {
         alertDialog.setPositiveButton("Save", (dialog, which) -> {
             String fullArchiveName = fullArchiveNameInput.getText().toString();
             String shortArchiveName = shortArchiveNameInput.getText().toString();
-            settingsRepository.addRepository(fullArchiveName, shortArchiveName);
+            boolean created = archiveRepository.createArchive(fullArchiveName, shortArchiveName);
+            if (created) Snackbar.make(linearLayout, fullArchiveName + " created", Snackbar.LENGTH_SHORT).show();
+            else Snackbar.make(linearLayout, fullArchiveName + " could not be created", Snackbar.LENGTH_SHORT).show();
+            updateDropdown();
         });
         alertDialog.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
         alertDialog.show();
+    }
+
+    private void updateDropdown(){
+        ArrayAdapter<String> dataAdapter =
+                new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, archiveRepository.readArchives());
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        dropdown.setAdapter(dataAdapter);
+        dropdown.setSelection(0);
     }
 
     private void showDeleteRepoDialog() {
@@ -447,18 +462,18 @@ public class MainActivity extends AppCompatActivity {
         labelSelect.setTextSize(20f);
 
         Spinner spinnerRepoSelect = new Spinner(this);
-        ArrayAdapter<String> dataAdapterR = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, settingsRepository.getRepos());
+        ArrayAdapter<String> dataAdapterR = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, archiveRepository.readArchives());
         dataAdapterR.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerRepoSelect.setAdapter(dataAdapterR);
         spinnerRepoSelect.setPadding(0, 8, 8, 24);
 
-        LinearLayout lpset = new LinearLayout(this);
-        lpset.setOrientation(LinearLayout.VERTICAL);
-        lpset.addView(tvTitle);
-        lpset.addView(spinnerRepoSelect);
+        LinearLayout linearLayout = new LinearLayout(this);
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        linearLayout.addView(tvTitle);
+        linearLayout.addView(spinnerRepoSelect);
 
-        lpset.setPadding(50, 80, 50, 10);
-        alertDialog.setView(lpset);
+        linearLayout.setPadding(50, 80, 50, 10);
+        alertDialog.setView(linearLayout);
 
         int[] selectedRepo = {-1};
         spinnerRepoSelect.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -474,21 +489,16 @@ public class MainActivity extends AppCompatActivity {
 
         // TODO: Add delete confirmation
         alertDialog.setPositiveButton("Delete", (dialog, which) -> {
-            if(selectedRepo[0] < 0) return;
-            String strDeletedRepo = settingsRepository.deleteRepository(selectedRepo[0]);
-            spinnerRepoSelect.setAdapter(makeNewRemovalDropDown());
-            Snackbar snack = Snackbar.make(lpset, getString(R.string.deleted)+ " - " + strDeletedRepo, Snackbar.LENGTH_SHORT);
+            String archiveToDelete = spinnerRepoSelect.getSelectedItem().toString();
+            String fullArchiveName = archiveToDelete.split("-")[0].trim();
+            archiveRepository.deleteArchive(fullArchiveName);
+            updateDropdown();
+            Snackbar snack = Snackbar.make(linearLayout, getString(R.string.deleted)+ " - " + archiveToDelete, Snackbar.LENGTH_SHORT);
             snack.show();
         });
 
         alertDialog.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
         alertDialog.show();
-    }
-
-    private ArrayAdapter<String> makeNewRemovalDropDown() {
-        ArrayAdapter<String> dataAdapterR = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, settingsRepository.getRepos());
-        dataAdapterR.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        return dataAdapterR;
     }
 
     public void showInfo() {
