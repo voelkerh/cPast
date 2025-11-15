@@ -109,7 +109,7 @@
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:layout_marginHorizontal="24dp"
-        app:layout_constraintBottom_toTopOf="@id/layoutItem"
+        app:layout_constraintBottom_toTopOf="@id/layoutImageCounter"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/LayoutRepo"
@@ -184,41 +184,99 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/layoutItem"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_marginHorizontal="24dp"
-        app:layout_constraintBottom_toTopOf="@+id/layoutSubItem"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/layoutReference">
+            android:id="@+id/layoutImageCounter"
+            android:layout_width="match_parent"
+            android:layout_height="24dp"
+            android:layout_marginHorizontal="24dp"
+            app:layout_constraintBottom_toTopOf="@id/layoutImageName"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/layoutReference">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layoutImageCounterLabel"
+                android:layout_width="match_parent"
+                android:layout_height="24dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                    android:id="@+id/imageCounterLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="24dp"
+                    android:layout_gravity="start"
+                    android:text="@string/photo_counter_label"
+                    android:textColor="@color/fontColor"
+                    android:textSize="18sp"
+
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/layoutSubItem"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_marginHorizontal="24dp"
-        app:layout_constraintBottom_toTopOf="@+id/layoutDetached"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/layoutItem">
+            android:id="@+id/layoutImageName"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_marginHorizontal="24dp"
+            app:layout_constraintBottom_toTopOf="@id/layoutNote"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/layoutImageCounter">
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layoutImageNameLabel"
+                android:layout_width="match_parent"
+                android:layout_height="24dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                    android:id="@+id/imageNameLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="24dp"
+                    android:layout_gravity="start"
+                    android:text="@string/next_photo_name"
+                    android:textColor="@color/fontColor"
+                    android:textSize="18sp"
+
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layoutImageNamePreview"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/layoutImageNameLabel">
+
+            <TextView
+                    android:id="@+id/textViewRef"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#0000"
+                    android:contentDescription="@string/preview_of_the_current_catalogue_number"
+                    android:ems="18"
+                    android:gravity="center|center_horizontal"
+                    android:text="@string/ref_text"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="18sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/layoutDetached"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_marginHorizontal="24dp"
-        app:layout_constraintBottom_toTopOf="@id/layoutNote"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/layoutSubItem">
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layoutNote"
@@ -226,10 +284,10 @@
         android:layout_height="48dp"
         android:layout_marginHorizontal="24dp"
 
-        app:layout_constraintBottom_toTopOf="@id/constraintLayoutRes"
+        app:layout_constraintBottom_toTopOf="@id/layoutActions"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/layoutDetached">
+        app:layout_constraintTop_toBottomOf="@+id/layoutImageName">
 
         <!--        <androidx.constraintlayout.widget.ConstraintLayout-->
         <!--            android:id="@+id/layoutNoteLabel"-->
@@ -295,45 +353,6 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayoutRes"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_marginHorizontal="24dp"
-        app:layout_constraintBottom_toTopOf="@id/layoutActions"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/layoutNote">
-
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/layoutPreview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <TextView
-                android:id="@+id/textViewRef"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#0000"
-                android:contentDescription="@string/preview_of_the_current_catalogue_number"
-                android:ems="18"
-                android:gravity="center"
-                android:text="@string/ref_text"
-                android:textColor="@color/fontColorSecondary"
-                android:textSize="18sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layoutActions"
         android:layout_width="match_parent"
@@ -348,7 +367,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayoutRes">
+        app:layout_constraintTop_toBottomOf="@+id/layoutImageName">
 
         <Button
             android:id="@+id/cameraButton"
