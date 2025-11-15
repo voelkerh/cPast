@@ -49,7 +49,7 @@ public class ImageRepository {
         return null;
     }
 
-    public void saveImageToGallery(String imageFileName, String catRef, String strNote) throws IOException {
+    public void saveImageToGallery(String imageFileName, String strNote) throws IOException {
         Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath);
         ExifInterface exif = new ExifInterface(currentPhotoPath);
         ContentResolver contentResolver = context.getContentResolver();
@@ -69,7 +69,7 @@ public class ImageRepository {
 
             // Sync data with disk. It's mandatory to be able later to call writeExif
             fd.sync();    // <---- HERE THE SOLUTION
-            final String userComment = "Capturing the Past image " + catRef + " " + strNote;
+            final String userComment = "Capturing the Past image " + imageFileName + " " + strNote;
             writeExif(imageUri, exif, userComment);
         } catch (IOException e) {
             e.printStackTrace();

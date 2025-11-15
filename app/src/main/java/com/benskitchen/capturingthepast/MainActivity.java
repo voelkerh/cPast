@@ -33,15 +33,13 @@ import com.benskitchen.capturingthepast.persistence.JsonArchiveStore;
 import com.benskitchen.capturingthepast.persistence.LogWriter;
 import com.benskitchen.capturingthepast.persistence.SettingsRepository;
 import com.benskitchen.capturingthepast.domainLogic.CaptureCounter;
-import com.benskitchen.capturingthepast.domainLogic.CatRefCreator;
+import com.benskitchen.capturingthepast.domainLogic.RecordReferenceCreator;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
-import java.util.Date;
 import java.util.List;
 
 import info.androidhive.fontawesome.FontDrawable;
@@ -52,9 +50,7 @@ public class MainActivity extends AppCompatActivity {
     // UI variables
     Spinner dropdown;
     int headingColor;
-
-    // Variables needed to call reference creator
-    private String strRef = "";
+    EditText tvRecordReference;
 
     // Variables needed for file names and metadata
     private String strNote = "";
@@ -99,11 +95,11 @@ public class MainActivity extends AppCompatActivity {
     private void initViews(){
         headingColor = ContextCompat.getColor(this, R.color.colorPrimaryDark);
         dropdown = findViewById(R.id.spinnerRepo);
-        EditText tvCatRef = findViewById(R.id.editTextRef);
-        TextView refText = findViewById(R.id.textViewRef);
+        tvRecordReference = findViewById(R.id.editTextRef);
+        TextView recordReferenceText = findViewById(R.id.textViewRef);
         TextView noteText = findViewById(R.id.textViewNote);
-        TextView refLabel = findViewById(R.id.refLabel);
-        Button camButton = findViewById(R.id.cameraButton);
+        TextView recordReferenceLabel = findViewById(R.id.refLabel);
+        Button cameraButton = findViewById(R.id.cameraButton);
         Button filesButton = findViewById(R.id.filesButton);
         Button addRepoButton = findViewById(R.id.addRepoButton);
         Button deleteRepoButton = findViewById(R.id.deleteRepoButton);
@@ -122,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
         dropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                refText.setText(createCatRef());
+                recordReferenceText.setText(createFileName());
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
@@ -148,25 +144,24 @@ public class MainActivity extends AppCompatActivity {
         });
         btnClearNote.setOnClickListener(v -> noteText.setText(""));
 
-        refLabel.setOnClickListener(view -> showDataEntryToolTips(getString(R.string.ref_description_heading), getString(R.string.ref_description_text)));
-        tvCatRef.addTextChangedListener(new TextWatcher() {
+        recordReferenceLabel.setOnClickListener(view -> showDataEntryToolTips(getString(R.string.ref_description_heading), getString(R.string.ref_description_text)));
+        tvRecordReference.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                strRef = tvCatRef.getText().toString();
-                refText.setText(createCatRef());
+                recordReferenceText.setText(createFileName());
             }
 
             @Override
             public void afterTextChanged(Editable s) {
             }
         });
-        btnClearRef.setOnClickListener(v -> tvCatRef.setText(""));
+        btnClearRef.setOnClickListener(v -> tvRecordReference.setText(""));
 
-        camButton.setOnClickListener(v -> dispatchTakePictureIntent());
+        cameraButton.setOnClickListener(v -> dispatchTakePictureIntent());
         filesButton.setOnClickListener(v -> {
             try {
                 openGallery();
@@ -221,28 +216,26 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-            String catRef = createCatRef();
-            String imageFileName = timeStamp + "_" + catRef + ".jpg";
-            saveImageToGallery(catRef, imageFileName);
-            triggerWriteLog(catRef, imageFileName);
+            String imageFileName = createFileName();
+            saveImageToGallery(imageFileName);
+            triggerWriteLog(imageFileName);
         }
     }
 
-    private void saveImageToGallery(String catRef, String imageFileName) {
+    private void saveImageToGallery(String imageFileName) {
         try {
-            imageRepository.saveImageToGallery(imageFileName, catRef, strNote);
+            imageRepository.saveImageToGallery(imageFileName, strNote);
             captureCounter.incrementCaptureCount();
-            settingsRepository.addFileToRecentFiles(catRef);
+            settingsRepository.addFileToRecentFiles(imageFileName);
             Toast.makeText(this, "Image saved", LENGTH_SHORT).show();
         } catch (IOException e) {
             Toast.makeText(this, "Error: Image not saved.\n" + e.getMessage(), LENGTH_SHORT).show();
         }
     }
 
-    public void triggerWriteLog(String catRef, String imageFileName) {
+    public void triggerWriteLog(String imageFileName) {
         String humanisedTime = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM).format(LocalDateTime.now());
-        String strCSV = "\"" + humanisedTime + "\",\"" + catRef + "\",\"" + imageFileName + "\",\"" + strNote + "\"";
+        String strCSV = "\"" + humanisedTime + "\"" + imageFileName + "\",\"" + strNote + "\"";
         String message = logWriter.writePublicLog(strCSV);
         if (!message.isEmpty()) Toast.makeText(this, message, LENGTH_SHORT).show();
     }
@@ -444,10 +437,25 @@ public class MainActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
-    private String createCatRef() {
-        String strArchon = "GB0000";
-        String catRef = CatRefCreator.createCatRef(strArchon, strRef);
+    private String createFileName() {
+        String strArchiveShort = getShortArchiveName();
+        String strRecordReference = tvRecordReference.getText().toString();
+        String strCounter = "0"; // placeholder, replace when image counter is implemented
+        String catRef = RecordReferenceCreator.createRecordReference(strArchiveShort, strRecordReference, strCounter);
         if (catRef.length() > 128) showMessage("Your catalogue reference is very long and may result in unusable file names.");
         return catRef;
+    }
+
+    private String getShortArchiveName(){
+        String selectedArchive = (String) dropdown.getSelectedItem();
+        if (selectedArchive.equals("Select Archive") || selectedArchive.equals("Add Archive")) return ".jpg";
+        String strArchiveShort;
+        String[] parts = selectedArchive.split("-");
+        if (parts.length >= 2) {
+            strArchiveShort = parts[1].trim();
+        } else {
+            strArchiveShort = selectedArchive.trim();
+        }
+        return strArchiveShort;
     }
 }
