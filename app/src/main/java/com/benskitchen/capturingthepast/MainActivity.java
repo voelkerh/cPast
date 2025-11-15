@@ -41,6 +41,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -111,15 +112,25 @@ public class MainActivity extends AppCompatActivity {
         FontDrawable drawable = new FontDrawable(this, R.string.fa_paper_plane_solid, true, false);
         drawable.setTextColor(ContextCompat.getColor(this, android.R.color.black));
 
+        List<String> archiveNames = new ArrayList<>(archiveRepository.readArchives());
+        if (archiveNames.isEmpty()) archiveNames.add("Select Archive");
+        archiveNames.add("Add archive");
         ArrayAdapter<String> dataAdapter =
-                new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, archiveRepository.readArchives());
+                new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, archiveNames);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         dropdown.setAdapter(dataAdapter);
-        dropdown.setSelection(0);
+        final int[] lastRealSelection = {0};
+        dropdown.setSelection(lastRealSelection[0]);
 
         dropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position == archiveNames.size() - 1) {
+                    showAddArchiveDialog();
+                    dropdown.setSelection(lastRealSelection[0]);
+                    return;
+                }
+                lastRealSelection[0] = position;
                 refText.setText(createCatRef());
             }
             @Override
@@ -299,8 +310,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateDropdown(){
+        List<String> archiveNames = new ArrayList<>(archiveRepository.readArchives());
+        if (archiveNames.isEmpty()) archiveNames.add("Select Archive");
+        archiveNames.add("Add archive");
         ArrayAdapter<String> dataAdapter =
-                new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, archiveRepository.readArchives());
+                new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, archiveNames);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         dropdown.setAdapter(dataAdapter);
         dropdown.setSelection(0);

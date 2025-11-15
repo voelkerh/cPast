@@ -5,8 +5,7 @@
     <string name="camera">Camera</string>
     <string name="files">Files</string>
     <string name="repo">Repo#</string>
-    <string name="fa_minus">&#xF068;</string>
-    <string name="fa_plus">&#xF067;</string>
+    <string name="fa_edit">&#xf044;</string>
     <string name="fa_camera">&#xF030;</string>
     <string name="fa_files">&#xF07C;</string>
     <string name="uf013">&#xF013;</string>
@@ -19,8 +18,8 @@
     <string name="launch_the_camera">Launch the camera</string>
     <string name="open_the_file_manager">Open the file manager</string>
     <string name="show_the_information_panel">Show the information panel</string>
-    <string name="repository">Current Archive</string>
-    <string name="catalogue_reference">Reference of archival record</string>
+    <string name="repository">Current archive:</string>
+    <string name="catalogue_reference">Reference of archival record:</string>
     <string name="reference_preview">Reference number preview </string>
     <string name="description_optional_saved_in_the_capture_log">Description</string>
     <string name="detached_or_torn_parts_special_cases">Special Cases</string>
