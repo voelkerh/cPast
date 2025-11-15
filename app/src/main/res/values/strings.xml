@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Capturing the Past</string>
     <string name="bundle_ref">Catalogue Reference</string>
-    <string name="ref_text">Ref#</string>
+    <string name="ref_text">.jpg</string>
     <string name="camera">Camera</string>
     <string name="files">Files</string>
     <string name="repo">Repo#</string>
@@ -58,4 +58,5 @@
     <string name="close">close</string>
     <string name="reset">Reset</string>
     <string name="deleted">Deleted</string>
+    <string name="next_image_name">File name for the next image:</string>
 </resources>
