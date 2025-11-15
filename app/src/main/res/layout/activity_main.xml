@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/back1">
-
+    android:background="@color/background">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/LayoutRepo"
@@ -32,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
                 android:text="@string/repository"
-                android:textColor="@color/colorPrimaryDarkTrans"
+                android:textColor="@color/fontColor"
                 android:textSize="18sp"
 
                 app:layout_constraintEnd_toEndOf="parent"
@@ -60,7 +59,7 @@
                 android:ems="12"
                 android:hint="@string/repo"
                 android:padding="10dp"
-                android:textColor="@color/fontColour"
+                android:textColor="@color/fontColor"
                 android:textSize="24sp"
                 android:tooltipText="@string/repo_dropdown"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -78,7 +77,7 @@
                 android:contentDescription="@string/remove_items_or_reset_the_repository_list"
                 android:fontFamily="@font/fasolid"
                 android:text="@string/fa_minus"
-                android:textColor="@color/colorPrimaryDarkTrans"
+                android:textColor="@color/colorPrimary"
                 android:textSize="20sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/addRepoButton"
@@ -94,7 +93,7 @@
                 android:contentDescription="@string/add_items_to_the_repository_list"
                 android:fontFamily="@font/fasolid"
                 android:text="@string/fa_plus"
-                android:textColor="@color/colorPrimaryDarkTrans"
+                android:textColor="@color/colorPrimary"
                 android:textSize="20sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -131,7 +130,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
                 android:text="@string/catalogue_reference"
-                android:textColor="@color/colorPrimaryDarkTrans"
+                android:textColor="@color/fontColor"
                 android:textSize="18sp"
 
                 app:layout_constraintEnd_toEndOf="parent"
@@ -149,25 +148,25 @@
             app:layout_constraintStart_toStartOf="parent">
 
             <EditText
-                android:id="@+id/editTextRef"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/edittext_bg"
-                android:ems="20"
-                android:gravity="left"
-                android:hint="@string/e_g_par378_31_3_5"
-                android:importantForAutofill="no"
-                android:inputType="textPersonName"
-                android:paddingHorizontal="8dp"
-                android:paddingVertical="8dp"
-                android:text=""
-                android:textSize="24sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                    android:id="@+id/editTextRef"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/edittext_bg"
+                    android:ems="12"
+                    android:gravity="left"
+                    android:hint="@string/e_g_par378_31_3_5"
+                    android:importantForAutofill="no"
+                    android:inputType="textPersonName"
+                    android:paddingHorizontal="8dp"
+                    android:paddingVertical="8dp"
+                    android:text=""
+                    android:textSize="24sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
 
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintVertical_bias="0.0"/>
             <Button
                 android:id="@+id/buttonClearRef"
                 android:layout_width="48dp"
@@ -326,7 +325,7 @@
                 android:ems="18"
                 android:gravity="center"
                 android:text="@string/ref_text"
-                android:textColor="@color/colorPrimaryDarkTrans"
+                android:textColor="@color/fontColorSecondary"
                 android:textSize="18sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -360,7 +359,7 @@
             android:contentDescription="@string/launch_the_camera"
             android:fontFamily="@font/fasolid"
             android:text="@string/fa_camera"
-            android:textColor="@color/colorPrimaryDarkTrans"
+            android:textColor="@color/colorPrimaryDark"
             android:textSize="56sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/filesButton"
@@ -377,7 +376,7 @@
 
             android:fontFamily="@font/fasolid"
             android:text="@string/fa_files"
-            android:textColor="@color/colorPrimaryDarkTrans"
+            android:textColor="@color/colorPrimaryDark"
             android:textSize="56sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/infoButton"
@@ -393,7 +392,7 @@
             android:contentDescription="@string/show_the_information_panel"
             android:fontFamily="@font/fasolid"
             android:text="@string/fa_info"
-            android:textColor="@color/colorPrimaryDarkTrans"
+            android:textColor="@color/colorPrimaryDark"
             android:textSize="56sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
