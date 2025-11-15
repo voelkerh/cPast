@@ -58,5 +58,6 @@
     <string name="close">close</string>
     <string name="reset">Reset</string>
     <string name="deleted">Deleted</string>
-    <string name="next_image_name">File name for the next image:</string>
+    <string name="next_photo_name">File name for the next photo:</string>
+    <string name="photo_counter_label">Photos taken for this archival record: 0</string>
 </resources>

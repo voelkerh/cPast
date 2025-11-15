@@ -109,7 +109,7 @@
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:layout_marginHorizontal="24dp"
-        app:layout_constraintBottom_toTopOf="@id/layoutImageName"
+        app:layout_constraintBottom_toTopOf="@id/layoutImageCounter"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/LayoutRepo"
@@ -184,6 +184,41 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layoutImageCounter"
+            android:layout_width="match_parent"
+            android:layout_height="24dp"
+            android:layout_marginHorizontal="24dp"
+            app:layout_constraintBottom_toTopOf="@id/layoutImageName"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/layoutReference">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layoutImageCounterLabel"
+                android:layout_width="match_parent"
+                android:layout_height="24dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                    android:id="@+id/imageCounterLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="24dp"
+                    android:layout_gravity="start"
+                    android:text="@string/photo_counter_label"
+                    android:textColor="@color/fontColor"
+                    android:textSize="18sp"
+
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/layoutImageName"
             android:layout_width="match_parent"
             android:layout_height="80dp"
@@ -191,7 +226,7 @@
             app:layout_constraintBottom_toTopOf="@id/layoutNote"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/layoutReference">
+            app:layout_constraintTop_toBottomOf="@+id/layoutImageCounter">
 
         <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layoutImageNameLabel"
@@ -206,7 +241,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="24dp"
                     android:layout_gravity="start"
-                    android:text="@string/next_image_name"
+                    android:text="@string/next_photo_name"
                     android:textColor="@color/fontColor"
                     android:textSize="18sp"
 
