@@ -36,7 +36,6 @@
     <string name="include_timestamp">Include timestamp in filename</string>
     <string name="prefix">Project prefix</string>
     <string name="enter_the_catalogue_number">Enter the catalogue number</string>
-    <string name="select_repo">Select repository</string>
     <string name="heading_delete_archive"><![CDATA[<H2>Delete Archive</H2>]]></string>
     <string name="latest_captures_message">Latest captures (Most recent first):\n</string>
     <string name="add_repo_heading"><![CDATA[<H2>Add Archive</H2>]]></string>

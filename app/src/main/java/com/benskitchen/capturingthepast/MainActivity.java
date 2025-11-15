@@ -4,13 +4,12 @@ import static android.widget.Toast.LENGTH_SHORT;
 
 import android.content.Intent;
 
-import androidx.appcompat.app.AlertDialog;
-
 import android.graphics.Color;
 import android.net.Uri;
 import android.provider.MediaStore;
 
 import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -52,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
     // UI variables
     Spinner dropdown;
+    int headingColor;
 
     // Variables needed to call reference creator
     private String strRef = "";
@@ -97,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initViews(){
+        headingColor = ContextCompat.getColor(this, R.color.colorPrimaryDark);
         dropdown = findViewById(R.id.spinnerRepo);
         EditText tvCatRef = findViewById(R.id.editTextRef);
         TextView refText = findViewById(R.id.textViewRef);
@@ -128,8 +129,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         // Tooltips
-        addRepoButton.setOnClickListener(v -> showAddRepoDialog());
-        deleteRepoButton.setOnClickListener(v -> showDeleteRepoDialog());
+        addRepoButton.setOnClickListener(v -> showAddArchiveDialog());
+        deleteRepoButton.setOnClickListener(v -> showDeleteArchiveDialog());
 
         noteText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -246,12 +247,14 @@ public class MainActivity extends AppCompatActivity {
         if (!message.isEmpty()) Toast.makeText(this, message, LENGTH_SHORT).show();
     }
 
-    private void showAddRepoDialog() {
+    private void showAddArchiveDialog() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
 
         TextView addArchiveHeading = new TextView(this);
         addArchiveHeading.setMovementMethod(LinkMovementMethod.getInstance());
         addArchiveHeading.setText(Html.fromHtml(getString(R.string.add_repo_heading), Html.FROM_HTML_MODE_LEGACY));
+        addArchiveHeading.setTextColor(headingColor);
+        addArchiveHeading.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
         TextView fullArchiveNameLabel = new TextView(this);
         fullArchiveNameLabel.setText(R.string.full_archive_name_label);
@@ -264,6 +267,16 @@ public class MainActivity extends AppCompatActivity {
         shortArchiveNameLabel.setMovementMethod(LinkMovementMethod.getInstance());
         shortArchiveNameLabel.setText(Html.fromHtml(getString(R.string.short_archive_name_label), Html.FROM_HTML_MODE_LEGACY));
         shortArchiveNameLabel.setTextSize(18f);
+
+        LinearLayout.LayoutParams labelParams =
+                new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT);
+        int topMarginInDp = 16;
+        float scale = getResources().getDisplayMetrics().density;
+        int topMarginInPx = (int) (topMarginInDp * scale + 0.5f);
+        labelParams.setMargins(0, topMarginInPx, 0, 0);
+        shortArchiveNameLabel.setLayoutParams(labelParams);
 
         EditText shortArchiveNameInput = new EditText(MainActivity.this);
         shortArchiveNameInput.setHint(R.string.short_archive_name_hint);
@@ -298,35 +311,42 @@ public class MainActivity extends AppCompatActivity {
         dropdown.setSelection(0);
     }
 
-    private void showDeleteRepoDialog() {
+    private void showDeleteArchiveDialog() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
 
-        TextView tvTitle = new TextView(this);
+        TextView deleteArchiveHeading = new TextView(this);
         String titleText = getString(R.string.heading_delete_archive);
-        tvTitle.setMovementMethod(LinkMovementMethod.getInstance());
-        tvTitle.setText(Html.fromHtml(titleText, Html.FROM_HTML_MODE_LEGACY));
+        deleteArchiveHeading.setMovementMethod(LinkMovementMethod.getInstance());
+        deleteArchiveHeading.setText(Html.fromHtml(titleText, Html.FROM_HTML_MODE_LEGACY));
+        deleteArchiveHeading.setTextColor(headingColor);
+        deleteArchiveHeading.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
-        TextView labelSelect = new TextView(this);
-        labelSelect.setText(R.string.select_repo);
-        labelSelect.setPadding(20, 20, 0, 20);
-        labelSelect.setTextSize(20f);
-
-        Spinner spinnerRepoSelect = new Spinner(this);
+        Spinner spinnerArchiveSelect = new Spinner(this);
         ArrayAdapter<String> dataAdapterR = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, archiveRepository.readArchives());
         dataAdapterR.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerRepoSelect.setAdapter(dataAdapterR);
-        spinnerRepoSelect.setPadding(0, 8, 8, 24);
+        spinnerArchiveSelect.setAdapter(dataAdapterR);
+        spinnerArchiveSelect.setPadding(0, 8, 8, 24);
+
+        LinearLayout.LayoutParams labelParams =
+                new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT);
+        int topMarginInDp = 16;
+        float scale = getResources().getDisplayMetrics().density;
+        int topMarginInPx = (int) (topMarginInDp * scale + 0.5f);
+        labelParams.setMargins(0, topMarginInPx, 0, 0);
+        spinnerArchiveSelect.setLayoutParams(labelParams);
 
         LinearLayout linearLayout = new LinearLayout(this);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
-        linearLayout.addView(tvTitle);
-        linearLayout.addView(spinnerRepoSelect);
+        linearLayout.addView(deleteArchiveHeading);
+        linearLayout.addView(spinnerArchiveSelect);
 
         linearLayout.setPadding(50, 80, 50, 10);
         alertDialog.setView(linearLayout);
 
         int[] selectedRepo = {-1};
-        spinnerRepoSelect.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spinnerArchiveSelect.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 selectedRepo[0] = position;
@@ -339,7 +359,7 @@ public class MainActivity extends AppCompatActivity {
 
         // TODO: Add delete confirmation
         alertDialog.setPositiveButton("Delete", (dialog, which) -> {
-            String archiveToDelete = spinnerRepoSelect.getSelectedItem().toString();
+            String archiveToDelete = spinnerArchiveSelect.getSelectedItem().toString();
             String fullArchiveName = archiveToDelete.split("-")[0].trim();
             archiveRepository.deleteArchive(fullArchiveName);
             updateDropdown();
