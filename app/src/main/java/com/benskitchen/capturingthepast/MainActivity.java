@@ -98,15 +98,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void initViews(){
         headingColor = ContextCompat.getColor(this, R.color.colorPrimaryDark);
-        dropdown = findViewById(R.id.spinnerRepo);
+        dropdown = findViewById(R.id.spinnerArchive);
         EditText tvCatRef = findViewById(R.id.editTextRef);
         TextView refText = findViewById(R.id.textViewRef);
         TextView noteText = findViewById(R.id.textViewNote);
         TextView refLabel = findViewById(R.id.refLabel);
         Button camButton = findViewById(R.id.cameraButton);
         Button filesButton = findViewById(R.id.filesButton);
-        Button addRepoButton = findViewById(R.id.addRepoButton);
-        Button deleteRepoButton = findViewById(R.id.deleteRepoButton);
         Button infoButton = findViewById(R.id.infoButton);
         Button btnClearNote = findViewById(R.id.buttonClearNote);
         Button btnClearRef = findViewById(R.id.buttonClearRef);
@@ -128,9 +126,6 @@ public class MainActivity extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
-        // Tooltips
-        addRepoButton.setOnClickListener(v -> showAddArchiveDialog());
-        deleteRepoButton.setOnClickListener(v -> showDeleteArchiveDialog());
 
         noteText.addTextChangedListener(new TextWatcher() {
             @Override

@@ -52,7 +52,7 @@
             app:layout_constraintVertical_bias="0.1">
 
             <Spinner
-                android:id="@+id/spinnerRepo"
+                android:id="@+id/spinnerArchive"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:background="@drawable/spinner_bg"
@@ -61,45 +61,10 @@
                 android:padding="10dp"
                 android:textColor="@color/fontColor"
                 android:textSize="24sp"
-                android:tooltipText="@string/repo_dropdown"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/deleteRepoButton"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <Button
-                android:id="@+id/deleteRepoButton"
-                android:layout_width="56dp"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:layout_marginHorizontal="8dp"
-                android:background="#0000"
-                android:contentDescription="@string/remove_items_or_reset_the_repository_list"
-                android:fontFamily="@font/fasolid"
-                android:text="@string/fa_minus"
-                android:textColor="@color/colorPrimary"
-                android:textSize="20sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/addRepoButton"
-                app:layout_constraintStart_toEndOf="@id/spinnerRepo"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <Button
-                android:id="@+id/addRepoButton"
-                android:layout_width="56dp"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:background="#0000"
-                android:contentDescription="@string/add_items_to_the_repository_list"
-                android:fontFamily="@font/fasolid"
-                android:text="@string/fa_plus"
-                android:textColor="@color/colorPrimary"
-                android:textSize="20sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/deleteRepoButton"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
