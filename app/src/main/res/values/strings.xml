@@ -21,7 +21,7 @@
     <string name="open_the_file_manager">Open the file manager</string>
     <string name="show_the_information_panel">Show the information panel</string>
     <string name="repository">Current Archive</string>
-    <string name="catalogue_reference">Catalogue Reference</string>
+    <string name="catalogue_reference">Reference of archival record</string>
     <string name="reference_preview">Reference number preview </string>
     <string name="description_optional_saved_in_the_capture_log">Description</string>
     <string name="detached_or_torn_parts_special_cases">Special Cases</string>
@@ -36,7 +36,6 @@
     <string name="include_timestamp">Include timestamp in filename</string>
     <string name="prefix">Project prefix</string>
     <string name="enter_the_catalogue_number">Enter the catalogue number</string>
-    <string name="select_repo">Select repository</string>
     <string name="heading_delete_archive"><![CDATA[<H2>Delete Archive</H2>]]></string>
     <string name="latest_captures_message">Latest captures (Most recent first):\n</string>
     <string name="add_repo_heading"><![CDATA[<H2>Add Archive</H2>]]></string>
