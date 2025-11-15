@@ -21,7 +21,7 @@
     <string name="open_the_file_manager">Open the file manager</string>
     <string name="show_the_information_panel">Show the information panel</string>
     <string name="repository">Current Archive</string>
-    <string name="catalogue_reference">Catalogue Reference</string>
+    <string name="catalogue_reference">Reference of archival record</string>
     <string name="reference_preview">Reference number preview </string>
     <string name="description_optional_saved_in_the_capture_log">Description</string>
     <string name="detached_or_torn_parts_special_cases">Special Cases</string>
