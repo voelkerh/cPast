@@ -34,6 +34,9 @@ import com.benskitchen.capturingthepast.persistence.LogWriter;
 import com.benskitchen.capturingthepast.persistence.SettingsRepository;
 import com.benskitchen.capturingthepast.domainLogic.CaptureCounter;
 import com.benskitchen.capturingthepast.domainLogic.RecordReferenceCreator;
+import com.benskitchen.capturingthepast.ui.AddArchiveDialog;
+import com.benskitchen.capturingthepast.ui.ArchiveAdapter;
+import com.benskitchen.capturingthepast.ui.EditArchiveDialog;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.io.IOException;
@@ -45,7 +48,7 @@ import java.util.List;
 import info.androidhive.fontawesome.FontDrawable;
 import capturingthepast.R;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements AddArchiveDialog.Listener, EditArchiveDialog.Listener {
 
     // UI variables
     Spinner dropdown;
@@ -108,8 +111,7 @@ public class MainActivity extends AppCompatActivity {
         drawable.setTextColor(ContextCompat.getColor(this, android.R.color.black));
 
         ArrayAdapter<String> dataAdapter =
-                new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, archiveRepository.readArchives());
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                new ArchiveAdapter(this, archiveRepository.readArchives(), headingColor, this, this);
         dropdown.setAdapter(dataAdapter);
         dropdown.setSelection(0);
 
@@ -235,66 +237,28 @@ public class MainActivity extends AppCompatActivity {
         if (!message.isEmpty()) Toast.makeText(this, message, LENGTH_SHORT).show();
     }
 
-    private void showAddArchiveDialog() {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
+    @Override
+    public void onArchiveCreated(String fullName, String shortName) {
+        boolean created = archiveRepository.createArchive(fullName, shortName);
+        if (created) {
+            Snackbar.make(dropdown, fullName + " created", Snackbar.LENGTH_SHORT).show();
+        } else {
+            Snackbar.make(dropdown, fullName + " could not be created", Snackbar.LENGTH_SHORT).show();
+        }
+        updateDropdown();
+    }
 
-        TextView addArchiveHeading = new TextView(this);
-        addArchiveHeading.setMovementMethod(LinkMovementMethod.getInstance());
-        addArchiveHeading.setText(Html.fromHtml(getString(R.string.add_repo_heading), Html.FROM_HTML_MODE_LEGACY));
-        addArchiveHeading.setTextColor(headingColor);
-        addArchiveHeading.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-
-        TextView fullArchiveNameLabel = new TextView(this);
-        fullArchiveNameLabel.setText(R.string.full_archive_name_label);
-        fullArchiveNameLabel.setTextSize(18f);
-
-        EditText fullArchiveNameInput = new EditText(MainActivity.this);
-        fullArchiveNameInput.setHint(R.string.full_archive_name_hint);
-
-        TextView shortArchiveNameLabel = new TextView(this);
-        shortArchiveNameLabel.setMovementMethod(LinkMovementMethod.getInstance());
-        shortArchiveNameLabel.setText(Html.fromHtml(getString(R.string.short_archive_name_label), Html.FROM_HTML_MODE_LEGACY));
-        shortArchiveNameLabel.setTextSize(18f);
-
-        LinearLayout.LayoutParams labelParams =
-                new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT);
-        int topMarginInDp = 16;
-        float scale = getResources().getDisplayMetrics().density;
-        int topMarginInPx = (int) (topMarginInDp * scale + 0.5f);
-        labelParams.setMargins(0, topMarginInPx, 0, 0);
-        shortArchiveNameLabel.setLayoutParams(labelParams);
-
-        EditText shortArchiveNameInput = new EditText(MainActivity.this);
-        shortArchiveNameInput.setHint(R.string.short_archive_name_hint);
-
-        LinearLayout linearLayout = new LinearLayout(this);
-        linearLayout.setOrientation(LinearLayout.VERTICAL);
-        linearLayout.addView(addArchiveHeading);
-        linearLayout.addView(fullArchiveNameLabel);
-        linearLayout.addView(fullArchiveNameInput);
-        linearLayout.addView(shortArchiveNameLabel);
-        linearLayout.addView(shortArchiveNameInput);
-        linearLayout.setPadding(50, 80, 50, 10);
-
-        alertDialog.setView(linearLayout);
-        alertDialog.setPositiveButton("Save", (dialog, which) -> {
-            String fullArchiveName = fullArchiveNameInput.getText().toString();
-            String shortArchiveName = shortArchiveNameInput.getText().toString();
-            boolean created = archiveRepository.createArchive(fullArchiveName, shortArchiveName);
-            if (created) Snackbar.make(linearLayout, fullArchiveName + " created", Snackbar.LENGTH_SHORT).show();
-            else Snackbar.make(linearLayout, fullArchiveName + " could not be created", Snackbar.LENGTH_SHORT).show();
-            updateDropdown();
-        });
-        alertDialog.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
-        alertDialog.show();
+    @Override
+    public void onArchiveEdited(String fullArchiveName) {
+        archiveRepository.deleteArchive(fullArchiveName);
+        updateDropdown();
+        Snackbar snack = Snackbar.make(dropdown, getString(R.string.deleted)+ " - " + fullArchiveName, Snackbar.LENGTH_SHORT);
+        snack.show();
     }
 
     private void updateDropdown(){
         ArrayAdapter<String> dataAdapter =
-                new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, archiveRepository.readArchives());
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                new ArchiveAdapter(this, archiveRepository.readArchives(), headingColor, this, this);
         dropdown.setAdapter(dataAdapter);
         dropdown.setSelection(0);
     }
@@ -310,8 +274,7 @@ public class MainActivity extends AppCompatActivity {
         deleteArchiveHeading.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
         Spinner spinnerArchiveSelect = new Spinner(this);
-        ArrayAdapter<String> dataAdapterR = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, archiveRepository.readArchives());
-        dataAdapterR.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter<String> dataAdapterR = new ArchiveAdapter(this, archiveRepository.readArchives(), headingColor, this, this);
         spinnerArchiveSelect.setAdapter(dataAdapterR);
         spinnerArchiveSelect.setPadding(0, 8, 8, 24);
 
@@ -442,15 +405,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private String getShortArchiveName(){
-        String selectedArchive = (String) dropdown.getSelectedItem();
-        if (selectedArchive.equals("Select Archive") || selectedArchive.equals("Add Archive")) return ".jpg";
-        String strArchiveShort;
+        Object item = dropdown.getSelectedItem();
+        if (item == null) return "";
+
+        String selectedArchive = item.toString();
+        if (selectedArchive.equals("Select Archive")) return "";
         String[] parts = selectedArchive.split("-");
         if (parts.length >= 2) {
-            strArchiveShort = parts[1].trim();
+            return parts[1].trim();
         } else {
-            strArchiveShort = selectedArchive.trim();
+            return selectedArchive.trim();
         }
-        return strArchiveShort;
     }
 }

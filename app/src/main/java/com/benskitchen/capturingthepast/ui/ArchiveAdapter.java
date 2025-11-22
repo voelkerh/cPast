@@ -70,7 +70,7 @@ public class ArchiveAdapter extends ArrayAdapter<String> {
             edit.setVisibility(View.VISIBLE);
             edit.setOnClickListener(v -> {
                 if (editArchiveListener != null) {
-                    EditArchiveDialog.show(context, headingColor, editArchiveListener);
+                    EditArchiveDialog.show(context, archives, headingColor, editArchiveListener);
                 }
             });
 
