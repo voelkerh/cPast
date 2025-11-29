@@ -14,7 +14,8 @@ public class EditArchiveDialog {
 
 
     public interface Listener {
-        void onArchiveEdited(String fullArchiveName);
+        void onArchiveEdited(String oldFullName, String shortArchiveName, String fullArchiveName);
+        void onArchiveDeleted(String fullArchiveName);
     }
 
     public static void show(Context context, List<String> archives, int headingColor, Listener listener) {
@@ -67,11 +68,21 @@ public class EditArchiveDialog {
             String archiveToDelete = spinnerArchiveSelect.getSelectedItem().toString();
             String fullArchiveName = archiveToDelete.split("-")[0].trim();
             if (listener != null) {
-                listener.onArchiveEdited(fullArchiveName);
+                listener.onArchiveDeleted(fullArchiveName);
             }
         });
 
-        alertDialog.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+        builder.setPositiveButton("Confirm", (dialog, which) -> {
+            String archiveToUpdate = spinnerArchiveSelect.getSelectedItem().toString();
+            String fullArchiveName = archiveToUpdate.split("-")[0].trim();
+            String shortArchiveName = archiveToUpdate.split("-")[1].trim();
+            if (listener != null) {
+                listener.onArchiveEdited(archiveToUpdate, shortArchiveName, fullArchiveName);
+            }
+        });
+
+        builder.setNeutralButton("Cancel", (dialog, which) -> dialog.cancel());
+        AlertDialog alertDialog = builder.create();
         alertDialog.show();
     }
 }
