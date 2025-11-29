@@ -5,6 +5,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -13,7 +14,7 @@ import static java.util.Collections.emptyMap;
 
 public class JsonArchiveStore implements ArchiveStore {
 
-    Context context;
+    private final Context context;
     private static final String FILE = "archives.json";
 
     public JsonArchiveStore(Context context){
@@ -23,16 +24,21 @@ public class JsonArchiveStore implements ArchiveStore {
     @Override
     public Map<String, String> loadArchives() {
         try (FileInputStream fis = context.openFileInput(FILE);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-            byte[] buffer = new byte[4096];
-            int read;
-            while ((read = fis.read(buffer)) != -1) baos.write(buffer, 0, read);
-            if (baos.size() == 0) return emptyMap();
-            String input = baos.toString();
-            return jsonToMap(input);
+             InputStreamReader isr = new InputStreamReader(fis, StandardCharsets.UTF_8);
+             BufferedReader reader = new BufferedReader(isr)) {
+
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line);
+            }
+
+            if(sb.length() == 0) return emptyMap();
+            return jsonToMap(sb.toString());
+
         } catch (FileNotFoundException e){
             return emptyMap();
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
             return emptyMap();
         }
