@@ -65,6 +65,14 @@ public class JsonArchiveStore implements ArchiveStore {
 
     @Override
     public boolean saveArchives(Map<String, String> archives) {
+        if (archives == null) return false;
+        try(FileOutputStream fos = context.openFileOutput(FILE, Context.MODE_PRIVATE)){
+            String json = mapToJson(archives);
+            fos.write(json.getBytes(StandardCharsets.UTF_8));
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return false;
     }
 
