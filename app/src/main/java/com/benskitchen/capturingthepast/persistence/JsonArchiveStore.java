@@ -1,6 +1,7 @@
 package com.benskitchen.capturingthepast.persistence;
 
 import android.content.Context;
+import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -39,8 +40,8 @@ public class JsonArchiveStore implements ArchiveStore {
         } catch (FileNotFoundException e){
             return emptyMap();
         } catch (IOException e) {
-            e.printStackTrace();
-            return emptyMap();
+            Log.e("JsonArchiveStore", e.getMessage());
+            return new HashMap<>();
         }
     }
 
@@ -57,8 +58,8 @@ public class JsonArchiveStore implements ArchiveStore {
                 }
             }
         } catch (JSONException e) {
-            e.printStackTrace();
-            return emptyMap();
+            Log.e("JsonArchiveStore", e.toString());
+            return new HashMap<>();
         }
         return archives;
     }
@@ -71,7 +72,7 @@ public class JsonArchiveStore implements ArchiveStore {
             fos.write(json.getBytes(StandardCharsets.UTF_8));
             return true;
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e("JsonArchiveStore", e.toString());
         }
         return false;
     }
@@ -86,7 +87,7 @@ public class JsonArchiveStore implements ArchiveStore {
             root.put("archives", archive);
             return root.toString(2);
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e("JsonArchiveStore", e.toString());
             return "{}";
         }
     }
