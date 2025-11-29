@@ -28,9 +28,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.benskitchen.capturingthepast.domainLogic.ArchiveRepository;
-import com.benskitchen.capturingthepast.persistence.ImageRepository;
+import com.benskitchen.capturingthepast.domainLogic.ImageRepository;
 import com.benskitchen.capturingthepast.persistence.JsonArchiveStore;
 import com.benskitchen.capturingthepast.persistence.LogWriter;
+import com.benskitchen.capturingthepast.persistence.MediaImageStore;
 import com.benskitchen.capturingthepast.persistence.SettingsRepository;
 import com.benskitchen.capturingthepast.domainLogic.CaptureCounter;
 import com.benskitchen.capturingthepast.domainLogic.RecordReferenceCreator;
@@ -81,7 +82,8 @@ public class MainActivity extends AppCompatActivity implements AddArchiveDialog.
         JsonArchiveStore jsonArchiveStore = new JsonArchiveStore(getApplicationContext());
         archiveRepository = new ArchiveRepository(jsonArchiveStore);
         settingsRepository = new SettingsRepository(this);
-        imageRepository = new ImageRepository(this);
+        MediaImageStore mediaImageStore = new MediaImageStore(getApplicationContext());
+        imageRepository = new ImageRepository(getApplicationContext(), mediaImageStore);
     }
 
     private void initState(){

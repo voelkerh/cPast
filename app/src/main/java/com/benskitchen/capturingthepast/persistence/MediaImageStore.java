@@ -9,20 +9,20 @@ import android.net.Uri;
 import android.os.Environment;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
+import android.util.Log;
 import androidx.core.content.FileProvider;
 import androidx.exifinterface.media.ExifInterface;
 
 import java.io.*;
 import java.lang.reflect.Field;
 
-public class ImageRepository {
+public class MediaImageStore implements ImageStore {
 
-    Context context;
-    String currentFolderPath;
+    private final Context context;
 
     String currentPhotoPath;
 
-    public ImageRepository(Context context) {
+    public MediaImageStore(Context context) {
         this.context = context;
     }
 
@@ -31,7 +31,6 @@ public class ImageRepository {
         if (storageDir == null) throw new IOException("No storage directory found");
 
         File image = new File(storageDir, "temp.jpg");
-        currentFolderPath = storageDir.getAbsolutePath();
         currentPhotoPath = image.getAbsolutePath();
         return image;
     }
@@ -43,13 +42,12 @@ public class ImageRepository {
                     "com.benskitchen.capturingthepast.fileprovider",
                     photoFile);
         } catch (IOException e) {
-            // Error occurred while creating the File
-            e.printStackTrace();
+            Log.e("getTempImageFileUri", e.toString());
         }
         return null;
     }
 
-    public void saveImageToGallery(String imageFileName, String strNote) throws IOException {
+    public boolean saveImageToGallery(String imageFileName, String strNote) throws IOException {
         Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath);
         ExifInterface exif = new ExifInterface(currentPhotoPath);
         ContentResolver contentResolver = context.getContentResolver();
@@ -71,9 +69,11 @@ public class ImageRepository {
             fd.sync();    // <---- HERE THE SOLUTION
             final String userComment = "Capturing the Past image " + imageFileName + " " + strNote;
             writeExif(imageUri, exif, userComment);
+            return true;
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return false;
     }
 
     // Writes Metadata from temp image to new image in gallery
