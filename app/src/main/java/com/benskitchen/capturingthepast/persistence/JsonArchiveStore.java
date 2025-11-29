@@ -77,6 +77,17 @@ public class JsonArchiveStore implements ArchiveStore {
     }
 
     private String mapToJson(Map<String, String> map) {
-        return null;
+        try {
+            JSONObject root = new JSONObject();
+            JSONObject archive = new JSONObject();
+            for (Map.Entry<String, String> entry : map.entrySet()) {
+                archive.put(entry.getKey(), entry.getValue());
+            }
+            root.put("archives", archive);
+            return root.toString(2);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return "{}";
+        }
     }
 }
