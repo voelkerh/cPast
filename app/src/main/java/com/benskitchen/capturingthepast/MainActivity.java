@@ -212,19 +212,16 @@ public class MainActivity extends AppCompatActivity implements AddArchiveDialog.
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             String imageFileName = createFileName();
-            saveImageToGallery(imageFileName);
-            triggerWriteLog(imageFileName);
-        }
-    }
-
-    private void saveImageToGallery(String imageFileName) {
-        try {
-            imageRepository.saveImageToGallery(imageFileName, strNote);
-            captureCounter.incrementCaptureCount();
-            settingsRepository.addFileToRecentFiles(imageFileName);
-            Toast.makeText(this, "Image saved", LENGTH_SHORT).show();
-        } catch (IOException e) {
-            Toast.makeText(this, "Error: Image not saved.\n" + e.getMessage(), LENGTH_SHORT).show();
+            try {
+                boolean saved = imageRepository.saveImageToGallery(imageFileName, strNote);
+                if (saved) {
+                    settingsRepository.addFileToRecentFiles(imageFileName);
+                    triggerWriteLog(imageFileName);
+                    Toast.makeText(this, "Image saved", LENGTH_SHORT).show();
+                }
+            } catch (IOException e) {
+                Toast.makeText(this, "Error: Image not saved.\n" + e.getMessage(), LENGTH_SHORT).show();
+            }
         }
     }
 
