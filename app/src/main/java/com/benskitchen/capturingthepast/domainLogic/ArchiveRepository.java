@@ -23,9 +23,10 @@ public class ArchiveRepository {
     }
 
     public boolean createArchive(String fullName, String shortName){
-        if (fullName == null || shortName == null || archives.containsKey(fullName)) return false;
+        if (fullName == null || shortName == null) return false;
         String fullNameNorm = normalizeString(fullName);
         String shortNameNorm = normalizeString(shortName);
+        if (archives.containsKey(fullNameNorm) || archives.containsValue(shortNameNorm)) return false;
         archives.put(fullNameNorm, shortNameNorm);
         return saveArchives(archives);
     }
@@ -36,13 +37,21 @@ public class ArchiveRepository {
         return saveArchives(archives);
     }
 
-    public boolean updateArchive(String oldFullName, String fullName, String shortName){
+    public boolean updateArchive(String oldFullName, String oldShortName, String fullName, String shortName){
         if (oldFullName == null || fullName == null || shortName == null || !archives.containsKey(oldFullName)) return false;
         String fullNameNorm = normalizeString(fullName);
         String shortNameNorm = normalizeString(shortName);
-        archives.remove(oldFullName);
         archives.put(fullNameNorm, shortNameNorm);
-        return saveArchives(archives);
+        if(saveArchives(archives)){
+            if (!oldFullName.equals(fullNameNorm)) {
+                archives.remove(oldFullName);
+            }
+            return true;
+        } else {
+        archives.put(oldFullName, oldShortName);
+        archives.remove(fullNameNorm);
+        return false;
+    }
     }
 
     public List<String> readArchives(){
