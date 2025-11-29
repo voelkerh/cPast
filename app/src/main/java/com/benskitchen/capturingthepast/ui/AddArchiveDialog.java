@@ -18,12 +18,12 @@ public class AddArchiveDialog {
         void onArchiveCreated(String fullName, String shortName);
     }
 
-    public static void show(Context context, int headingColor, Listener listener) {
+    public static void show(Context context, Listener listener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
         TextView addArchiveHeading = new TextView(context);
         addArchiveHeading.setText(Html.fromHtml(context.getString(R.string.add_repo_heading), Html.FROM_HTML_MODE_LEGACY));
-        addArchiveHeading.setTextColor(headingColor);
+        addArchiveHeading.setTextColor(ContextCompat.getColor(context, R.color.colorPrimaryDark));
         addArchiveHeading.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
         TextView fullArchiveNameLabel = new TextView(context);

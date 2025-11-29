@@ -20,18 +20,18 @@ public class EditArchiveDialog {
         void onArchiveDeleted(String fullArchiveName);
     }
 
-    public static void show(Context context, List<String> archives, int headingColor, Listener listener) {
+    public static void show(Context context, List<String> archives, Listener listener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
         TextView editArchiveHeading = new TextView(context);
         String titleText = context.getString(R.string.heading_edit_archive);
         editArchiveHeading.setMovementMethod(LinkMovementMethod.getInstance());
         editArchiveHeading.setText(Html.fromHtml(titleText, Html.FROM_HTML_MODE_LEGACY));
-        editArchiveHeading.setTextColor(headingColor);
+        editArchiveHeading.setTextColor(ContextCompat.getColor(context, R.color.colorPrimaryDark));
         editArchiveHeading.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
         Spinner spinnerArchiveSelect = new Spinner(context);
-        ArrayAdapter<String> dataAdapterR = new ArchiveAdapter(context, archives, headingColor, (AddArchiveDialog.Listener) context, (Listener) context);
+        ArrayAdapter<String> dataAdapterR = new ArchiveAdapter(context, archives, (AddArchiveDialog.Listener) context, (Listener) context);
         spinnerArchiveSelect.setAdapter(dataAdapterR);
         spinnerArchiveSelect.setPadding(0, 8, 8, 24);
 

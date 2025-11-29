@@ -52,7 +52,6 @@ public class MainActivity extends AppCompatActivity implements AddArchiveDialog.
 
     // UI variables
     Spinner dropdown;
-    int headingColor;
     EditText tvRecordReference;
 
     // Variables needed for file names and metadata
@@ -96,7 +95,6 @@ public class MainActivity extends AppCompatActivity implements AddArchiveDialog.
     }
 
     private void initViews(){
-        headingColor = ContextCompat.getColor(this, R.color.colorPrimaryDark);
         dropdown = findViewById(R.id.spinnerArchive);
         tvRecordReference = findViewById(R.id.editTextRef);
         TextView recordReferenceText = findViewById(R.id.textViewRef);
@@ -111,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements AddArchiveDialog.
         drawable.setTextColor(ContextCompat.getColor(this, android.R.color.black));
 
         ArrayAdapter<String> dataAdapter =
-                new ArchiveAdapter(this, archiveRepository.readArchives(), headingColor, this, this);
+                new ArchiveAdapter(this, archiveRepository.readArchives(), this, this);
         dropdown.setAdapter(dataAdapter);
 
         dropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -266,7 +264,7 @@ public class MainActivity extends AppCompatActivity implements AddArchiveDialog.
 
     private void updateDropdown(){
         ArrayAdapter<String> dataAdapter =
-                new ArchiveAdapter(this, archiveRepository.readArchives(), headingColor, this, this);
+                new ArchiveAdapter(this, archiveRepository.readArchives(), this, this);
         dropdown.setAdapter(dataAdapter);
     }
 
