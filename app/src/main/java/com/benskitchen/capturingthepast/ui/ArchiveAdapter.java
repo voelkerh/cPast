@@ -19,14 +19,12 @@ public class ArchiveAdapter extends ArrayAdapter<String> {
     private final Context context;
     private final AddArchiveDialog.Listener addArchiveListener;
     private final EditArchiveDialog.Listener editArchiveListener;
-    private final int headingColor;
 
-    public ArchiveAdapter(Context context, List<String> archives, int headingColor, AddArchiveDialog.Listener listener, EditArchiveDialog.Listener editListener) {
+    public ArchiveAdapter(Context context, List<String> archives, AddArchiveDialog.Listener listener, EditArchiveDialog.Listener editListener) {
         super(context, 0, archives);
         this.context = context;
         this.archives = archives;
         this.inflater = LayoutInflater.from(context);
-        this.headingColor = headingColor;
         this.addArchiveListener = listener;
         this.editArchiveListener = editListener;
     }
@@ -71,7 +69,7 @@ public class ArchiveAdapter extends ArrayAdapter<String> {
             edit.setOnClickListener(v -> {
                 v.post(() -> {
                     if (editArchiveListener != null) {
-                        EditArchiveDialog.show(context, archives, headingColor, editArchiveListener);
+                        EditArchiveDialog.show(context, archiveName, editArchiveListener);
                     }
                 });
             });
@@ -86,7 +84,7 @@ public class ArchiveAdapter extends ArrayAdapter<String> {
             row.setBackgroundColor(context.getResources().getColor(R.color.colorPrimary));
             row.setOnClickListener(v -> {
                 if (addArchiveListener != null) {
-                    AddArchiveDialog.show(context, headingColor, addArchiveListener);
+                    AddArchiveDialog.show(context, addArchiveListener);
                 }
             });
         }

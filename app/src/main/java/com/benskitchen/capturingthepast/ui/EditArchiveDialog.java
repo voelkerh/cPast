@@ -1,36 +1,49 @@
 package com.benskitchen.capturingthepast.ui;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.*;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import capturingthepast.R;
-
-import java.util.List;
 
 public class EditArchiveDialog {
 
 
     public interface Listener {
-        void onArchiveEdited(String fullArchiveName);
+        void onArchiveEdited(String oldFullName, String shortArchiveName, String fullArchiveName);
+        void onArchiveDeleted(String fullArchiveName);
     }
 
-    public static void show(Context context, List<String> archives, int headingColor, Listener listener) {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
+    public static void show(Context context, String archiveName, Listener listener) {
+        String fullArchiveName = archiveName.split("-")[0].trim();
+        String shortArchiveName = archiveName.split("-")[1].trim();
 
-        TextView deleteArchiveHeading = new TextView(context);
-        String titleText = context.getString(R.string.heading_delete_archive);
-        deleteArchiveHeading.setMovementMethod(LinkMovementMethod.getInstance());
-        deleteArchiveHeading.setText(Html.fromHtml(titleText, Html.FROM_HTML_MODE_LEGACY));
-        deleteArchiveHeading.setTextColor(headingColor);
-        deleteArchiveHeading.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
-        Spinner spinnerArchiveSelect = new Spinner(context);
-        ArrayAdapter<String> dataAdapterR = new ArchiveAdapter(context, archives, headingColor, (AddArchiveDialog.Listener) context, (Listener) context);
-        spinnerArchiveSelect.setAdapter(dataAdapterR);
-        spinnerArchiveSelect.setPadding(0, 8, 8, 24);
+        TextView editArchiveHeading = new TextView(context);
+        String titleText = context.getString(R.string.heading_edit_archive);
+        editArchiveHeading.setMovementMethod(LinkMovementMethod.getInstance());
+        editArchiveHeading.setText(Html.fromHtml(titleText, Html.FROM_HTML_MODE_LEGACY));
+        editArchiveHeading.setTextColor(ContextCompat.getColor(context, R.color.colorPrimaryDark));
+        editArchiveHeading.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+
+        TextView fullArchiveNameLabel = new TextView(context);
+        fullArchiveNameLabel.setText(Html.fromHtml(context.getString(R.string.full_archive_name_label), Html.FROM_HTML_MODE_LEGACY));
+        fullArchiveNameLabel.setTextSize(18f);
+
+        EditText fullArchiveNameInput = new EditText(context);
+        fullArchiveNameInput.setText(fullArchiveName);
+
+        TextView shortArchiveNameLabel = new TextView(context);
+        shortArchiveNameLabel.setText(Html.fromHtml(context.getString(R.string.short_archive_name_label), Html.FROM_HTML_MODE_LEGACY));
+        shortArchiveNameLabel.setTextSize(18f);
+
+        EditText shortArchiveNameInput = new EditText(context);
+        shortArchiveNameInput.setText(shortArchiveName);
 
         LinearLayout.LayoutParams labelParams =
                 new LinearLayout.LayoutParams(
@@ -40,38 +53,40 @@ public class EditArchiveDialog {
         float scale = context.getResources().getDisplayMetrics().density;
         int topMarginInPx = (int) (topMarginInDp * scale + 0.5f);
         labelParams.setMargins(0, topMarginInPx, 0, 0);
-        spinnerArchiveSelect.setLayoutParams(labelParams);
+        shortArchiveNameLabel.setLayoutParams(labelParams);
 
         LinearLayout linearLayout = new LinearLayout(context);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
-        linearLayout.addView(deleteArchiveHeading);
-        linearLayout.addView(spinnerArchiveSelect);
+        linearLayout.addView(editArchiveHeading);
+        linearLayout.addView(fullArchiveNameLabel);
+        linearLayout.addView(fullArchiveNameInput);
+        linearLayout.addView(shortArchiveNameLabel);
+        linearLayout.addView(shortArchiveNameInput);
 
         linearLayout.setPadding(50, 80, 50, 10);
-        alertDialog.setView(linearLayout);
+        builder.setView(linearLayout);
 
-        int[] selectedRepo = {-1};
-        spinnerArchiveSelect.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                selectedRepo[0] = position;
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-
-        // TODO: Add delete confirmation
-        alertDialog.setPositiveButton("Delete", (dialog, which) -> {
-            String archiveToDelete = spinnerArchiveSelect.getSelectedItem().toString();
-            String fullArchiveName = archiveToDelete.split("-")[0].trim();
+        builder.setNegativeButton("Delete", (dialog, which) -> {
             if (listener != null) {
-                listener.onArchiveEdited(fullArchiveName);
+                listener.onArchiveDeleted(fullArchiveName);
             }
         });
 
-        alertDialog.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+        builder.setPositiveButton("Confirm", (dialog, which) -> {
+            if (listener != null) {
+                listener.onArchiveEdited(fullArchiveName, String.valueOf(shortArchiveNameInput.getText()), String.valueOf(fullArchiveNameInput.getText()));
+            }
+        });
+
+        builder.setNeutralButton("Cancel", (dialog, which) -> dialog.cancel());
+        AlertDialog alertDialog = builder.create();
         alertDialog.show();
+
+        Button positiveButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+        Button neutralButton = alertDialog.getButton(AlertDialog.BUTTON_NEUTRAL);
+        Button negativeButton = alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+        positiveButton.setTextColor(ContextCompat.getColor(context, R.color.colorPrimaryDark));
+        negativeButton.setTextColor(Color.RED);
+        neutralButton.setTextColor(Color.GRAY);
     }
 }

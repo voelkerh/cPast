@@ -52,7 +52,6 @@ public class MainActivity extends AppCompatActivity implements AddArchiveDialog.
 
     // UI variables
     Spinner dropdown;
-    int headingColor;
     EditText tvRecordReference;
 
     // Variables needed for file names and metadata
@@ -96,7 +95,6 @@ public class MainActivity extends AppCompatActivity implements AddArchiveDialog.
     }
 
     private void initViews(){
-        headingColor = ContextCompat.getColor(this, R.color.colorPrimaryDark);
         dropdown = findViewById(R.id.spinnerArchive);
         tvRecordReference = findViewById(R.id.editTextRef);
         TextView recordReferenceText = findViewById(R.id.textViewRef);
@@ -111,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements AddArchiveDialog.
         drawable.setTextColor(ContextCompat.getColor(this, android.R.color.black));
 
         ArrayAdapter<String> dataAdapter =
-                new ArchiveAdapter(this, archiveRepository.readArchives(), headingColor, this, this);
+                new ArchiveAdapter(this, archiveRepository.readArchives(), this, this);
         dropdown.setAdapter(dataAdapter);
 
         dropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -249,7 +247,15 @@ public class MainActivity extends AppCompatActivity implements AddArchiveDialog.
     }
 
     @Override
-    public void onArchiveEdited(String fullArchiveName) {
+    public void onArchiveEdited(String archiveToUpdate, String shortArchiveName, String fullArchiveName) {
+        archiveRepository.updateArchive(archiveToUpdate, shortArchiveName, fullArchiveName);
+        updateDropdown();
+        Snackbar snack = Snackbar.make(dropdown, fullArchiveName + " updated", Snackbar.LENGTH_SHORT);
+        snack.show();
+    }
+
+    @Override
+    public void onArchiveDeleted(String fullArchiveName) {
         archiveRepository.deleteArchive(fullArchiveName);
         updateDropdown();
         Snackbar snack = Snackbar.make(dropdown, getString(R.string.deleted)+ " - " + fullArchiveName, Snackbar.LENGTH_SHORT);
@@ -258,67 +264,8 @@ public class MainActivity extends AppCompatActivity implements AddArchiveDialog.
 
     private void updateDropdown(){
         ArrayAdapter<String> dataAdapter =
-                new ArchiveAdapter(this, archiveRepository.readArchives(), headingColor, this, this);
+                new ArchiveAdapter(this, archiveRepository.readArchives(), this, this);
         dropdown.setAdapter(dataAdapter);
-    }
-
-    private void showDeleteArchiveDialog() {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
-
-        TextView deleteArchiveHeading = new TextView(this);
-        String titleText = getString(R.string.heading_delete_archive);
-        deleteArchiveHeading.setMovementMethod(LinkMovementMethod.getInstance());
-        deleteArchiveHeading.setText(Html.fromHtml(titleText, Html.FROM_HTML_MODE_LEGACY));
-        deleteArchiveHeading.setTextColor(headingColor);
-        deleteArchiveHeading.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-
-        Spinner spinnerArchiveSelect = new Spinner(this);
-        ArrayAdapter<String> dataAdapterR = new ArchiveAdapter(this, archiveRepository.readArchives(), headingColor, this, this);
-        spinnerArchiveSelect.setAdapter(dataAdapterR);
-        spinnerArchiveSelect.setPadding(0, 8, 8, 24);
-
-        LinearLayout.LayoutParams labelParams =
-                new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT);
-        int topMarginInDp = 16;
-        float scale = getResources().getDisplayMetrics().density;
-        int topMarginInPx = (int) (topMarginInDp * scale + 0.5f);
-        labelParams.setMargins(0, topMarginInPx, 0, 0);
-        spinnerArchiveSelect.setLayoutParams(labelParams);
-
-        LinearLayout linearLayout = new LinearLayout(this);
-        linearLayout.setOrientation(LinearLayout.VERTICAL);
-        linearLayout.addView(deleteArchiveHeading);
-        linearLayout.addView(spinnerArchiveSelect);
-
-        linearLayout.setPadding(50, 80, 50, 10);
-        alertDialog.setView(linearLayout);
-
-        int[] selectedRepo = {-1};
-        spinnerArchiveSelect.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                selectedRepo[0] = position;
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-
-        // TODO: Add delete confirmation
-        alertDialog.setPositiveButton("Delete", (dialog, which) -> {
-            String archiveToDelete = spinnerArchiveSelect.getSelectedItem().toString();
-            String fullArchiveName = archiveToDelete.split("-")[0].trim();
-            archiveRepository.deleteArchive(fullArchiveName);
-            updateDropdown();
-            Snackbar snack = Snackbar.make(linearLayout, getString(R.string.deleted)+ " - " + archiveToDelete, Snackbar.LENGTH_SHORT);
-            snack.show();
-        });
-
-        alertDialog.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
-        alertDialog.show();
     }
 
     public void showInfo() {
