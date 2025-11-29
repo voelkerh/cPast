@@ -80,7 +80,9 @@ public class ArchiveAdapter extends ArrayAdapter<String> {
 
         } else {
             name.setText("Add archive");
+            name.setTextColor(context.getResources().getColor(android.R.color.white));
             edit.setVisibility(View.GONE);  // no edit symbol
+            row.setBackgroundColor(context.getResources().getColor(R.color.colorPrimary));
 
             row.setOnClickListener(v -> {
                 if (addArchiveListener != null) {
