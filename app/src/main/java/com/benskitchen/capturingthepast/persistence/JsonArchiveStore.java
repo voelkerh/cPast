@@ -58,6 +58,7 @@ public class JsonArchiveStore implements ArchiveStore {
             }
         } catch (JSONException e) {
             e.printStackTrace();
+            return emptyMap();
         }
         return archives;
     }
