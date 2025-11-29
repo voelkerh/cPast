@@ -69,7 +69,7 @@ public class ArchiveAdapter extends ArrayAdapter<String> {
             edit.setOnClickListener(v -> {
                 v.post(() -> {
                     if (editArchiveListener != null) {
-                        EditArchiveDialog.show(context, archives, editArchiveListener);
+                        EditArchiveDialog.show(context, archiveName, editArchiveListener);
                     }
                 });
             });

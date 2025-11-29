@@ -10,8 +10,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import capturingthepast.R;
 
-import java.util.List;
-
 public class EditArchiveDialog {
 
 
@@ -20,7 +18,10 @@ public class EditArchiveDialog {
         void onArchiveDeleted(String fullArchiveName);
     }
 
-    public static void show(Context context, List<String> archives, Listener listener) {
+    public static void show(Context context, String archiveName, Listener listener) {
+        String fullArchiveName = archiveName.split("-")[0].trim();
+        String shortArchiveName = archiveName.split("-")[1].trim();
+
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
         TextView editArchiveHeading = new TextView(context);
@@ -30,10 +31,19 @@ public class EditArchiveDialog {
         editArchiveHeading.setTextColor(ContextCompat.getColor(context, R.color.colorPrimaryDark));
         editArchiveHeading.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
-        Spinner spinnerArchiveSelect = new Spinner(context);
-        ArrayAdapter<String> dataAdapterR = new ArchiveAdapter(context, archives, (AddArchiveDialog.Listener) context, (Listener) context);
-        spinnerArchiveSelect.setAdapter(dataAdapterR);
-        spinnerArchiveSelect.setPadding(0, 8, 8, 24);
+        TextView fullArchiveNameLabel = new TextView(context);
+        fullArchiveNameLabel.setText(Html.fromHtml(context.getString(R.string.full_archive_name_label), Html.FROM_HTML_MODE_LEGACY));
+        fullArchiveNameLabel.setTextSize(18f);
+
+        EditText fullArchiveNameInput = new EditText(context);
+        fullArchiveNameInput.setText(fullArchiveName);
+
+        TextView shortArchiveNameLabel = new TextView(context);
+        shortArchiveNameLabel.setText(Html.fromHtml(context.getString(R.string.short_archive_name_label), Html.FROM_HTML_MODE_LEGACY));
+        shortArchiveNameLabel.setTextSize(18f);
+
+        EditText shortArchiveNameInput = new EditText(context);
+        shortArchiveNameInput.setText(shortArchiveName);
 
         LinearLayout.LayoutParams labelParams =
                 new LinearLayout.LayoutParams(
@@ -43,42 +53,28 @@ public class EditArchiveDialog {
         float scale = context.getResources().getDisplayMetrics().density;
         int topMarginInPx = (int) (topMarginInDp * scale + 0.5f);
         labelParams.setMargins(0, topMarginInPx, 0, 0);
-        spinnerArchiveSelect.setLayoutParams(labelParams);
+        shortArchiveNameLabel.setLayoutParams(labelParams);
 
         LinearLayout linearLayout = new LinearLayout(context);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         linearLayout.addView(editArchiveHeading);
-        linearLayout.addView(spinnerArchiveSelect);
+        linearLayout.addView(fullArchiveNameLabel);
+        linearLayout.addView(fullArchiveNameInput);
+        linearLayout.addView(shortArchiveNameLabel);
+        linearLayout.addView(shortArchiveNameInput);
 
         linearLayout.setPadding(50, 80, 50, 10);
         builder.setView(linearLayout);
 
-        int[] selectedRepo = {-1};
-        spinnerArchiveSelect.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                selectedRepo[0] = position;
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-
         builder.setNegativeButton("Delete", (dialog, which) -> {
-            String archiveToDelete = spinnerArchiveSelect.getSelectedItem().toString();
-            String fullArchiveName = archiveToDelete.split("-")[0].trim();
             if (listener != null) {
                 listener.onArchiveDeleted(fullArchiveName);
             }
         });
 
         builder.setPositiveButton("Confirm", (dialog, which) -> {
-            String archiveToUpdate = spinnerArchiveSelect.getSelectedItem().toString();
-            String fullArchiveName = archiveToUpdate.split("-")[0].trim();
-            String shortArchiveName = archiveToUpdate.split("-")[1].trim();
             if (listener != null) {
-                listener.onArchiveEdited(archiveToUpdate, shortArchiveName, fullArchiveName);
+                listener.onArchiveEdited(fullArchiveName, String.valueOf(shortArchiveNameInput.getText()), String.valueOf(fullArchiveNameInput.getText()));
             }
         });
 
