@@ -1,10 +1,12 @@
 package com.benskitchen.capturingthepast.persistence;
 
 import android.content.Context;
+import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -13,7 +15,7 @@ import static java.util.Collections.emptyMap;
 
 public class JsonArchiveStore implements ArchiveStore {
 
-    Context context;
+    private final Context context;
     private static final String FILE = "archives.json";
 
     public JsonArchiveStore(Context context){
@@ -23,18 +25,23 @@ public class JsonArchiveStore implements ArchiveStore {
     @Override
     public Map<String, String> loadArchives() {
         try (FileInputStream fis = context.openFileInput(FILE);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-            byte[] buffer = new byte[4096];
-            int read;
-            while ((read = fis.read(buffer)) != -1) baos.write(buffer, 0, read);
-            if (baos.size() == 0) return emptyMap();
-            String input = baos.toString();
-            return jsonToMap(input);
+             InputStreamReader isr = new InputStreamReader(fis, StandardCharsets.UTF_8);
+             BufferedReader reader = new BufferedReader(isr)) {
+
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line);
+            }
+
+            if(sb.length() == 0) return emptyMap();
+            return jsonToMap(sb.toString());
+
         } catch (FileNotFoundException e){
             return emptyMap();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return emptyMap();
+        } catch (IOException e) {
+            Log.e("JsonArchiveStore", e.getMessage());
+            return new HashMap<>();
         }
     }
 
@@ -51,17 +58,37 @@ public class JsonArchiveStore implements ArchiveStore {
                 }
             }
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e("JsonArchiveStore", e.toString());
+            return new HashMap<>();
         }
         return archives;
     }
 
     @Override
     public boolean saveArchives(Map<String, String> archives) {
+        if (archives == null) return false;
+        try(FileOutputStream fos = context.openFileOutput(FILE, Context.MODE_PRIVATE)){
+            String json = mapToJson(archives);
+            fos.write(json.getBytes(StandardCharsets.UTF_8));
+            return true;
+        } catch (IOException e) {
+            Log.e("JsonArchiveStore", e.toString());
+        }
         return false;
     }
 
     private String mapToJson(Map<String, String> map) {
-        return null;
+        try {
+            JSONObject root = new JSONObject();
+            JSONObject archive = new JSONObject();
+            for (Map.Entry<String, String> entry : map.entrySet()) {
+                archive.put(entry.getKey(), entry.getValue());
+            }
+            root.put("archives", archive);
+            return root.toString(2);
+        } catch (JSONException e) {
+            Log.e("JsonArchiveStore", e.toString());
+            return "{}";
+        }
     }
 }

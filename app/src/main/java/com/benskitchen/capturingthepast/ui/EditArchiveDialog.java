@@ -14,7 +14,7 @@ public class EditArchiveDialog {
 
 
     public interface Listener {
-        void onArchiveEdited(String oldFullName, String shortArchiveName, String fullArchiveName);
+        void onArchiveEdited(String oldFullName, String oldShortName, String shortArchiveName, String fullArchiveName);
         void onArchiveDeleted(String fullArchiveName);
     }
 
@@ -74,7 +74,7 @@ public class EditArchiveDialog {
 
         builder.setPositiveButton("Confirm", (dialog, which) -> {
             if (listener != null) {
-                listener.onArchiveEdited(fullArchiveName, String.valueOf(shortArchiveNameInput.getText()), String.valueOf(fullArchiveNameInput.getText()));
+                listener.onArchiveEdited(fullArchiveName, shortArchiveName, String.valueOf(shortArchiveNameInput.getText()), String.valueOf(fullArchiveNameInput.getText()));
             }
         });
 
