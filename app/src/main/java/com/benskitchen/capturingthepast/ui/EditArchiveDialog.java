@@ -20,12 +20,12 @@ public class EditArchiveDialog {
     public static void show(Context context, List<String> archives, int headingColor, Listener listener) {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
 
-        TextView deleteArchiveHeading = new TextView(context);
-        String titleText = context.getString(R.string.heading_delete_archive);
-        deleteArchiveHeading.setMovementMethod(LinkMovementMethod.getInstance());
-        deleteArchiveHeading.setText(Html.fromHtml(titleText, Html.FROM_HTML_MODE_LEGACY));
-        deleteArchiveHeading.setTextColor(headingColor);
-        deleteArchiveHeading.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        TextView editArchiveHeading = new TextView(context);
+        String titleText = context.getString(R.string.heading_edit_archive);
+        editArchiveHeading.setMovementMethod(LinkMovementMethod.getInstance());
+        editArchiveHeading.setText(Html.fromHtml(titleText, Html.FROM_HTML_MODE_LEGACY));
+        editArchiveHeading.setTextColor(headingColor);
+        editArchiveHeading.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
         Spinner spinnerArchiveSelect = new Spinner(context);
         ArrayAdapter<String> dataAdapterR = new ArchiveAdapter(context, archives, headingColor, (AddArchiveDialog.Listener) context, (Listener) context);
@@ -44,7 +44,7 @@ public class EditArchiveDialog {
 
         LinearLayout linearLayout = new LinearLayout(context);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
-        linearLayout.addView(deleteArchiveHeading);
+        linearLayout.addView(editArchiveHeading);
         linearLayout.addView(spinnerArchiveSelect);
 
         linearLayout.setPadding(50, 80, 50, 10);
