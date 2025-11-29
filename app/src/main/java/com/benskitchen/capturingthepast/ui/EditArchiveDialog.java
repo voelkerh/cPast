@@ -1,11 +1,13 @@
 package com.benskitchen.capturingthepast.ui;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.*;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import capturingthepast.R;
 
 import java.util.List;
@@ -19,7 +21,7 @@ public class EditArchiveDialog {
     }
 
     public static void show(Context context, List<String> archives, int headingColor, Listener listener) {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
         TextView editArchiveHeading = new TextView(context);
         String titleText = context.getString(R.string.heading_edit_archive);
@@ -49,7 +51,7 @@ public class EditArchiveDialog {
         linearLayout.addView(spinnerArchiveSelect);
 
         linearLayout.setPadding(50, 80, 50, 10);
-        alertDialog.setView(linearLayout);
+        builder.setView(linearLayout);
 
         int[] selectedRepo = {-1};
         spinnerArchiveSelect.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -63,8 +65,7 @@ public class EditArchiveDialog {
             }
         });
 
-        // TODO: Add delete confirmation
-        alertDialog.setPositiveButton("Delete", (dialog, which) -> {
+        builder.setNegativeButton("Delete", (dialog, which) -> {
             String archiveToDelete = spinnerArchiveSelect.getSelectedItem().toString();
             String fullArchiveName = archiveToDelete.split("-")[0].trim();
             if (listener != null) {
@@ -84,5 +85,12 @@ public class EditArchiveDialog {
         builder.setNeutralButton("Cancel", (dialog, which) -> dialog.cancel());
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
+
+        Button positiveButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+        Button neutralButton = alertDialog.getButton(AlertDialog.BUTTON_NEUTRAL);
+        Button negativeButton = alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+        positiveButton.setTextColor(ContextCompat.getColor(context, R.color.colorPrimaryDark));
+        negativeButton.setTextColor(Color.RED);
+        neutralButton.setTextColor(Color.GRAY);
     }
 }

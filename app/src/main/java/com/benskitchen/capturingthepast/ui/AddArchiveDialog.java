@@ -1,12 +1,15 @@
 package com.benskitchen.capturingthepast.ui;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.text.Html;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import capturingthepast.R;
 
 public class AddArchiveDialog {
@@ -16,7 +19,7 @@ public class AddArchiveDialog {
     }
 
     public static void show(Context context, int headingColor, Listener listener) {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
         TextView addArchiveHeading = new TextView(context);
         addArchiveHeading.setText(Html.fromHtml(context.getString(R.string.add_repo_heading), Html.FROM_HTML_MODE_LEGACY));
@@ -56,15 +59,23 @@ public class AddArchiveDialog {
         layout.addView(shortArchiveNameInput);
         layout.setPadding(50, 80, 50, 10);
 
-        alertDialog.setView(layout);
-        alertDialog.setPositiveButton("Save", (dialog, which) -> {
+        builder.setView(layout);
+        builder.setPositiveButton("Save", (dialog, which) -> {
             String fullName = fullArchiveNameInput.getText().toString();
             String shortName = shortArchiveNameInput.getText().toString();
             if (listener != null) {
                 listener.onArchiveCreated(fullName, shortName);
             }
         });
-        alertDialog.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
-        alertDialog.show();
+        builder.setNeutralButton("Cancel", (dialog, which) -> dialog.cancel());
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+        Button neutralButton = dialog.getButton(AlertDialog.BUTTON_NEUTRAL);
+
+        positiveButton.setTextColor(ContextCompat.getColor(context, R.color.colorPrimaryDark));
+        neutralButton.setTextColor(Color.GRAY);
     }
 }
