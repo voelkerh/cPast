@@ -113,13 +113,13 @@ public class MainActivity extends AppCompatActivity implements AddArchiveDialog.
         ArrayAdapter<String> dataAdapter =
                 new ArchiveAdapter(this, archiveRepository.readArchives(), headingColor, this, this);
         dropdown.setAdapter(dataAdapter);
-        dropdown.setSelection(0);
 
         dropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 recordReferenceText.setText(createFileName());
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
             }
@@ -260,7 +260,6 @@ public class MainActivity extends AppCompatActivity implements AddArchiveDialog.
         ArrayAdapter<String> dataAdapter =
                 new ArchiveAdapter(this, archiveRepository.readArchives(), headingColor, this, this);
         dropdown.setAdapter(dataAdapter);
-        dropdown.setSelection(0);
     }
 
     private void showDeleteArchiveDialog() {

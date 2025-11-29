@@ -69,21 +69,21 @@ public class ArchiveAdapter extends ArrayAdapter<String> {
 
             edit.setVisibility(View.VISIBLE);
             edit.setOnClickListener(v -> {
-                if (editArchiveListener != null) {
-                    EditArchiveDialog.show(context, archives, headingColor, editArchiveListener);
-                }
+                v.post(() -> {
+                    if (editArchiveListener != null) {
+                        EditArchiveDialog.show(context, archives, headingColor, editArchiveListener);
+                    }
+                });
             });
 
-            // Empty for now to prevent crashes
-            row.setOnClickListener(v -> {
-            });
+            edit.setFocusable(false);
+            edit.setFocusableInTouchMode(false);
 
         } else {
             name.setText("Add archive");
             name.setTextColor(context.getResources().getColor(android.R.color.white));
             edit.setVisibility(View.GONE);  // no edit symbol
             row.setBackgroundColor(context.getResources().getColor(R.color.colorPrimary));
-
             row.setOnClickListener(v -> {
                 if (addArchiveListener != null) {
                     AddArchiveDialog.show(context, headingColor, addArchiveListener);
