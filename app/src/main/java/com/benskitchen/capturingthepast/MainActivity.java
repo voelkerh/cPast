@@ -26,14 +26,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.benskitchen.capturingthepast.domainLogic.ArchiveRepository;
-import com.benskitchen.capturingthepast.domainLogic.ImageRepository;
-import com.benskitchen.capturingthepast.persistence.JsonArchiveStore;
-import com.benskitchen.capturingthepast.persistence.LogWriter;
-import com.benskitchen.capturingthepast.persistence.MediaImageStore;
-import com.benskitchen.capturingthepast.persistence.SettingsRepository;
-import com.benskitchen.capturingthepast.domainLogic.CaptureCounter;
-import com.benskitchen.capturingthepast.domainLogic.RecordReferenceCreator;
+import com.benskitchen.capturingthepast.domainLogic.*;
+import com.benskitchen.capturingthepast.persistence.*;
 import com.benskitchen.capturingthepast.ui.AddArchiveDialog;
 import com.benskitchen.capturingthepast.ui.ArchiveAdapter;
 import com.benskitchen.capturingthepast.ui.EditArchiveDialog;
@@ -57,13 +51,12 @@ public class MainActivity extends AppCompatActivity implements AddArchiveDialog.
     private TextView noteText;
 
     // Domain logic dependencies
-    private CaptureCounter captureCounter;
     private ArchiveRepository archiveRepository;
     private ImageRepository imageRepository;
     private ImageRepository.TempImageInfo tempImageInfo;
+    private RecentCapturesRepository recentCapturesRepository;
 
     // Data layer dependencies - to be dissolved
-    private SettingsRepository settingsRepository;
     private LogWriter logWriter;
 
     @Override
@@ -77,16 +70,16 @@ public class MainActivity extends AppCompatActivity implements AddArchiveDialog.
     }
 
     private void initAppRepos(){
-        JsonArchiveStore jsonArchiveStore = new JsonArchiveStore(getApplicationContext());
+        ArchiveStore jsonArchiveStore = new JsonArchiveStore(getApplicationContext());
         archiveRepository = new ArchiveRepository(jsonArchiveStore);
-        settingsRepository = new SettingsRepository(this);
-        MediaImageStore mediaImageStore = new MediaImageStore(getApplicationContext());
+        RecentCapturesStore recentCapturesStore = new JsonRecentCapturesStore(getApplicationContext());
+        recentCapturesRepository = new RecentCapturesRepository(recentCapturesStore);
+        ImageStore mediaImageStore = new MediaImageStore(getApplicationContext());
         imageRepository = new ImageRepository(getApplicationContext(), mediaImageStore);
     }
 
     private void initState(){
         logWriter = new LogWriter(this);
-        captureCounter = new CaptureCounter(settingsRepository);
     }
 
     private void initViews(){
@@ -137,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements AddArchiveDialog.
 
         cameraButton.setOnClickListener(v -> dispatchTakePictureIntent());
         filesButton.setOnClickListener(v -> openGallery());
-        infoButton.setOnClickListener(v -> InfoDialog.show(this, settingsRepository.getRecentFiles()));
+        infoButton.setOnClickListener(v -> InfoDialog.show(this, recentCapturesRepository.getRecentCaptures()));
     }
 
     private void showMessage(String str) {
@@ -193,7 +186,7 @@ public class MainActivity extends AppCompatActivity implements AddArchiveDialog.
                 String note = noteText.getText().toString();
                 boolean saved = imageRepository.saveImageToGallery(imageFileName, note, tempImageInfo.path, "CapturingThePast");
                 if (saved) {
-                    settingsRepository.addFileToRecentFiles(imageFileName);
+                    recentCapturesRepository.addFileToRecentCaptures(imageFileName);
                     triggerWriteLog(imageFileName);
                     tempImageInfo = null;
                     showMessage("Image saved to " + imageFileName);
