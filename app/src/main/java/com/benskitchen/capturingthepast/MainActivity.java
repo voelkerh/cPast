@@ -8,7 +8,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.provider.MediaStore;
 
-import androidx.core.content.ContextCompat;
+import android.util.Log;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -28,16 +28,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.benskitchen.capturingthepast.domainLogic.ArchiveRepository;
-import com.benskitchen.capturingthepast.persistence.ImageRepository;
+import com.benskitchen.capturingthepast.domainLogic.ImageRepository;
 import com.benskitchen.capturingthepast.persistence.JsonArchiveStore;
 import com.benskitchen.capturingthepast.persistence.LogWriter;
+import com.benskitchen.capturingthepast.persistence.MediaImageStore;
 import com.benskitchen.capturingthepast.persistence.SettingsRepository;
 import com.benskitchen.capturingthepast.domainLogic.CaptureCounter;
 import com.benskitchen.capturingthepast.domainLogic.RecordReferenceCreator;
 import com.benskitchen.capturingthepast.ui.AddArchiveDialog;
 import com.benskitchen.capturingthepast.ui.ArchiveAdapter;
 import com.benskitchen.capturingthepast.ui.EditArchiveDialog;
-import com.google.android.material.snackbar.Snackbar;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -45,27 +45,27 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.List;
 
-import info.androidhive.fontawesome.FontDrawable;
 import capturingthepast.R;
 
 public class MainActivity extends AppCompatActivity implements AddArchiveDialog.Listener, EditArchiveDialog.Listener {
 
-    // UI variables
-    Spinner dropdown;
-    EditText tvRecordReference;
+    private static final int REQUEST_IMAGE_CAPTURE = 1;
+    private static final String TAG = "MainActivity";
 
-    // Variables needed for file names and metadata
-    private String strNote = "";
-    char[] alphabet = new char[26];
+    // UI components
+    private Spinner dropdown;
+    private EditText recordReferenceEditText;
+    private TextView noteText;
 
     // Domain logic dependencies
     private CaptureCounter captureCounter;
     private ArchiveRepository archiveRepository;
+    private ImageRepository imageRepository;
+    private ImageRepository.TempImageInfo tempImageInfo;
 
-    // Data layer dependencies
-    SettingsRepository settingsRepository;
-    ImageRepository imageRepository;
-    LogWriter logWriter;
+    // Data layer dependencies - to be dissolved
+    private SettingsRepository settingsRepository;
+    private LogWriter logWriter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,32 +81,26 @@ public class MainActivity extends AppCompatActivity implements AddArchiveDialog.
         JsonArchiveStore jsonArchiveStore = new JsonArchiveStore(getApplicationContext());
         archiveRepository = new ArchiveRepository(jsonArchiveStore);
         settingsRepository = new SettingsRepository(this);
-        imageRepository = new ImageRepository(this);
+        MediaImageStore mediaImageStore = new MediaImageStore(getApplicationContext());
+        imageRepository = new ImageRepository(getApplicationContext(), mediaImageStore);
     }
 
     private void initState(){
-        int i = 0;
-        for (char letter = 'a'; letter <= 'z'; letter++) {
-            alphabet[i++] = letter;
-        }
-
         logWriter = new LogWriter(this);
         captureCounter = new CaptureCounter(settingsRepository);
     }
 
     private void initViews(){
         dropdown = findViewById(R.id.spinnerArchive);
-        tvRecordReference = findViewById(R.id.editTextRef);
+        recordReferenceEditText = findViewById(R.id.editTextRef);
         TextView recordReferenceText = findViewById(R.id.textViewRef);
-        TextView noteText = findViewById(R.id.textViewNote);
+        noteText = findViewById(R.id.textViewNote);
         TextView recordReferenceLabel = findViewById(R.id.refLabel);
         Button cameraButton = findViewById(R.id.cameraButton);
         Button filesButton = findViewById(R.id.filesButton);
         Button infoButton = findViewById(R.id.infoButton);
-        Button btnClearNote = findViewById(R.id.buttonClearNote);
-        Button btnClearRef = findViewById(R.id.buttonClearRef);
-        FontDrawable drawable = new FontDrawable(this, R.string.fa_paper_plane_solid, true, false);
-        drawable.setTextColor(ContextCompat.getColor(this, android.R.color.black));
+        Button clearNoteButton = findViewById(R.id.buttonClearNote);
+        Button clearReferenceButton = findViewById(R.id.buttonClearRef);
 
         ArrayAdapter<String> dataAdapter =
                 new ArchiveAdapter(this, archiveRepository.readArchives(), this, this);
@@ -123,24 +117,10 @@ public class MainActivity extends AppCompatActivity implements AddArchiveDialog.
             }
         });
 
-        noteText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                strNote = noteText.getText().toString();
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
-        btnClearNote.setOnClickListener(v -> noteText.setText(""));
+        clearNoteButton.setOnClickListener(v -> noteText.setText(""));
 
         recordReferenceLabel.setOnClickListener(view -> showDataEntryToolTips(getString(R.string.ref_description_heading), getString(R.string.ref_description_text)));
-        tvRecordReference.addTextChangedListener(new TextWatcher() {
+        recordReferenceEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
@@ -154,16 +134,10 @@ public class MainActivity extends AppCompatActivity implements AddArchiveDialog.
             public void afterTextChanged(Editable s) {
             }
         });
-        btnClearRef.setOnClickListener(v -> tvRecordReference.setText(""));
+        clearReferenceButton.setOnClickListener(v -> recordReferenceEditText.setText(""));
 
         cameraButton.setOnClickListener(v -> dispatchTakePictureIntent());
-        filesButton.setOnClickListener(v -> {
-            try {
-                openGallery();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
+        filesButton.setOnClickListener(v -> openGallery());
         infoButton.setOnClickListener(v -> showInfo());
     }
 
@@ -187,23 +161,23 @@ public class MainActivity extends AppCompatActivity implements AddArchiveDialog.
     }
 
     private void openGallery() {
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("content://media/internal/images/media"));
-        startActivity(intent);
+        try {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("content://media/internal/images/media"));
+            startActivity(intent);
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to open gallery", e);
+        }
     }
-
-    static final int REQUEST_IMAGE_CAPTURE = 1;
 
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        // Ensure that there's a camera activity to handle the intent
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            Uri photoURI = imageRepository.getTempImageFileUri();
-            if (photoURI != null) {
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+            tempImageInfo = imageRepository.getTempImageInfo();
+            if (tempImageInfo != null) {
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, tempImageInfo.uri);
                 startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-            } else {
-                showMessage("No photoURI to capture image");
             }
+            else showMessage("No photoURI to capture image");
         }
     }
 
@@ -211,38 +185,39 @@ public class MainActivity extends AppCompatActivity implements AddArchiveDialog.
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            if (tempImageInfo == null) {
+                showMessage("Error: No image path available");
+                return;
+            }
             String imageFileName = createFileName();
-            saveImageToGallery(imageFileName);
-            triggerWriteLog(imageFileName);
-        }
-    }
-
-    private void saveImageToGallery(String imageFileName) {
-        try {
-            imageRepository.saveImageToGallery(imageFileName, strNote);
-            captureCounter.incrementCaptureCount();
-            settingsRepository.addFileToRecentFiles(imageFileName);
-            Toast.makeText(this, "Image saved", LENGTH_SHORT).show();
-        } catch (IOException e) {
-            Toast.makeText(this, "Error: Image not saved.\n" + e.getMessage(), LENGTH_SHORT).show();
+            try {
+                String note = noteText.getText().toString();
+                boolean saved = imageRepository.saveImageToGallery(imageFileName, note, tempImageInfo.path, "CapturingThePast");
+                if (saved) {
+                    settingsRepository.addFileToRecentFiles(imageFileName);
+                    triggerWriteLog(imageFileName);
+                    tempImageInfo = null;
+                    showMessage("Image saved to " + imageFileName);
+                }
+            } catch (IOException e) {
+                showMessage("Error: Image not saved.\n" + e.getMessage());
+            }
         }
     }
 
     public void triggerWriteLog(String imageFileName) {
         String humanisedTime = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM).format(LocalDateTime.now());
-        String strCSV = "\"" + humanisedTime + "\"" + imageFileName + "\",\"" + strNote + "\"";
-        String message = logWriter.writePublicLog(strCSV);
-        if (!message.isEmpty()) Toast.makeText(this, message, LENGTH_SHORT).show();
+        String note = noteText.getText().toString();
+        String csvRow = "\"" + humanisedTime + "\"" + imageFileName + "\",\"" + note + "\"";
+        String message = logWriter.writePublicLog(csvRow);
+        if (!message.isEmpty()) showMessage(message);
     }
 
     @Override
     public void onArchiveCreated(String fullName, String shortName) {
         boolean created = archiveRepository.createArchive(fullName, shortName);
-        if (created) {
-            Snackbar.make(dropdown, fullName + " created", Snackbar.LENGTH_SHORT).show();
-        } else {
-            Snackbar.make(dropdown, fullName + " could not be created", Snackbar.LENGTH_SHORT).show();
-        }
+        if (created) showMessage(fullName + " created");
+        else showMessage(fullName + " could not be created");
         updateDropdown();
     }
 
@@ -250,16 +225,14 @@ public class MainActivity extends AppCompatActivity implements AddArchiveDialog.
     public void onArchiveEdited(String oldFullName, String oldShortName, String shortArchiveName, String fullArchiveName) {
         archiveRepository.updateArchive(oldFullName, oldShortName, shortArchiveName, fullArchiveName);
         updateDropdown();
-        Snackbar snack = Snackbar.make(dropdown, fullArchiveName + " updated", Snackbar.LENGTH_SHORT);
-        snack.show();
+        showMessage(fullArchiveName + " updated");
     }
 
     @Override
     public void onArchiveDeleted(String fullArchiveName) {
         archiveRepository.deleteArchive(fullArchiveName);
         updateDropdown();
-        Snackbar snack = Snackbar.make(dropdown, getString(R.string.deleted)+ " - " + fullArchiveName, Snackbar.LENGTH_SHORT);
-        snack.show();
+        showMessage(getString(R.string.deleted)+ " - " + fullArchiveName);
     }
 
     private void updateDropdown(){
@@ -275,8 +248,8 @@ public class MainActivity extends AppCompatActivity implements AddArchiveDialog.
             sb.append(recentFiles.get(i)).append("\n");
         }
         String folderStatus = getString(R.string.latest_captures_message) + sb; //"Latest captures (Most recent first):\n" + sb;
-        String strMessage = "<p>" + captureCounter.getCaptureCount() + "</p> ";
-        showFolderStatusMessage(strMessage, folderStatus);
+        String message = "<p>" + captureCounter.getCaptureCount() + "</p> ";
+        showFolderStatusMessage(message, folderStatus);
     }
 
     private void showFolderStatusMessage(String strMessage, String strReport) {
@@ -342,12 +315,12 @@ public class MainActivity extends AppCompatActivity implements AddArchiveDialog.
     }
 
     private String createFileName() {
-        String strArchiveShort = getShortArchiveName();
-        String strRecordReference = tvRecordReference.getText().toString();
-        String strCounter = "0"; // placeholder, replace when image counter is implemented
-        String catRef = RecordReferenceCreator.createRecordReference(strArchiveShort, strRecordReference, strCounter);
-        if (catRef.length() > 128) showMessage("Your catalogue reference is very long and may result in unusable file names.");
-        return catRef;
+        String shortArchiveName = getShortArchiveName();
+        String recordReference = recordReferenceEditText.getText().toString();
+        String counter = "0"; // placeholder, replace when image counter is implemented
+        String fileName = RecordReferenceCreator.createRecordReference(shortArchiveName, recordReference, counter);
+        if (fileName.length() > 128) showMessage("Your catalogue reference is very long and may result in unusable file names.");
+        return fileName;
     }
 
     private String getShortArchiveName(){
