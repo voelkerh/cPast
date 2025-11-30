@@ -35,7 +35,7 @@
     <string name="prefix">Project prefix</string>
     <string name="enter_the_catalogue_number">Enter the catalogue number</string>
     <string name="heading_edit_archive"><![CDATA[<H2>Edit Archive</H2>]]></string>
-    <string name="latest_captures_message">Latest captures (Most recent first):\n</string>
+    <string name="latest_captures_message">Latest photos captured (Most recent first):\n</string>
     <string name="add_repo_heading"><![CDATA[<H2>Add Archive</H2>]]></string>
     <string name="full_archive_name_label">Full name</string>
     <string name="full_archive_name_hint">E.g. Bundesarchiv</string>
@@ -49,10 +49,10 @@
     <string name="sub_item_description_heading">Sub Item Level</string>
     <string name="detached_description_text">Optional - this control is intended to be reserved for special cases such as detached or torn document parts. The control adds a distinguishable identifier to the end of the reference using a combination of letters and numbers.</string>
     <string name="detached_description_heading">Special Cases</string>
-    <string name="log_information"><![CDATA[<h3>Capture Log</h3><p>A log file called CapturingThePast.csv is saved in your device\'s Documents folder and contains a list of all captures. Delete the log to reset it, or rename it to preserve it and start a fresh one.</p>]]> </string>
-    <string name="resources_note"><![CDATA[<h3>Resources</h3><p><a href=https://capturingthepast.benskitchen.com/ >Website</a></p><p><a href=https://blogs.sussex.ac.uk/capturing-the-past/about-us/ >Project</a></p>]]></string>
-    <string name="footer_link"><![CDATA[<p><br/>Capturing the Past is a <a href=https://www.sussex.ac.uk/research/centres/sussex-humanities-lab/ >Sussex Humanities Lab</a> project funded by the <a href=https://ahrc.ukri.org/ >Arts and Humanities Research Council</a>.</p>]]></string>
-    <string name="counter_label"><![CDATA[<h4>Capture Counter</h4>]]></string>
+    <string name="notes_information"><![CDATA[<h3>Your Notes</h3><p>Your notes are saved with the photo names in CapturingThePast.csv in the Documents folder on your phone.</p>]]> </string>
+    <string name="info_heading"><![CDATA[<h2>Information</h2>]]></string>
+    <string name="further_information"><![CDATA[<h3>Further Information</h3><a href=https://capturingthepast.benskitchen.com/ >Software Documentation</a><br /><p><a href=https://blogs.sussex.ac.uk/capturing-the-past/about-us/ >Research Project</a></p><p>Capturing the Past is a <a href=https://www.sussex.ac.uk/research/centres/sussex-humanities-lab/ >Sussex Humanities Lab</a> project funded by the <a href=https://ahrc.ukri.org/ >Arts and Humanities Research Council</a>.</p>]]></string>
+    <string name="counter_label"><![CDATA[<h3>Photos captured</h3>]]></string>
     <string name="close">close</string>
     <string name="reset">Reset</string>
     <string name="deleted">Deleted</string>
