@@ -63,6 +63,8 @@ public class MainActivity extends AppCompatActivity implements AddArchiveDialog.
     private CaptureCounter captureCounter;
     private ArchiveRepository archiveRepository;
 
+    private ImageRepository.TempImageInfo tempImageInfo;
+
     // Data layer dependencies
     SettingsRepository settingsRepository;
     ImageRepository imageRepository;
@@ -197,15 +199,13 @@ public class MainActivity extends AppCompatActivity implements AddArchiveDialog.
 
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        // Ensure that there's a camera activity to handle the intent
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            Uri photoURI = imageRepository.getTempImageFileUri();
-            if (photoURI != null) {
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+            tempImageInfo = imageRepository.getTempImageInfo();
+            if (tempImageInfo != null) {
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, tempImageInfo.uri);
                 startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-            } else {
-                showMessage("No photoURI to capture image");
             }
+            else showMessage("No photoURI to capture image");
         }
     }
 
@@ -213,12 +213,17 @@ public class MainActivity extends AppCompatActivity implements AddArchiveDialog.
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            if (tempImageInfo == null) {
+                Toast.makeText(this, "Error: No image path available", LENGTH_SHORT).show();
+                return;
+            }
             String imageFileName = createFileName();
             try {
-                boolean saved = imageRepository.saveImageToGallery(imageFileName, strNote);
+                boolean saved = imageRepository.saveImageToGallery(imageFileName, strNote, tempImageInfo.path, "CapturingThePast");
                 if (saved) {
                     settingsRepository.addFileToRecentFiles(imageFileName);
                     triggerWriteLog(imageFileName);
+                    tempImageInfo = null;
                     Toast.makeText(this, "Image saved", LENGTH_SHORT).show();
                 }
             } catch (IOException e) {
