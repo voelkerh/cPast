@@ -52,19 +52,19 @@ import capturingthepast.R;
 public class MainActivity extends AppCompatActivity implements AddArchiveDialog.Listener, EditArchiveDialog.Listener {
 
     // UI variables
-    Spinner dropdown;
-    EditText tvRecordReference;
-    TextView noteText;
+    private Spinner dropdown;
+    private EditText tvRecordReference;
+    private TextView noteText;
 
     // Domain logic dependencies
     private CaptureCounter captureCounter;
     private ArchiveRepository archiveRepository;
-    ImageRepository imageRepository;
+    private ImageRepository imageRepository;
     private ImageRepository.TempImageInfo tempImageInfo;
 
     // Data layer dependencies - to be dissolved
-    SettingsRepository settingsRepository;
-    LogWriter logWriter;
+    private SettingsRepository settingsRepository;
+    private LogWriter logWriter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,19 +118,6 @@ public class MainActivity extends AppCompatActivity implements AddArchiveDialog.
             }
         });
 
-        noteText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
         btnClearNote.setOnClickListener(v -> noteText.setText(""));
 
         recordReferenceLabel.setOnClickListener(view -> showDataEntryToolTips(getString(R.string.ref_description_heading), getString(R.string.ref_description_text)));
