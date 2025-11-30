@@ -26,7 +26,7 @@ class ArchiveRepositoryTest {
     }
 
     @Test
-    void archiveRepository_constructorNotNull(){
+    void archiveRepository_constructorNotNull() {
         assertNotNull(repository);
     }
 
@@ -38,16 +38,41 @@ class ArchiveRepositoryTest {
     }
 
     @Test
-    void createArchive_preventsDuplicates() {
+    void createArchive_preventsDuplicatesFullName() {
         repository.createArchive("Bundesarchiv", "BArch");
         boolean result = repository.createArchive("Bundesarchiv", "BArch2");
         assertFalse(result);
     }
 
     @Test
-    void createArchive_handlesNull() {
-        assertFalse(repository.createArchive(null, "BArch"));
-        assertFalse(repository.createArchive("Bundesarchiv", null));
+    void createArchive_preventsDuplicatesShortName() {
+        repository.createArchive("Bundesarchiv", "BArch");
+        boolean result = repository.createArchive("Archiv", "BArch");
+        assertFalse(result);
+    }
+
+    @Test
+    void createArchive_handlesNullFullName() {
+        boolean result = repository.createArchive(null, "BArch");
+        assertFalse(result);
+    }
+
+    @Test
+    void createArchive_handlesNullShortName() {
+        boolean result = repository.createArchive("Bundesarchiv", null);
+        assertFalse(result);
+    }
+
+    @Test
+    void createArchive_handlesEmptyFullName() {
+        boolean result = repository.createArchive("", "BArch");
+        assertFalse(result);
+    }
+
+    @Test
+    void createArchive_handlesEmptyShortName() {
+        boolean result = repository.createArchive("Bundesarchiv", "");
+        assertFalse(result);
     }
 
     @Test
@@ -65,6 +90,37 @@ class ArchiveRepositoryTest {
     }
 
     @Test
+    void deleteArchive_handlesNullFullName() {
+        boolean result = repository.deleteArchive(null);
+        assertFalse(result);
+    }
+
+    @Test
+    void deleteArchive_handlesEmptyFullName() {
+        boolean result = repository.deleteArchive("");
+        assertFalse(result);
+    }
+
+    @Test
+    void updateArchive_success() {
+        repository.createArchive("Bundesarchiv", "BArch");
+        boolean result = repository.updateArchive("Bundesarchiv", "BuArch", "Bundesarchiv", "BArch");
+        assertTrue(result);
+        assertTrue(repository.readArchives().get(0).contains("BArch"));
+        assertEquals(1, repository.readArchives().size());
+    }
+
+    @Test
+    void updateArchive_newFullName() {
+        repository.createArchive("Bundesarchiv", "BArch");
+        boolean result = repository.updateArchive("Bundesarchiv", "BArch", "Landesarchiv", "BArch");
+        assertTrue(result);
+        assertTrue(repository.readArchives().get(0).contains("BArch"));
+        assertFalse(repository.readArchives().get(0).contains("Bundesarchiv"));
+        assertEquals(1, repository.readArchives().size());
+    }
+
+    @Test
     void updateArchive_handlesStorageFailure() {
         repository.createArchive("Bundesarchiv", "BArch");
 
@@ -75,9 +131,25 @@ class ArchiveRepositoryTest {
     }
 
     @Test
+    void updateArchive_handlesNullArchiveName() {
+        repository.createArchive("Bundesarchiv", "BArch");
+        boolean result = repository.updateArchive("Bundesarchiv", null, "NN", "NN");
+        assertFalse(result);
+    }
+
+    @Test
+    void readArchive_success() {
+        repository.createArchive("Bundesarchiv", "BArch");
+        List<String> archives = repository.readArchives();
+        assertEquals(1, archives.size());
+        assertTrue(archives.get(0).contains("BArch"));
+    }
+
+    @Test
     void normalizeString_trimsWhitespace() {
         repository.createArchive("  Bundesarchiv  ", "  BArch  ");
         List<String> archives = repository.readArchives();
         assertEquals("Bundesarchiv - BArch", archives.get(0));
     }
+
 }
