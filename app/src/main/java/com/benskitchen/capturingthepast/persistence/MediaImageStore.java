@@ -10,98 +10,92 @@ import android.os.Environment;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.util.Log;
-import androidx.core.content.FileProvider;
 import androidx.exifinterface.media.ExifInterface;
 
 import java.io.*;
 import java.lang.reflect.Field;
 
 public class MediaImageStore implements ImageStore {
-
+    private static final String TAG = "MediaImageStore";
+    private static final String TEMP_FILE_NAME = "temp.jpg";
+    private static final String MIME_TYPE = "image/jpeg";
+    private static final int JPEG_QUALITY = 100;
     private final Context context;
-
-    String currentPhotoPath;
 
     public MediaImageStore(Context context) {
         this.context = context;
     }
 
-    public File createTempImageFile() throws IOException {
-        File storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+    public File createTempImageFile(File storageDir) throws IOException {
         if (storageDir == null) throw new IOException("No storage directory found");
-
-        File image = new File(storageDir, "temp.jpg");
-        currentPhotoPath = image.getAbsolutePath();
-        return image;
+        return new File(storageDir, TEMP_FILE_NAME);
     }
 
-    public Uri getTempImageFileUri() {
-        try {
-            File photoFile = createTempImageFile();
-            if (photoFile != null) return FileProvider.getUriForFile(context,
-                    "com.benskitchen.capturingthepast.fileprovider",
-                    photoFile);
-        } catch (IOException e) {
-            Log.e("getTempImageFileUri", e.toString());
-        }
-        return null;
-    }
-
-    public boolean saveImageToGallery(String imageFileName, String strNote) throws IOException {
+    public boolean saveImageToGallery(String imageFileName, String note, String currentPhotoPath, String folderPath) throws IOException {
         Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath);
-        ExifInterface exif = new ExifInterface(currentPhotoPath);
-        ContentResolver contentResolver = context.getContentResolver();
+        if (bitmap == null) throw new IOException("No bitmap found");
+
+        ExifInterface sourceExif = new ExifInterface(currentPhotoPath);
+
         ContentValues contentValues = new ContentValues();
         contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, imageFileName);
-        contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "image/jpg");
-        contentValues.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + File.separator + "CapturingThePast");
+        contentValues.put(MediaStore.MediaColumns.MIME_TYPE, MIME_TYPE);
+        contentValues.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + File.separator + folderPath);
+
+        ContentResolver contentResolver = context.getContentResolver();
         Uri imageUri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
 
-        try (ParcelFileDescriptor pfd = contentResolver.openFileDescriptor(imageUri, "w")) {
-            FileDescriptor fd = pfd.getFileDescriptor();
+        if (imageUri == null) throw new IOException("Failed to create MediaStore entry");
 
-            try (OutputStream stream = new FileOutputStream(fd)) {
-                // Perform operations on "stream".
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-            }
+        try (ParcelFileDescriptor pfd = contentResolver.openFileDescriptor(imageUri, "w");
+            OutputStream os = new FileOutputStream(pfd.getFileDescriptor())) {
 
-            // Sync data with disk. It's mandatory to be able later to call writeExif
-            fd.sync();    // <---- HERE THE SOLUTION
-            final String userComment = "Capturing the Past image " + imageFileName + " " + strNote;
-            writeExif(imageUri, exif, userComment);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, JPEG_QUALITY, os);
+            pfd.getFileDescriptor().sync();
+
+            String userComment = imageFileName + " " + note;
+            copyExifData(imageUri, sourceExif, userComment);
+
             return true;
+
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, e.toString());
+            contentResolver.delete(imageUri, null, null);
+            throw e;
+        } finally {
+            bitmap.recycle();
         }
-        return false;
     }
 
-    // Writes Metadata from temp image to new image in gallery
-    public void writeExif(Uri uri, ExifInterface exif, String userComment) {
+    private void copyExifData(Uri targetUri, ExifInterface sourceExif, String userComment) {
 
-        try (ParcelFileDescriptor imagePfd = context.getContentResolver().openFileDescriptor(uri, "rw")) {
-            ExifInterface exifNew = new ExifInterface(imagePfd.getFileDescriptor());
+        try (ParcelFileDescriptor pfd = context.getContentResolver().openFileDescriptor(targetUri, "rw")) {
+            if (pfd == null) {
+                Log.w(TAG, "Could not open file descriptor for EXIF data");
+                return;
+            }
 
-            // Copy existing tags
+            ExifInterface targetExif = new ExifInterface(pfd.getFileDescriptor());
+
             Field[] fields = ExifInterface.class.getFields();
             for (Field field : fields) {
                 if (field.getName().startsWith("TAG")) {
                     try {
                         String tag = (String) field.get(null);
-                        String value = exif.getAttribute(tag);
-                        if (value != null) exifNew.setAttribute(tag, value);
+                        if (tag == null) continue;
+                        String value = sourceExif.getAttribute(tag);
+                        if (value != null) targetExif.setAttribute(tag, value);
                     } catch (IllegalAccessException e) {
-                        e.printStackTrace();
+                        Log.e(TAG, "Could not access field: " + field.getName());
                     }
                 }
             }
 
-            // Add user comment
-            exifNew.setAttribute(ExifInterface.TAG_USER_COMMENT, userComment);
+            targetExif.setAttribute(ExifInterface.TAG_USER_COMMENT, userComment);
+            targetExif.saveAttributes();
 
-            exifNew.saveAttributes();
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, e.toString());
         }
     }
 }
