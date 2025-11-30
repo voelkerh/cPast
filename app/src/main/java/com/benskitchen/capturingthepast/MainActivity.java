@@ -4,7 +4,6 @@ import static android.widget.Toast.LENGTH_SHORT;
 
 import android.content.Intent;
 
-import android.graphics.Color;
 import android.net.Uri;
 import android.provider.MediaStore;
 
@@ -43,9 +42,9 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
-import java.util.List;
 
 import capturingthepast.R;
+import com.benskitchen.capturingthepast.ui.InfoDialog;
 
 public class MainActivity extends AppCompatActivity implements AddArchiveDialog.Listener, EditArchiveDialog.Listener {
 
@@ -138,7 +137,7 @@ public class MainActivity extends AppCompatActivity implements AddArchiveDialog.
 
         cameraButton.setOnClickListener(v -> dispatchTakePictureIntent());
         filesButton.setOnClickListener(v -> openGallery());
-        infoButton.setOnClickListener(v -> showInfo());
+        infoButton.setOnClickListener(v -> InfoDialog.show(this, settingsRepository.getRecentFiles()));
     }
 
     private void showMessage(String str) {
@@ -241,79 +240,6 @@ public class MainActivity extends AppCompatActivity implements AddArchiveDialog.
         dropdown.setAdapter(dataAdapter);
     }
 
-    public void showInfo() {
-        StringBuilder sb = new StringBuilder();
-        List<String> recentFiles = settingsRepository.getRecentFiles();
-        for (int i = recentFiles.size() - 1; i >= 0; i--) {
-            sb.append(recentFiles.get(i)).append("\n");
-        }
-        String folderStatus = getString(R.string.latest_captures_message) + sb; //"Latest captures (Most recent first):\n" + sb;
-        String message = "<p>" + captureCounter.getCaptureCount() + "</p> ";
-        showFolderStatusMessage(message, folderStatus);
-    }
-
-    private void showFolderStatusMessage(String strMessage, String strReport) {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
-        TextView tvTip = new TextView(this);
-        String sLink = getString(R.string.resources_note);//"<h3>Resources</h3>"; //resources_note
-        TextView tvLogInfo = new TextView(this);
-        String strLogInfo = getString(R.string.log_information);//"<h3>Capture Log</h3><p>A log (called CapturingThePast) of all captures is saved in your Documents folder. " +
-        //"Delete the log to reset it, or rename it to preserve it and start a fresh one. " +
-        //"</p>"; //log_information
-        tvLogInfo.setMovementMethod(LinkMovementMethod.getInstance());
-        tvLogInfo.setText(Html.fromHtml(strLogInfo, Html.FROM_HTML_MODE_LEGACY));
-
-        tvTip.setMovementMethod(LinkMovementMethod.getInstance());
-        tvTip.setText(Html.fromHtml(sLink, Html.FROM_HTML_MODE_LEGACY));
-        TextView tvList = new TextView(this);
-        tvList.setText(strReport);
-        TextView tvCaptureCount = new TextView(this);
-        tvCaptureCount.setMovementMethod(LinkMovementMethod.getInstance());
-        tvCaptureCount.setText(Html.fromHtml(strMessage, Html.FROM_HTML_MODE_LEGACY));
-        String fLink = getString(R.string.footer_link);//"<p><br/>Capturing the Past is a <a href=https://www.sussex.ac.uk/research/centres/sussex-humanities-lab/ >Sussex Humanities Lab</a> project funded by the <a href=https://ahrc.ukri.org/ >Arts and Humanities Research Council</a>.</p>";
-        TextView tvHeader = new TextView(this);
-        tvHeader.setMovementMethod(LinkMovementMethod.getInstance());
-        tvHeader.setText(Html.fromHtml(fLink, Html.FROM_HTML_MODE_LEGACY));
-        String fCap = getString(R.string.counter_label);//"<h4>Capture Counter</h4>";
-        TextView tvCap = new TextView(this);
-        tvCap.setMovementMethod(LinkMovementMethod.getInstance());
-        tvCap.setText(Html.fromHtml(fCap, Html.FROM_HTML_MODE_LEGACY));
-        final Button btnResetCount = new Button(this);
-        btnResetCount.setText(getString(R.string.reset));
-        btnResetCount.setAllCaps(false);
-        LinearLayout counterReset = new LinearLayout(this);
-        counterReset.setOrientation(LinearLayout.HORIZONTAL);
-        LinearLayout lpset = new LinearLayout(this);
-        lpset.setOrientation(LinearLayout.VERTICAL);
-        tvTip.setTextSize(16f);
-        tvCap.setTextSize(16f);
-        lpset.addView(tvTip);
-        lpset.addView(tvLogInfo);
-
-        tvCaptureCount.setWidth(150);
-        tvCaptureCount.setGravity(1);
-        btnResetCount.setBackgroundColor(0); //setHeight(50)
-        btnResetCount.setTextColor(Color.DKGRAY);
-        counterReset.addView(tvCap);
-        counterReset.addView(tvCaptureCount);
-        counterReset.addView(btnResetCount);
-        lpset.addView(counterReset);
-        lpset.addView(tvList);
-        tvHeader.setTextSize(11.0f);
-        lpset.addView(tvHeader);
-        lpset.setPadding(40, 40, 40, 16);
-        alertDialog.setView(lpset);
-        alertDialog.setNegativeButton(getString(R.string.close), (dialog, which) -> dialog.cancel());
-        btnResetCount.setOnClickListener(view -> {
-            captureCounter.setCaptureCount(0);
-            settingsRepository.addFileToRecentFiles("");
-            String strCaptureCount = "<p>" + captureCounter.getCaptureCount() + "</p> ";
-            tvCaptureCount.setMovementMethod(LinkMovementMethod.getInstance());
-            tvCaptureCount.setText(Html.fromHtml(strCaptureCount, Html.FROM_HTML_MODE_LEGACY));
-        });
-        alertDialog.show();
-    }
-
     private String createFileName() {
         String shortArchiveName = getShortArchiveName();
         String recordReference = recordReferenceEditText.getText().toString();
@@ -330,10 +256,7 @@ public class MainActivity extends AppCompatActivity implements AddArchiveDialog.
         String selectedArchive = item.toString();
         if (selectedArchive.equals("Select Archive")) return "";
         String[] parts = selectedArchive.split("-");
-        if (parts.length >= 2) {
-            return parts[1].trim();
-        } else {
-            return selectedArchive.trim();
-        }
+        if (parts.length >= 2) return parts[1].trim();
+        else return selectedArchive.trim();
     }
 }
