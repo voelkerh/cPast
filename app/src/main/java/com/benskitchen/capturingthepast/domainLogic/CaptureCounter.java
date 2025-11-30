@@ -1,13 +1,11 @@
 package com.benskitchen.capturingthepast.domainLogic;
 
-import com.benskitchen.capturingthepast.persistence.SettingsRepository;
-
 public class CaptureCounter {
 
     private int captureCount;
 
-    public CaptureCounter(SettingsRepository settingsRepository) {
-        this.captureCount = settingsRepository.getCaptureCounter();
+    public CaptureCounter() {
+        this.captureCount = 0;
     }
 
     public int getCaptureCount() {
