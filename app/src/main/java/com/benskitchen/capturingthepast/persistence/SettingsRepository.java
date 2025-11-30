@@ -14,8 +14,6 @@ import java.util.List;
 
 public class SettingsRepository {
     private final String params = "AppSettings.json";
-    private int nCaptureCounter = 0;
-    boolean bTimestamped = true;
     private ArrayList<String> recentFiles = new ArrayList<>();
     JSONArray recentFileStore = new JSONArray();
     Context context;
@@ -50,16 +48,8 @@ public class SettingsRepository {
         JSONObject jsonObject;
         try {
             jsonObject = new JSONObject(jsonString);
-            bTimestamped = jsonObject.getBoolean("bTimestamp");
-            nCaptureCounter = jsonObject.getInt("nCaptureCount");
-        } catch (JSONException e) {
-            writeDefaults();
-            e.printStackTrace();
-        }
-        try {
-            jsonObject = new JSONObject(jsonString);
             recentFileStore = jsonObject.getJSONArray("recentFiles");
-            recentFiles = new ArrayList<>();//(recentFileStore);
+            recentFiles = new ArrayList<>();
             for (int j = 0; j < recentFileStore.length(); j++) {
                 recentFiles.add((String) recentFileStore.get(j));
             }
@@ -70,7 +60,7 @@ public class SettingsRepository {
 
     // Fallback for applyJsonSettings()
     public void writeDefaults() {
-        String jsonString = "{\"bTimestamp\":\"TRUE\",\"nCaptureCount\":\"0\",\"recentFiles\":[]}";
+        String jsonString = "{\"recentFiles\":[]}";
         createAndSaveFile(params, jsonString);
     }
 
@@ -89,8 +79,6 @@ public class SettingsRepository {
     public void writePreferences() {
         try {
             JSONObject jsonObj = new JSONObject();
-            jsonObj.put("bTimestamp", bTimestamped);
-            jsonObj.put("nCaptureCount", nCaptureCounter);
             jsonObj.put("recentFiles", recentFileStore);
             String output = jsonObj.toString();
             createAndSaveFile(params, output);
@@ -108,10 +96,6 @@ public class SettingsRepository {
             recentFileStore = new JSONArray(recentFiles);
         }
         writePreferences();
-    }
-
-    public int getCaptureCounter() {
-        return nCaptureCounter;
     }
 
     public List<String> getRecentFiles() {
