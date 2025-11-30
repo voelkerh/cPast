@@ -39,7 +39,6 @@ import com.benskitchen.capturingthepast.domainLogic.RecordReferenceCreator;
 import com.benskitchen.capturingthepast.ui.AddArchiveDialog;
 import com.benskitchen.capturingthepast.ui.ArchiveAdapter;
 import com.benskitchen.capturingthepast.ui.EditArchiveDialog;
-import com.google.android.material.snackbar.Snackbar;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -233,11 +232,8 @@ public class MainActivity extends AppCompatActivity implements AddArchiveDialog.
     @Override
     public void onArchiveCreated(String fullName, String shortName) {
         boolean created = archiveRepository.createArchive(fullName, shortName);
-        if (created) {
-            Snackbar.make(dropdown, fullName + " created", Snackbar.LENGTH_SHORT).show();
-        } else {
-            Snackbar.make(dropdown, fullName + " could not be created", Snackbar.LENGTH_SHORT).show();
-        }
+        if (created) showMessage(fullName + " created");
+        else showMessage(fullName + " could not be created");
         updateDropdown();
     }
 
@@ -245,16 +241,14 @@ public class MainActivity extends AppCompatActivity implements AddArchiveDialog.
     public void onArchiveEdited(String oldFullName, String oldShortName, String shortArchiveName, String fullArchiveName) {
         archiveRepository.updateArchive(oldFullName, oldShortName, shortArchiveName, fullArchiveName);
         updateDropdown();
-        Snackbar snack = Snackbar.make(dropdown, fullArchiveName + " updated", Snackbar.LENGTH_SHORT);
-        snack.show();
+        showMessage(fullArchiveName + " updated");
     }
 
     @Override
     public void onArchiveDeleted(String fullArchiveName) {
         archiveRepository.deleteArchive(fullArchiveName);
         updateDropdown();
-        Snackbar snack = Snackbar.make(dropdown, getString(R.string.deleted)+ " - " + fullArchiveName, Snackbar.LENGTH_SHORT);
-        snack.show();
+        showMessage(getString(R.string.deleted)+ " - " + fullArchiveName);
     }
 
     private void updateDropdown(){
