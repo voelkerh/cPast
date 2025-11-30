@@ -19,11 +19,13 @@ public class ArchiveRepository {
     }
 
     private boolean saveArchives(Map<String, String> archives) {
+        if (archives == null) return false;
         return archiveStore.saveArchives(archives);
     }
 
     public boolean createArchive(String fullName, String shortName){
         if (fullName == null || shortName == null) return false;
+        if (fullName.isEmpty() || shortName.isEmpty()) return false;
         String fullNameNorm = normalizeString(fullName);
         String shortNameNorm = normalizeString(shortName);
         if (archives.containsKey(fullNameNorm) || archives.containsValue(shortNameNorm)) return false;
@@ -32,13 +34,13 @@ public class ArchiveRepository {
     }
 
     public boolean deleteArchive(String fullName){
-        if (fullName == null || !archives.containsKey(fullName)) return false;
+        if (fullName == null || fullName.isEmpty() || !archives.containsKey(fullName)) return false;
         archives.remove(fullName);
         return saveArchives(archives);
     }
 
     public boolean updateArchive(String oldFullName, String oldShortName, String fullName, String shortName){
-        if (oldFullName == null || fullName == null || shortName == null || !archives.containsKey(oldFullName)) return false;
+        if (oldFullName == null || fullName == null || oldShortName == null || shortName == null || !archives.containsKey(oldFullName)) return false;
         String fullNameNorm = normalizeString(fullName);
         String shortNameNorm = normalizeString(shortName);
         archives.put(fullNameNorm, shortNameNorm);
@@ -48,10 +50,10 @@ public class ArchiveRepository {
             }
             return true;
         } else {
-        archives.put(oldFullName, oldShortName);
-        archives.remove(fullNameNorm);
-        return false;
-    }
+            archives.put(oldFullName, oldShortName);
+            archives.remove(fullNameNorm);
+            return false;
+        }
     }
 
     public List<String> readArchives(){
