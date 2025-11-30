@@ -215,7 +215,7 @@ public class MainActivity extends AppCompatActivity implements AddArchiveDialog.
 
     @Override
     public void onArchiveEdited(String oldFullName, String oldShortName, String shortArchiveName, String fullArchiveName) {
-        archiveRepository.updateArchive(oldFullName, oldShortName, shortArchiveName, fullArchiveName);
+        archiveRepository.updateArchive(oldFullName, oldShortName, fullArchiveName, shortArchiveName);
         updateDropdown();
         showMessage(fullArchiveName + " updated");
     }
