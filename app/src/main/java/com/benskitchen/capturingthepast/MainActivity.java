@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements AddArchiveDialog.
 
         cameraButton.setOnClickListener(v -> dispatchTakePictureIntent());
         filesButton.setOnClickListener(v -> openGallery());
-        infoButton.setOnClickListener(v -> InfoDialog.show(this, settingsRepository.getRecentFiles(), captureCounter.getCaptureCount()));
+        infoButton.setOnClickListener(v -> InfoDialog.show(this, settingsRepository.getRecentFiles()));
     }
 
     private void showMessage(String str) {
