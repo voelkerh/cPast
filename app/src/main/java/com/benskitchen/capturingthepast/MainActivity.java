@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.provider.MediaStore;
 
+import android.util.Log;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -54,20 +55,16 @@ public class MainActivity extends AppCompatActivity implements AddArchiveDialog.
     // UI variables
     Spinner dropdown;
     EditText tvRecordReference;
-
-    // Variables needed for file names and metadata
-    private String strNote = "";
-    char[] alphabet = new char[26];
+    TextView noteText;
 
     // Domain logic dependencies
     private CaptureCounter captureCounter;
     private ArchiveRepository archiveRepository;
-
+    ImageRepository imageRepository;
     private ImageRepository.TempImageInfo tempImageInfo;
 
-    // Data layer dependencies
+    // Data layer dependencies - to be dissolved
     SettingsRepository settingsRepository;
-    ImageRepository imageRepository;
     LogWriter logWriter;
 
     @Override
@@ -89,11 +86,6 @@ public class MainActivity extends AppCompatActivity implements AddArchiveDialog.
     }
 
     private void initState(){
-        int i = 0;
-        for (char letter = 'a'; letter <= 'z'; letter++) {
-            alphabet[i++] = letter;
-        }
-
         logWriter = new LogWriter(this);
         captureCounter = new CaptureCounter(settingsRepository);
     }
@@ -102,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements AddArchiveDialog.
         dropdown = findViewById(R.id.spinnerArchive);
         tvRecordReference = findViewById(R.id.editTextRef);
         TextView recordReferenceText = findViewById(R.id.textViewRef);
-        TextView noteText = findViewById(R.id.textViewNote);
+        noteText = findViewById(R.id.textViewNote);
         TextView recordReferenceLabel = findViewById(R.id.refLabel);
         Button cameraButton = findViewById(R.id.cameraButton);
         Button filesButton = findViewById(R.id.filesButton);
@@ -134,7 +126,6 @@ public class MainActivity extends AppCompatActivity implements AddArchiveDialog.
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                strNote = noteText.getText().toString();
             }
 
             @Override
@@ -161,13 +152,7 @@ public class MainActivity extends AppCompatActivity implements AddArchiveDialog.
         btnClearRef.setOnClickListener(v -> tvRecordReference.setText(""));
 
         cameraButton.setOnClickListener(v -> dispatchTakePictureIntent());
-        filesButton.setOnClickListener(v -> {
-            try {
-                openGallery();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
+        filesButton.setOnClickListener(v -> openGallery());
         infoButton.setOnClickListener(v -> showInfo());
     }
 
@@ -191,8 +176,12 @@ public class MainActivity extends AppCompatActivity implements AddArchiveDialog.
     }
 
     private void openGallery() {
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("content://media/internal/images/media"));
-        startActivity(intent);
+        try {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("content://media/internal/images/media"));
+            startActivity(intent);
+        } catch (Exception e) {
+            Log.e("MainActivity", "Failed to open gallery", e);
+        }
     }
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
@@ -214,29 +203,31 @@ public class MainActivity extends AppCompatActivity implements AddArchiveDialog.
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             if (tempImageInfo == null) {
-                Toast.makeText(this, "Error: No image path available", LENGTH_SHORT).show();
+                showMessage("Error: No image path available");
                 return;
             }
             String imageFileName = createFileName();
             try {
-                boolean saved = imageRepository.saveImageToGallery(imageFileName, strNote, tempImageInfo.path, "CapturingThePast");
+                String note = noteText.getText().toString();
+                boolean saved = imageRepository.saveImageToGallery(imageFileName, note, tempImageInfo.path, "CapturingThePast");
                 if (saved) {
                     settingsRepository.addFileToRecentFiles(imageFileName);
                     triggerWriteLog(imageFileName);
                     tempImageInfo = null;
-                    Toast.makeText(this, "Image saved", LENGTH_SHORT).show();
+                    showMessage("Image saved to " + imageFileName);
                 }
             } catch (IOException e) {
-                Toast.makeText(this, "Error: Image not saved.\n" + e.getMessage(), LENGTH_SHORT).show();
+                showMessage("Error: Image not saved.\n" + e.getMessage());
             }
         }
     }
 
     public void triggerWriteLog(String imageFileName) {
         String humanisedTime = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM).format(LocalDateTime.now());
-        String strCSV = "\"" + humanisedTime + "\"" + imageFileName + "\",\"" + strNote + "\"";
+        String note = noteText.getText().toString();
+        String strCSV = "\"" + humanisedTime + "\"" + imageFileName + "\",\"" + note + "\"";
         String message = logWriter.writePublicLog(strCSV);
-        if (!message.isEmpty()) Toast.makeText(this, message, LENGTH_SHORT).show();
+        if (!message.isEmpty()) showMessage(message);
     }
 
     @Override
