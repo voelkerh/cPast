@@ -7,6 +7,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -28,7 +29,7 @@ public class JsonRecentCapturesStore implements RecentCapturesStore {
         if (!file.exists()) return Collections.emptyList();
 
         try(FileInputStream fis = new FileInputStream(file);
-            InputStreamReader isr = new InputStreamReader(fis, "UTF-8");
+            InputStreamReader isr = new InputStreamReader(fis, StandardCharsets.UTF_8);
             BufferedReader br = new BufferedReader(isr)) {
 
             StringBuilder sb = new StringBuilder();
@@ -64,7 +65,7 @@ public class JsonRecentCapturesStore implements RecentCapturesStore {
 
     @Override
     public boolean saveRecentFiles(List<String> files) {
-        if (files == null || files.size() == 0) return false;
+        if (files == null || files.isEmpty()) return false;
 
         try {
             JSONObject json = new JSONObject();

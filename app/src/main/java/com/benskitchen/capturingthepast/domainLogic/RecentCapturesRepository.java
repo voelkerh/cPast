@@ -2,7 +2,6 @@ package com.benskitchen.capturingthepast.domainLogic;
 
 import com.benskitchen.capturingthepast.persistence.RecentCapturesStore;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class RecentCapturesRepository {
