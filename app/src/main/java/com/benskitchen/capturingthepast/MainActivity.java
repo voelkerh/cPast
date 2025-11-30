@@ -4,7 +4,6 @@ import static android.widget.Toast.LENGTH_SHORT;
 
 import android.content.Intent;
 
-import android.graphics.Color;
 import android.net.Uri;
 import android.provider.MediaStore;
 
@@ -43,7 +42,6 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
-import java.util.List;
 
 import capturingthepast.R;
 import com.benskitchen.capturingthepast.ui.InfoDialog;
@@ -258,10 +256,7 @@ public class MainActivity extends AppCompatActivity implements AddArchiveDialog.
         String selectedArchive = item.toString();
         if (selectedArchive.equals("Select Archive")) return "";
         String[] parts = selectedArchive.split("-");
-        if (parts.length >= 2) {
-            return parts[1].trim();
-        } else {
-            return selectedArchive.trim();
-        }
+        if (parts.length >= 2) return parts[1].trim();
+        else return selectedArchive.trim();
     }
 }
