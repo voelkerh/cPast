@@ -9,7 +9,6 @@ import android.net.Uri;
 import android.provider.MediaStore;
 
 import android.util.Log;
-import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -46,14 +45,16 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.List;
 
-import info.androidhive.fontawesome.FontDrawable;
 import capturingthepast.R;
 
 public class MainActivity extends AppCompatActivity implements AddArchiveDialog.Listener, EditArchiveDialog.Listener {
 
-    // UI variables
+    private static final int REQUEST_IMAGE_CAPTURE = 1;
+    private static final String TAG = "MainActivity";
+
+    // UI components
     private Spinner dropdown;
-    private EditText tvRecordReference;
+    private EditText recordReferenceEditText;
     private TextView noteText;
 
     // Domain logic dependencies
@@ -91,17 +92,15 @@ public class MainActivity extends AppCompatActivity implements AddArchiveDialog.
 
     private void initViews(){
         dropdown = findViewById(R.id.spinnerArchive);
-        tvRecordReference = findViewById(R.id.editTextRef);
+        recordReferenceEditText = findViewById(R.id.editTextRef);
         TextView recordReferenceText = findViewById(R.id.textViewRef);
         noteText = findViewById(R.id.textViewNote);
         TextView recordReferenceLabel = findViewById(R.id.refLabel);
         Button cameraButton = findViewById(R.id.cameraButton);
         Button filesButton = findViewById(R.id.filesButton);
         Button infoButton = findViewById(R.id.infoButton);
-        Button btnClearNote = findViewById(R.id.buttonClearNote);
-        Button btnClearRef = findViewById(R.id.buttonClearRef);
-        FontDrawable drawable = new FontDrawable(this, R.string.fa_paper_plane_solid, true, false);
-        drawable.setTextColor(ContextCompat.getColor(this, android.R.color.black));
+        Button clearNoteButton = findViewById(R.id.buttonClearNote);
+        Button clearReferenceButton = findViewById(R.id.buttonClearRef);
 
         ArrayAdapter<String> dataAdapter =
                 new ArchiveAdapter(this, archiveRepository.readArchives(), this, this);
@@ -118,10 +117,10 @@ public class MainActivity extends AppCompatActivity implements AddArchiveDialog.
             }
         });
 
-        btnClearNote.setOnClickListener(v -> noteText.setText(""));
+        clearNoteButton.setOnClickListener(v -> noteText.setText(""));
 
         recordReferenceLabel.setOnClickListener(view -> showDataEntryToolTips(getString(R.string.ref_description_heading), getString(R.string.ref_description_text)));
-        tvRecordReference.addTextChangedListener(new TextWatcher() {
+        recordReferenceEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
@@ -135,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements AddArchiveDialog.
             public void afterTextChanged(Editable s) {
             }
         });
-        btnClearRef.setOnClickListener(v -> tvRecordReference.setText(""));
+        clearReferenceButton.setOnClickListener(v -> recordReferenceEditText.setText(""));
 
         cameraButton.setOnClickListener(v -> dispatchTakePictureIntent());
         filesButton.setOnClickListener(v -> openGallery());
@@ -166,11 +165,9 @@ public class MainActivity extends AppCompatActivity implements AddArchiveDialog.
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("content://media/internal/images/media"));
             startActivity(intent);
         } catch (Exception e) {
-            Log.e("MainActivity", "Failed to open gallery", e);
+            Log.e(TAG, "Failed to open gallery", e);
         }
     }
-
-    static final int REQUEST_IMAGE_CAPTURE = 1;
 
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -211,8 +208,8 @@ public class MainActivity extends AppCompatActivity implements AddArchiveDialog.
     public void triggerWriteLog(String imageFileName) {
         String humanisedTime = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM).format(LocalDateTime.now());
         String note = noteText.getText().toString();
-        String strCSV = "\"" + humanisedTime + "\"" + imageFileName + "\",\"" + note + "\"";
-        String message = logWriter.writePublicLog(strCSV);
+        String csvRow = "\"" + humanisedTime + "\"" + imageFileName + "\",\"" + note + "\"";
+        String message = logWriter.writePublicLog(csvRow);
         if (!message.isEmpty()) showMessage(message);
     }
 
@@ -251,8 +248,8 @@ public class MainActivity extends AppCompatActivity implements AddArchiveDialog.
             sb.append(recentFiles.get(i)).append("\n");
         }
         String folderStatus = getString(R.string.latest_captures_message) + sb; //"Latest captures (Most recent first):\n" + sb;
-        String strMessage = "<p>" + captureCounter.getCaptureCount() + "</p> ";
-        showFolderStatusMessage(strMessage, folderStatus);
+        String message = "<p>" + captureCounter.getCaptureCount() + "</p> ";
+        showFolderStatusMessage(message, folderStatus);
     }
 
     private void showFolderStatusMessage(String strMessage, String strReport) {
@@ -318,12 +315,12 @@ public class MainActivity extends AppCompatActivity implements AddArchiveDialog.
     }
 
     private String createFileName() {
-        String strArchiveShort = getShortArchiveName();
-        String strRecordReference = tvRecordReference.getText().toString();
-        String strCounter = "0"; // placeholder, replace when image counter is implemented
-        String catRef = RecordReferenceCreator.createRecordReference(strArchiveShort, strRecordReference, strCounter);
-        if (catRef.length() > 128) showMessage("Your catalogue reference is very long and may result in unusable file names.");
-        return catRef;
+        String shortArchiveName = getShortArchiveName();
+        String recordReference = recordReferenceEditText.getText().toString();
+        String counter = "0"; // placeholder, replace when image counter is implemented
+        String fileName = RecordReferenceCreator.createRecordReference(shortArchiveName, recordReference, counter);
+        if (fileName.length() > 128) showMessage("Your catalogue reference is very long and may result in unusable file names.");
+        return fileName;
     }
 
     private String getShortArchiveName(){
