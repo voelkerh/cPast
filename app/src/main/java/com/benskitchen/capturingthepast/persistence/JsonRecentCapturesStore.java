@@ -26,7 +26,7 @@ public class JsonRecentCapturesStore implements RecentCapturesStore {
     @Override
     public List<String> loadRecentFiles() {
         File file = new File(context.getFilesDir(), FILE_NAME);
-        if (!file.exists()) return Collections.emptyList();
+        if (!file.exists()) return new ArrayList<>();
 
         try(FileInputStream fis = new FileInputStream(file);
             InputStreamReader isr = new InputStreamReader(fis, StandardCharsets.UTF_8);
@@ -42,7 +42,7 @@ public class JsonRecentCapturesStore implements RecentCapturesStore {
 
         } catch (IOException e){
             Log.e(TAG, "Error while loading recent files: " + e.getMessage());
-            return Collections.emptyList();
+            return new ArrayList<>();
         }
     }
 
