@@ -11,21 +11,32 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import static java.util.Collections.emptyMap;
-
 public class JsonArchiveStore implements ArchiveStore {
 
-    private final Context context;
+    private static final String TAG = "JsonArchiveStore";
     private static final String FILE = "archives.json";
+    private final Context context;
+    private final InputStream inputStream;
+    private final OutputStream outputStream;
 
     public JsonArchiveStore(Context context){
         this.context = context;
+        this.inputStream = null;
+        this.outputStream = null;
+    }
+
+    public JsonArchiveStore(InputStream inputStream, OutputStream outputStream){
+        this.context = null;
+        this.inputStream = inputStream;
+        this.outputStream = outputStream;
     }
 
     @Override
     public Map<String, String> loadArchives() {
-        try (FileInputStream fis = context.openFileInput(FILE);
-             InputStreamReader isr = new InputStreamReader(fis, StandardCharsets.UTF_8);
+        InputStream stream = getInputStream();
+        if (stream == null) return new HashMap<>();
+
+        try (InputStreamReader isr = new InputStreamReader(stream, StandardCharsets.UTF_8);
              BufferedReader reader = new BufferedReader(isr)) {
 
             StringBuilder sb = new StringBuilder();
@@ -34,15 +45,35 @@ public class JsonArchiveStore implements ArchiveStore {
                 sb.append(line);
             }
 
-            if(sb.length() == 0) return emptyMap();
+            if(sb.length() == 0) return new HashMap<>();
             return jsonToMap(sb.toString());
 
         } catch (FileNotFoundException e){
-            return emptyMap();
-        } catch (IOException e) {
-            Log.e("JsonArchiveStore", e.getMessage());
             return new HashMap<>();
+        } catch (IOException e) {
+            Log.e(TAG, e.getMessage());
+            return new HashMap<>();
+        } finally {
+            if (context != null) {
+                try {
+                    stream.close();
+                } catch (IOException e) {
+                    Log.e(TAG, "Error closing input stream", e);
+                }
+            }
         }
+    }
+
+    private InputStream getInputStream(){
+        if(inputStream != null) return this.inputStream;
+        if(context != null) {
+            try {
+                return context.openFileInput(FILE);
+            } catch (FileNotFoundException e) {
+                return null;
+            }
+        }
+        return null;
     }
 
     private Map<String, String> jsonToMap(String jsonString) {
@@ -58,7 +89,7 @@ public class JsonArchiveStore implements ArchiveStore {
                 }
             }
         } catch (JSONException e) {
-            Log.e("JsonArchiveStore", e.toString());
+            Log.e(TAG, e.toString());
             return new HashMap<>();
         }
         return archives;
@@ -67,14 +98,38 @@ public class JsonArchiveStore implements ArchiveStore {
     @Override
     public boolean saveArchives(Map<String, String> archives) {
         if (archives == null) return false;
-        try(FileOutputStream fos = context.openFileOutput(FILE, Context.MODE_PRIVATE)){
+        OutputStream stream = getOutputStream();
+        if (stream == null) return false;
+
+        try {
             String json = mapToJson(archives);
-            fos.write(json.getBytes(StandardCharsets.UTF_8));
+            stream.write(json.getBytes(StandardCharsets.UTF_8));
+            stream.flush();
             return true;
         } catch (IOException e) {
-            Log.e("JsonArchiveStore", e.toString());
+            Log.e(TAG, e.toString());
+            return false;
+        } finally {
+            if (context != null) {
+                try {
+                    stream.close();
+                } catch (IOException e) {
+                    Log.e(TAG, "Error closing output stream", e);
+                }
+            }
         }
-        return false;
+    }
+
+    private OutputStream getOutputStream(){
+        if (outputStream != null) return this.outputStream;
+        if (context != null) {
+            try {
+                return context.openFileOutput(FILE, Context.MODE_PRIVATE);
+            } catch (FileNotFoundException e) {
+                return null;
+            }
+        }
+        return null;
     }
 
     private String mapToJson(Map<String, String> map) {
