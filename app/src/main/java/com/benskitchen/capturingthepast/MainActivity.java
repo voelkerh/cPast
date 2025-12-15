@@ -33,9 +33,6 @@ import com.benskitchen.capturingthepast.ui.ArchiveAdapter;
 import com.benskitchen.capturingthepast.ui.EditArchiveDialog;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
 
 import capturingthepast.R;
 import com.benskitchen.capturingthepast.ui.InfoDialog;
@@ -54,10 +51,8 @@ public class MainActivity extends AppCompatActivity implements AddArchiveDialog.
     private ArchiveRepository archiveRepository;
     private ImageRepository imageRepository;
     private ImageRepository.TempImageInfo tempImageInfo;
+    private NoteRepository noteRepository;
     private RecentCapturesRepository recentCapturesRepository;
-
-    // Data layer dependencies - to be dissolved
-    private LogWriter logWriter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +60,6 @@ public class MainActivity extends AppCompatActivity implements AddArchiveDialog.
         setContentView(R.layout.activity_main);
 
         initAppRepos();
-        initState();
         initViews();
     }
 
@@ -76,10 +70,8 @@ public class MainActivity extends AppCompatActivity implements AddArchiveDialog.
         recentCapturesRepository = new RecentCapturesRepository(recentCapturesStore);
         ImageStore mediaImageStore = new MediaImageStore(getApplicationContext());
         imageRepository = new ImageRepository(getApplicationContext(), mediaImageStore);
-    }
-
-    private void initState(){
-        logWriter = new LogWriter(this);
+        NoteStore csvNoteStore = new CsvNoteStore(this);
+        noteRepository = new NoteRepository(csvNoteStore);
     }
 
     private void initViews(){
@@ -187,22 +179,15 @@ public class MainActivity extends AppCompatActivity implements AddArchiveDialog.
                 boolean saved = imageRepository.saveImageToGallery(imageFileName, note, tempImageInfo.path, "CapturingThePast");
                 if (saved) {
                     recentCapturesRepository.addFileToRecentCaptures(imageFileName);
-                    triggerWriteLog(imageFileName);
+                    boolean noteSaved = noteRepository.saveNote(imageFileName, noteText.getText().toString());
                     tempImageInfo = null;
-                    showMessage("Image saved to " + imageFileName);
+                    if(noteSaved) showMessage("Image saved to " + imageFileName + "\n Note saved to output file.");
+                    else showMessage("Image saved to " + imageFileName + "\nNote could not be saved");
                 }
             } catch (IOException e) {
                 showMessage("Error: Image not saved.\n" + e.getMessage());
             }
         }
-    }
-
-    public void triggerWriteLog(String imageFileName) {
-        String humanisedTime = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM).format(LocalDateTime.now());
-        String note = noteText.getText().toString();
-        String csvRow = "\"" + humanisedTime + "\"" + imageFileName + "\",\"" + note + "\"";
-        String message = logWriter.writePublicLog(csvRow);
-        if (!message.isEmpty()) showMessage(message);
     }
 
     @Override
