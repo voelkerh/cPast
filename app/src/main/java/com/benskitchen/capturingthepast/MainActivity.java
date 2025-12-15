@@ -175,7 +175,8 @@ public class MainActivity extends AppCompatActivity implements AddArchiveDialog.
             }
             String imageFileName = createFileName();
             try {
-                String note = noteText.getText().toString();
+                String note = noteText.getText().toString().trim();
+                noteText.setText("");
                 boolean saved = imageRepository.saveImageToGallery(imageFileName, note, tempImageInfo.path, "CapturingThePast");
                 if (saved) {
                     recentCapturesRepository.addFileToRecentCaptures(imageFileName);
