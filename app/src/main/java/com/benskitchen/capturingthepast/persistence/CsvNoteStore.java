@@ -90,7 +90,14 @@ public class CsvNoteStore implements NoteStore {
     }
 
     private String formatEntry(String time, String imageName, String note) {
-        return "\"" + time + "\",\"" + imageName + "\",\"" + note + "\"\n";
+        time = time.replace('\u202F', ' ');
+        return csvField(time) + "," + csvField(imageName) + "," + csvField(note) + "\n";
+    }
+
+    private static String csvField(String s) {
+        if (s == null) return "\"\"";
+        s = s.replace("\"", "\"\"");
+        return "\"" + s + "\"";
     }
 
     private boolean appendToFile(Uri uri, String note) {
