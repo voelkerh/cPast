@@ -18,8 +18,7 @@ public class NoteRepository {
         if (imageFileName == null || note == null || note.isEmpty()) return false;
 
         String humanisedTime = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM).format(LocalDateTime.now());
-        String csvRow = "\"" + humanisedTime + "\"" + imageFileName + "\",\"" + note + "\"";
 
-        return noteStore.saveNote(csvRow);
+        return noteStore.saveNote(humanisedTime, imageFileName, note);
     }
 }

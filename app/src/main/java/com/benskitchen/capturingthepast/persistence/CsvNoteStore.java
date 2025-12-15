@@ -17,7 +17,7 @@ public class CsvNoteStore implements NoteStore {
     private static final String TAG = "CsvNoteStore";
     private static final String LOG_FILENAME = "cPast_Notes.csv";
     private static final String LOG_DIR = Environment.DIRECTORY_DOCUMENTS + "/CapturingThePast/";
-    private static final String CSV_HEADER = "\"Date\", \"Cat Ref\", \"Filename\", \"Note\"\n";
+    private static final String CSV_HEADER = "\"Date\", \"Filename\", \"Note\"\n";
 
     private final Context context;
 
@@ -26,13 +26,18 @@ public class CsvNoteStore implements NoteStore {
     }
 
     @Override
-    public boolean saveNote(String note) {
+    public boolean saveNote(String time, String imageName, String note) {
         if (note == null || note.isEmpty()) return false;
 
         Uri uri = findExistingFile();
         if (uri == null) uri = createNewFile();
 
-        return appendToFile(uri, note);
+        String csvEntry = formatEntry(time, imageName, note);
+        return appendToFile(uri, csvEntry);
+    }
+
+    private String formatEntry(String time, String imageName, String note) {
+        return "\"" + time + "\",\"" + imageName + "\",\"" + note + "\"\n";
     }
 
     private Uri findExistingFile() {

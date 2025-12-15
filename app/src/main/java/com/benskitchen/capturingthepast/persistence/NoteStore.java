@@ -1,5 +1,5 @@
 package com.benskitchen.capturingthepast.persistence;
 
 public interface NoteStore {
-    boolean saveNote(String note);
+    boolean saveNote(String time, String imageName, String note);
 }
