@@ -90,32 +90,14 @@ public class CsvNoteStore implements NoteStore {
 
     private boolean appendToFile(Uri uri, String note) {
         if(uri == null) return false;
+        if (!note.endsWith("\n")) note = note + "\n";
 
-        try {
-            String existingContent = readFileContent(uri);
-            String newContent = existingContent + "\n" + note;
-
-            try (OutputStream os = context.getContentResolver().openOutputStream(uri, "rwt")) {
-                os.write(newContent.getBytes(StandardCharsets.UTF_8));
-                return true;
-            }
+        try (OutputStream os = context.getContentResolver().openOutputStream(uri, "wa")) {
+            os.write(note.getBytes(StandardCharsets.UTF_8));
+            return true;
         } catch (IOException e) {
             Log.e(TAG, "Failed to append to file: " + e.getMessage());
             return false;
-        }
-    }
-
-    private String readFileContent(Uri uri) throws IOException {
-        try (InputStream is = context.getContentResolver().openInputStream(uri);
-             BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
-
-            StringBuilder content = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                content.append(line).append("\n");
-            }
-
-            return content.toString();
         }
     }
 
