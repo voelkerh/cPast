@@ -181,7 +181,7 @@ public class MainActivity extends AppCompatActivity implements AddArchiveDialog.
                     recentCapturesRepository.addFileToRecentCaptures(imageFileName);
                     boolean noteSaved = noteRepository.saveNote(imageFileName, noteText.getText().toString());
                     tempImageInfo = null;
-                    if(noteSaved) showMessage("Image saved to " + imageFileName + "\n Note saved to output file.");
+                    if(noteSaved) showMessage("Note and image saved\n " + imageFileName);
                     else showMessage("Image saved to " + imageFileName + "\nNote could not be saved");
                 }
             } catch (IOException e) {
