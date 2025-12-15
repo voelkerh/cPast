@@ -36,10 +36,6 @@ public class CsvNoteStore implements NoteStore {
         return appendToFile(uri, csvEntry);
     }
 
-    private String formatEntry(String time, String imageName, String note) {
-        return "\"" + time + "\",\"" + imageName + "\",\"" + note + "\"\n";
-    }
-
     private Uri findExistingFile() {
         Uri contentUri = MediaStore.Files.getContentUri("external");
         String selection = MediaStore.MediaColumns.RELATIVE_PATH + "=?";
@@ -93,9 +89,12 @@ public class CsvNoteStore implements NoteStore {
         }
     }
 
+    private String formatEntry(String time, String imageName, String note) {
+        return "\"" + time + "\",\"" + imageName + "\",\"" + note + "\"\n";
+    }
+
     private boolean appendToFile(Uri uri, String note) {
         if(uri == null) return false;
-        if (!note.endsWith("\n")) note = note + "\n";
 
         try (OutputStream os = context.getContentResolver().openOutputStream(uri, "wa")) {
             os.write(note.getBytes(StandardCharsets.UTF_8));
