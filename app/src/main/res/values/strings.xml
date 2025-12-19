@@ -20,7 +20,7 @@
     <string name="show_the_information_panel">Show the information panel</string>
     <string name="repository">Current archive:</string>
     <string name="catalogue_reference">Reference of archival record:</string>
-    <string name="reference_preview">Reference number preview </string>
+    <string name="reference_preview">Reference number preview</string>
     <string name="description_optional_saved_in_the_capture_log">Description</string>
     <string name="detached_or_torn_parts_special_cases">Special Cases</string>
     <string name="sub_item_e_g_pages_of_the_document">Sub Item</string>
@@ -43,17 +43,27 @@
     <string name="full_archive_name_hint">E.g. Bundesarchiv</string>
     <string name="short_archive_name_label"><![CDATA[Short form <br />(as you would cite this archive)]]></string>
     <string name="short_archive_name_hint">E.g. BArch</string>
-    <string name="ref_description_text"><![CDATA[Enter the catalogue number to associate photos with a specific document in a catalogue.<br /> <br />When working with sequences such as entire collections it may be convenient to use the optional controls below to increment the final levels of the catalogue reference. E.g. books or letters. Non sequential entry of reference numbers may be easier using a single text field. <br /> <br />The character limit for filenames is accumulated across all input fields though is not restricted as you may have a valid reason for creating filenames that do not work in common file systems. Instead a warning message is shown when 128 characters is exceeded, this would be a really long file name. Actual limits vary for according to file system, but 255 characters is likely to work.]]></string>
+    <string name="ref_description_text">
+        <![CDATA[Enter the catalogue number to associate photos with a specific document in a catalogue.<br /> <br />When working with sequences such as entire collections it may be convenient to use the optional controls below to increment the final levels of the catalogue reference. E.g. books or letters. Non sequential entry of reference numbers may be easier using a single text field. <br /> <br />The character limit for filenames is accumulated across all input fields though is not restricted as you may have a valid reason for creating filenames that do not work in common file systems. Instead a warning message is shown when 128 characters is exceeded, this would be a really long file name. Actual limits vary for according to file system, but 255 characters is likely to work.]]></string>
     <string name="ref_description_heading">Catalogue Reference</string>
-    <string name="item_descript_text">Optional - The incrementing and decrementing buttons are intended to help with sequential capture tasks such as working through a series or collection. The input is restricted to numeric values</string>
+    <string name="item_descript_text">Optional - The incrementing and decrementing buttons are intended to help with
+        sequential capture tasks such as working through a series or collection. The input is restricted to numeric
+        values
+    </string>
     <string name="item_description_heading">Item Level</string>
-    <string name="sub_item_description_text"><![CDATA[Optional - The sub item is intended to  be used to associate photos with specific parts of an item. E.g. The individual pages of books or letters. \n\n<br /><br />File names include a time stamp to enable unlimited numbers of photos for any reference number. <br /><br />The sub item level is often used by projects to provide an additional level of catalogue description beyond the institutions catalogue numbering.]]></string>
+    <string name="sub_item_description_text">
+        <![CDATA[Optional - The sub item is intended to  be used to associate photos with specific parts of an item. E.g. The individual pages of books or letters. \n\n<br /><br />File names include a time stamp to enable unlimited numbers of photos for any reference number. <br /><br />The sub item level is often used by projects to provide an additional level of catalogue description beyond the institutions catalogue numbering.]]></string>
     <string name="sub_item_description_heading">Sub Item Level</string>
-    <string name="detached_description_text">Optional - this control is intended to be reserved for special cases such as detached or torn document parts. The control adds a distinguishable identifier to the end of the reference using a combination of letters and numbers.</string>
+    <string name="detached_description_text">Optional - this control is intended to be reserved for special cases such
+        as detached or torn document parts. The control adds a distinguishable identifier to the end of the reference
+        using a combination of letters and numbers.
+    </string>
     <string name="detached_description_heading">Special Cases</string>
-    <string name="notes_information"><![CDATA[<h3>Your Notes</h3><p>Your notes are saved with the photo names in CapturingThePast.csv in the Documents folder on your phone.</p>]]> </string>
+    <string name="notes_information">
+        <![CDATA[<h3>Your Notes</h3><p>Your notes are saved with the photo names in CapturingThePast.csv in the Documents folder on your phone.</p>]]> </string>
     <string name="info_heading"><![CDATA[<h2>Information</h2>]]></string>
-    <string name="further_information"><![CDATA[<h3>Further Information</h3><a href=https://capturingthepast.benskitchen.com/ >Software Documentation</a><br /><p><a href=https://blogs.sussex.ac.uk/capturing-the-past/about-us/ >Research Project</a></p><p>Capturing the Past is a <a href=https://www.sussex.ac.uk/research/centres/sussex-humanities-lab/ >Sussex Humanities Lab</a> project funded by the <a href=https://ahrc.ukri.org/ >Arts and Humanities Research Council</a>.</p>]]></string>
+    <string name="further_information">
+        <![CDATA[<h3>Further Information</h3><a href=https://capturingthepast.benskitchen.com/ >Software Documentation</a><br /><p><a href=https://blogs.sussex.ac.uk/capturing-the-past/about-us/ >Research Project</a></p><p>Capturing the Past is a <a href=https://www.sussex.ac.uk/research/centres/sussex-humanities-lab/ >Sussex Humanities Lab</a> project funded by the <a href=https://ahrc.ukri.org/ >Arts and Humanities Research Council</a>.</p>]]></string>
     <string name="counter_label"><![CDATA[<h3>Photos captured</h3>]]></string>
     <string name="close">Close</string>
     <string name="ok">OK</string>
@@ -63,5 +73,8 @@
     <string name="photo_counter_label">Photos taken for this archival record: 0</string>
     <string name="notes_label">Notes for next photo:</string>
     <string name="input_warning_heading"><![CDATA[<H2>Wrong Input Format</H2>]]></string>
-    <string name="input_warning_text"><![CDATA[<p>1. Make sure to chose an archive.<br /><br />2. Separate hierarchy levels in archival records with \'_\' or \'/\'. Other separators cannot be used.<p>]]></string>
+    <string name="input_warning_text">
+        <![CDATA[<p>1. Make sure to chose an archive.<br /><br />2. Separate hierarchy levels in archival records with \'_\' or \'/\'. Other separators cannot be used.<p>]]></string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
