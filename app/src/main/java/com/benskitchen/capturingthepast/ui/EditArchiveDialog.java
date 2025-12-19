@@ -38,6 +38,7 @@ public class EditArchiveDialog {
         EditText fullArchiveNameInput = new EditText(context);
         fullArchiveNameInput.setText(fullArchiveName);
 
+
         TextView shortArchiveNameLabel = new TextView(context);
         shortArchiveNameLabel.setText(Html.fromHtml(context.getString(R.string.short_archive_name_label), Html.FROM_HTML_MODE_LEGACY));
         shortArchiveNameLabel.setTextSize(18f);
@@ -68,7 +69,8 @@ public class EditArchiveDialog {
 
         builder.setNegativeButton("Delete", (dialog, which) -> {
             if (listener != null) {
-                listener.onArchiveDeleted(fullArchiveName);
+                ConfirmDeleteArchiveDialog.show(context, listener, fullArchiveName);
+                dialog.cancel();
             }
         });
 
@@ -86,7 +88,7 @@ public class EditArchiveDialog {
         Button neutralButton = alertDialog.getButton(AlertDialog.BUTTON_NEUTRAL);
         Button negativeButton = alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE);
         positiveButton.setTextColor(ContextCompat.getColor(context, R.color.colorPrimaryDark));
-        negativeButton.setTextColor(Color.RED);
+        negativeButton.setTextColor(ContextCompat.getColor(context, R.color.design_default_color_error));
         neutralButton.setTextColor(Color.GRAY);
     }
 }
