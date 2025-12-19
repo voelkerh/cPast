@@ -1,63 +1,248 @@
 package com.benskitchen.capturingthepast.ui;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.Html;
+import android.text.TextWatcher;
+import android.text.method.LinkMovementMethod;
+import android.util.Log;
+import android.widget.*;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import capturingthepast.R;
+import com.benskitchen.capturingthepast.domainLogic.*;
+import com.benskitchen.capturingthepast.persistence.*;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link HomeFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class HomeFragment extends Fragment {
+import java.io.IOException;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+import static android.widget.Toast.LENGTH_SHORT;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+public class HomeFragment extends Fragment implements AddArchiveDialog.Listener, EditArchiveDialog.Listener {
 
-    public HomeFragment() {
-        // Required empty public constructor
-    }
+    private static final int REQUEST_IMAGE_CAPTURE = 1;
+    private static final String TAG = "com.benskitchen.capturingthepast.HomeFragment";
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment HomeFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static HomeFragment newInstance(String param1, String param2) {
-        HomeFragment fragment = new HomeFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    // UI components
+    private Spinner dropdown;
+    private EditText recordReferenceEditText;
+    private TextView noteText;
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
+    // Domain logic dependencies
+    private ArchiveRepository archiveRepository;
+    private ImageRepository imageRepository;
+    private ImageRepository.TempImageInfo tempImageInfo;
+    private NoteRepository noteRepository;
+    private RecentCapturesRepository recentCapturesRepository;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_home, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initAppRepos();
+        initViews(view);
+    }
+
+    private void initAppRepos(){
+        ArchiveStore jsonArchiveStore = new JsonArchiveStore(requireContext().getApplicationContext());
+        archiveRepository = new ArchiveRepository(jsonArchiveStore);
+        RecentCapturesStore recentCapturesStore = new JsonRecentCapturesStore(requireContext().getApplicationContext());
+        recentCapturesRepository = new RecentCapturesRepository(recentCapturesStore);
+        ImageStore mediaImageStore = new MediaImageStore(requireContext().getApplicationContext());
+        imageRepository = new ImageRepository(requireContext().getApplicationContext(), mediaImageStore);
+        NoteStore csvNoteStore = new CsvNoteStore(requireContext());
+        noteRepository = new NoteRepository(csvNoteStore);
+    }
+
+    private void initViews(View view){
+        dropdown = view.findViewById(R.id.spinnerArchive);
+        recordReferenceEditText = view.findViewById(R.id.editTextRef);
+        TextView recordReferenceText = view.findViewById(R.id.textViewRef);
+        noteText = view.findViewById(R.id.textViewNote);
+        TextView recordReferenceLabel = view.findViewById(R.id.refLabel);
+        Button cameraButton = view.findViewById(R.id.cameraButton);
+        Button filesButton = view.findViewById(R.id.filesButton);
+        Button infoButton = view.findViewById(R.id.infoButton);
+        Button clearNoteButton = view.findViewById(R.id.buttonClearNote);
+        Button clearReferenceButton = view.findViewById(R.id.buttonClearRef);
+
+        ArrayAdapter<String> dataAdapter =
+                new ArchiveAdapter(requireContext(), archiveRepository.readArchives(), this, this);
+        dropdown.setAdapter(dataAdapter);
+
+        dropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                recordReferenceText.setText(createFileName());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
+        clearNoteButton.setOnClickListener(v -> noteText.setText(""));
+
+        recordReferenceLabel.setOnClickListener(v -> showDataEntryToolTips(getString(R.string.ref_description_heading), getString(R.string.ref_description_text)));
+        recordReferenceEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                recordReferenceText.setText(createFileName());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+        clearReferenceButton.setOnClickListener(v -> recordReferenceEditText.setText(""));
+
+        cameraButton.setOnClickListener(v -> dispatchTakePictureIntent());
+        filesButton.setOnClickListener(v -> openGallery());
+        infoButton.setOnClickListener(v -> InfoDialog.show(requireContext(), recentCapturesRepository.getRecentCaptures()));
+    }
+
+    private void showMessage(String str) {
+        Toast.makeText(requireContext(), str, LENGTH_SHORT).show();
+    }
+
+    private void showDataEntryToolTips(String heading, String message) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(requireContext());
+        TextView tvTip = new TextView(requireContext());
+        String tipText = "<h4>" + heading + "</h4><p>" + message + "</p>";
+        tvTip.setMovementMethod(LinkMovementMethod.getInstance());
+        tvTip.setText(Html.fromHtml(tipText, Html.FROM_HTML_MODE_LEGACY));
+        LinearLayout lpset = new LinearLayout(requireContext());
+        lpset.setOrientation(LinearLayout.VERTICAL);
+        lpset.addView(tvTip);
+        lpset.setPadding(50, 80, 50, 10);
+        alertDialog.setView(lpset);
+        alertDialog.setNegativeButton("Close", (dialog, which) -> dialog.cancel());
+        alertDialog.show();
+    }
+
+    private void openGallery() {
+        try {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("content://media/internal/images/media"));
+            startActivity(intent);
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to open gallery", e);
+        }
+    }
+
+    private void dispatchTakePictureIntent() {
+        if (!isInputValid()) {
+            ValidationDialog.show(requireContext());
+            return;
+        }
+
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(requireContext().getPackageManager()) != null) {
+            tempImageInfo = imageRepository.getTempImageInfo();
+            if (tempImageInfo != null) {
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, tempImageInfo.uri);
+                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+            }
+            else showMessage("No photoURI to capture image");
+        }
+    }
+
+    private boolean isInputValid() {
+        Object item = dropdown.getSelectedItem();
+        if (item == null || item.toString().equals("Select Archive")) return false;
+        String recordReference = recordReferenceEditText.getText().toString();
+        return !recordReference.contains("-") &&
+                !recordReference.contains(";") &&
+                !recordReference.contains("\\") &&
+                !recordReference.contains(",");
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
+            if (tempImageInfo == null) {
+                showMessage("Error: No image path available");
+                return;
+            }
+            String imageFileName = createFileName();
+            try {
+                String note = noteText.getText().toString().trim();
+                noteText.setText("");
+                boolean saved = imageRepository.saveImageToGallery(imageFileName, note, tempImageInfo.path, "CapturingThePast");
+                if (saved) {
+                    recentCapturesRepository.addFileToRecentCaptures(imageFileName);
+                    boolean noteSaved = noteRepository.saveNote(imageFileName, note);
+                    tempImageInfo = null;
+                    if(noteSaved) showMessage("Note and image saved\n " + imageFileName);
+                    else showMessage("Image saved to " + imageFileName + "\nNote could not be saved");
+                }
+            } catch (IOException e) {
+                showMessage("Error: Image not saved.\n" + e.getMessage());
+            }
+        }
+    }
+
+    @Override
+    public void onArchiveCreated(String fullName, String shortName) {
+        boolean created = archiveRepository.createArchive(fullName, shortName);
+        if (created) showMessage(fullName + " created");
+        else showMessage(fullName + " could not be created");
+        updateDropdown();
+    }
+
+    @Override
+    public void onArchiveEdited(String oldFullName, String oldShortName, String shortArchiveName, String fullArchiveName) {
+        archiveRepository.updateArchive(oldFullName, oldShortName, fullArchiveName, shortArchiveName);
+        updateDropdown();
+        showMessage(fullArchiveName + " updated");
+    }
+
+    @Override
+    public void onArchiveDeleted(String fullArchiveName) {
+        archiveRepository.deleteArchive(fullArchiveName);
+        updateDropdown();
+        showMessage(getString(R.string.deleted)+ " - " + fullArchiveName);
+    }
+
+    private void updateDropdown(){
+        ArrayAdapter<String> dataAdapter =
+                new ArchiveAdapter(requireContext(), archiveRepository.readArchives(), this, this);
+        dropdown.setAdapter(dataAdapter);
+    }
+
+    private String createFileName() {
+        String shortArchiveName = getShortArchiveName();
+        String recordReference = recordReferenceEditText.getText().toString();
+        String counter = "0"; // placeholder, replace when image counter is implemented
+        String fileName = RecordReferenceCreator.createRecordReference(shortArchiveName, recordReference, counter);
+        if (fileName.length() > 128) showMessage("Your catalogue reference is very long and may result in unusable file names.");
+        return fileName;
+    }
+
+    private String getShortArchiveName(){
+        Object item = dropdown.getSelectedItem();
+        if (item == null) return "";
+
+        String selectedArchive = item.toString();
+        if (selectedArchive.equals("Select Archive")) return "";
+        String[] parts = selectedArchive.split("-");
+        if (parts.length >= 2) return parts[1].trim();
+        else return selectedArchive.trim();
     }
 }
