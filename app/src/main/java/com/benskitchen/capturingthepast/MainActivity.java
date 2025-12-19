@@ -28,14 +28,11 @@ import android.widget.Toast;
 
 import com.benskitchen.capturingthepast.domainLogic.*;
 import com.benskitchen.capturingthepast.persistence.*;
-import com.benskitchen.capturingthepast.ui.AddArchiveDialog;
-import com.benskitchen.capturingthepast.ui.ArchiveAdapter;
-import com.benskitchen.capturingthepast.ui.EditArchiveDialog;
+import com.benskitchen.capturingthepast.ui.*;
 
 import java.io.IOException;
 
 import capturingthepast.R;
-import com.benskitchen.capturingthepast.ui.InfoDialog;
 
 public class MainActivity extends AppCompatActivity implements AddArchiveDialog.Listener, EditArchiveDialog.Listener {
 
@@ -154,6 +151,11 @@ public class MainActivity extends AppCompatActivity implements AddArchiveDialog.
     }
 
     private void dispatchTakePictureIntent() {
+        if (!isInputValid()) {
+            ValidationDialog.show(this);
+            return;
+        }
+
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             tempImageInfo = imageRepository.getTempImageInfo();
@@ -163,6 +165,16 @@ public class MainActivity extends AppCompatActivity implements AddArchiveDialog.
             }
             else showMessage("No photoURI to capture image");
         }
+    }
+
+    private boolean isInputValid() {
+        Object item = dropdown.getSelectedItem();
+        if (item == null || item.toString().equals("Select Archive")) return false;
+        String recordReference = recordReferenceEditText.getText().toString();
+        return !recordReference.contains("-") &&
+                !recordReference.contains(";") &&
+                !recordReference.contains("\\") &&
+                !recordReference.contains(",");
     }
 
     @Override

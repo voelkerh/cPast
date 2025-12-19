@@ -53,10 +53,13 @@
     <string name="info_heading"><![CDATA[<h2>Information</h2>]]></string>
     <string name="further_information"><![CDATA[<h3>Further Information</h3><a href=https://capturingthepast.benskitchen.com/ >Software Documentation</a><br /><p><a href=https://blogs.sussex.ac.uk/capturing-the-past/about-us/ >Research Project</a></p><p>Capturing the Past is a <a href=https://www.sussex.ac.uk/research/centres/sussex-humanities-lab/ >Sussex Humanities Lab</a> project funded by the <a href=https://ahrc.ukri.org/ >Arts and Humanities Research Council</a>.</p>]]></string>
     <string name="counter_label"><![CDATA[<h3>Photos captured</h3>]]></string>
-    <string name="close">close</string>
+    <string name="close">Close</string>
+    <string name="ok">OK</string>
     <string name="reset">Reset</string>
     <string name="deleted">Deleted</string>
     <string name="next_photo_name">File name for the next photo:</string>
     <string name="photo_counter_label">Photos taken for this archival record: 0</string>
     <string name="notes_label">Notes for next photo:</string>
+    <string name="input_warning_heading"><![CDATA[<H2>Wrong Input Format</H2>]]></string>
+    <string name="input_warning_text"><![CDATA[<p>1. Make sure to chose an archive.<br /><br />2. Separate hierarchy levels in archival records with \'_\' or \'/\'. Other separators cannot be used.<p>]]></string>
 </resources>
