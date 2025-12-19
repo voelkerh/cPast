@@ -81,6 +81,16 @@
     <string name="about_fragment_text"><![CDATA[<p>This app is a revised version of Capturing the Past. This app was originally developed in a <a href=https://blogs.sussex.ac.uk/capturing-the-past/about-us/ >research project</a> at the <a href=https://www.sussex.ac.uk/research/centres/sussex-humanities-lab/ >Sussex Humanities Lab</a>. The original project was funded by the <a href=https://ahrc.ukri.org/ >Arts and Humanities Research Council</a>.</p>]]></string>
     <string name="help_fragment_title">Help</string>
     <string name="help_fragment_text"><![CDATA[<a href=https://capturingthepast.benskitchen.com/ >Software Documentation</a>]]></string>
+    <string name="help_fragment_acc_title_1">Select Archive</string>
+    <string name="help_fragment_acc_body_1">Help content</string>
+    <string name="help_fragment_acc_title_2">Add record information</string>
+    <string name="help_fragment_acc_body_2">Help content</string>
+    <string name="help_fragment_acc_title_3">Define folder structure via record name</string>
+    <string name="help_fragment_acc_body_3">Help content</string>
+    <string name="help_fragment_acc_title_4">Take notes and photos</string>
+    <string name="help_fragment_acc_body_4">Help content</string>
+    <string name="help_fragment_acc_title_5">Use notes and photos on your computer</string>
+    <string name="help_fragment_acc_body_5">Help content</string>
     <string name="open_nav">Open Navigation Drawer</string>
     <string name="close_nav">Close Navigation Drawer</string>
     <string name="diamond">◆</string>
