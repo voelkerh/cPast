@@ -78,7 +78,6 @@ public class HomeFragment extends Fragment implements AddArchiveDialog.Listener,
         noteText = view.findViewById(R.id.textViewNote);
         TextView recordReferenceLabel = view.findViewById(R.id.refLabel);
         Button cameraButton = view.findViewById(R.id.cameraButton);
-        Button filesButton = view.findViewById(R.id.filesButton);
         Button infoButton = view.findViewById(R.id.infoButton);
         Button clearNoteButton = view.findViewById(R.id.buttonClearNote);
         Button clearReferenceButton = view.findViewById(R.id.buttonClearRef);
@@ -118,7 +117,6 @@ public class HomeFragment extends Fragment implements AddArchiveDialog.Listener,
         clearReferenceButton.setOnClickListener(v -> recordReferenceEditText.setText(""));
 
         cameraButton.setOnClickListener(v -> dispatchTakePictureIntent());
-        filesButton.setOnClickListener(v -> openGallery());
         infoButton.setOnClickListener(v -> InfoDialog.show(requireContext(), recentCapturesRepository.getRecentCaptures()));
     }
 
@@ -139,15 +137,6 @@ public class HomeFragment extends Fragment implements AddArchiveDialog.Listener,
         alertDialog.setView(lpset);
         alertDialog.setNegativeButton("Close", (dialog, which) -> dialog.cancel());
         alertDialog.show();
-    }
-
-    private void openGallery() {
-        try {
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("content://media/internal/images/media"));
-            startActivity(intent);
-        } catch (Exception e) {
-            Log.e(TAG, "Failed to open gallery", e);
-        }
     }
 
     private void dispatchTakePictureIntent() {
