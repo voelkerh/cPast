@@ -15,8 +15,9 @@
             </item>
             <item>
 
-                    <bitmap android:gravity="center_vertical|right"
-                    android:src="@android:drawable/arrow_down_float"/> // you can place your dropdown image
+                    <bitmap
+                        android:gravity="center_vertical|right"
+                        android:src="@drawable/arrow_down"/>
 
             </item>
 
