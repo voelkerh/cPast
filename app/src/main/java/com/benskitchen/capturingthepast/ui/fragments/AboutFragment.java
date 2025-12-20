@@ -1,4 +1,4 @@
-package com.benskitchen.capturingthepast.ui;
+package com.benskitchen.capturingthepast.ui.fragments;
 
 import android.os.Bundle;
 import android.widget.TextView;
