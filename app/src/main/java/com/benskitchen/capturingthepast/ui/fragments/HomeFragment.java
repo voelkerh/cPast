@@ -1,4 +1,4 @@
-package com.benskitchen.capturingthepast.ui;
+package com.benskitchen.capturingthepast.ui.fragments;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -19,6 +19,11 @@ import android.view.ViewGroup;
 import capturingthepast.R;
 import com.benskitchen.capturingthepast.domainLogic.*;
 import com.benskitchen.capturingthepast.persistence.*;
+import com.benskitchen.capturingthepast.ui.ui_elements.ArchiveAdapter;
+import com.benskitchen.capturingthepast.ui.dialogs.ValidationDialog;
+import com.benskitchen.capturingthepast.ui.dialogs.AddArchiveDialog;
+import com.benskitchen.capturingthepast.ui.dialogs.EditArchiveDialog;
+import com.benskitchen.capturingthepast.ui.dialogs.InfoDialog;
 
 import java.io.IOException;
 

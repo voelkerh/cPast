@@ -9,7 +9,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import capturingthepast.R;
-import com.benskitchen.capturingthepast.ui.*;
+import com.benskitchen.capturingthepast.ui.fragments.*;
 import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity  implements NavigationView.OnNavigationItemSelectedListener {
