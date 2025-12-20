@@ -1,4 +1,4 @@
-package com.benskitchen.capturingthepast.ui;
+package com.benskitchen.capturingthepast.ui.ui_elements;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,6 +11,8 @@ import android.widget.TextView;
 import java.util.List;
 
 import capturingthepast.R;
+import com.benskitchen.capturingthepast.ui.dialogs.AddArchiveDialog;
+import com.benskitchen.capturingthepast.ui.dialogs.EditArchiveDialog;
 
 public class ArchiveAdapter extends ArrayAdapter<String> {
 

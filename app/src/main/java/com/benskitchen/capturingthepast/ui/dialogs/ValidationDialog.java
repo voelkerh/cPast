@@ -1,4 +1,4 @@
-package com.benskitchen.capturingthepast.ui;
+package com.benskitchen.capturingthepast.ui.dialogs;
 
 import android.content.Context;
 import android.text.Html;

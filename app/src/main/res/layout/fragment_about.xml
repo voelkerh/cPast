@@ -1,0 +1,46 @@
+<LinearLayout
+     xmlns:android="http://schemas.android.com/apk/res/android"
+     xmlns:tools="http://schemas.android.com/tools"
+     android:layout_width="match_parent"
+     android:layout_height="match_parent"
+     android:orientation="vertical"
+     tools:context="com.benskitchen.capturingthepast.ui.fragments.AboutFragment">
+
+    <TextView
+        android:id="@+id/about_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/about_fragment_title"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textColor="@color/colorPrimaryDark"
+        android:textStyle="bold"
+        android:padding="32dp"
+    />
+
+    <TextView
+            android:id="@+id/about_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="32dp"
+            android:hyphenationFrequency="full"
+            android:text="@string/about_fragment_text"
+            android:textColor="@color/fontColorSecondary"
+            android:textSize="20sp"
+            android:justificationMode="inter_word"
+            android:lineSpacingMultiplier="1.3"
+    />
+
+    <TextView
+            android:id="@+id/about_diamond"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="32dp"
+            android:text="@string/diamond"
+            android:textColor="@color/colorPrimaryDark"
+            android:textAlignment="center"
+            android:textSize="20sp"
+            android:lineSpacingMultiplier="1.3"
+    />
+
+</LinearLayout>
