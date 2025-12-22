@@ -345,42 +345,10 @@
                 android:textColor="@color/colorPrimaryDark"
                 android:textSize="56sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/filesButton"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-        <Button
-                android:id="@+id/filesButton"
-                android:layout_width="72dp"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:background="#0000"
-                android:contentDescription="@string/open_the_file_manager"
-
-                android:fontFamily="@font/fasolid"
-                android:text="@string/fa_files"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="56sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/infoButton"
-                app:layout_constraintStart_toEndOf="@id/cameraButton"
-                app:layout_constraintTop_toTopOf="parent" />
-
-        <Button
-                android:id="@+id/infoButton"
-                android:layout_width="72dp"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:background="#0000"
-                android:contentDescription="@string/show_the_information_panel"
-                android:fontFamily="@font/fasolid"
-                android:text="@string/fa_info"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="56sp"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/filesButton"
                 app:layout_constraintTop_toTopOf="parent" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

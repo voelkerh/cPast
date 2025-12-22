@@ -14,7 +14,9 @@ public class NoteRepository {
         this.noteStore = noteStore;
     }
 
-    public boolean saveNote(String imageFileName, String note) {
+    public boolean saveNote(Capture capture) {
+        String imageFileName = capture.getFileName();
+        String note = capture.getNote();
         if (imageFileName == null || note == null || note.isEmpty()) return false;
 
         String humanisedTime = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM).format(LocalDateTime.now());

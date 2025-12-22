@@ -2,28 +2,25 @@ package com.benskitchen.capturingthepast.ui.fragments;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
-import android.util.Log;
-import android.widget.*;
-import androidx.appcompat.app.AlertDialog;
-import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.*;
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
 import capturingthepast.R;
 import com.benskitchen.capturingthepast.domainLogic.*;
 import com.benskitchen.capturingthepast.persistence.*;
-import com.benskitchen.capturingthepast.ui.ui_elements.ArchiveAdapter;
-import com.benskitchen.capturingthepast.ui.dialogs.ValidationDialog;
 import com.benskitchen.capturingthepast.ui.dialogs.AddArchiveDialog;
 import com.benskitchen.capturingthepast.ui.dialogs.EditArchiveDialog;
-import com.benskitchen.capturingthepast.ui.dialogs.InfoDialog;
+import com.benskitchen.capturingthepast.ui.dialogs.ValidationDialog;
+import com.benskitchen.capturingthepast.ui.ui_elements.ArchiveAdapter;
 
 import java.io.IOException;
 
@@ -44,7 +41,11 @@ public class HomeFragment extends Fragment implements AddArchiveDialog.Listener,
     private ImageRepository imageRepository;
     private ImageRepository.TempImageInfo tempImageInfo;
     private NoteRepository noteRepository;
-    private RecentCapturesRepository recentCapturesRepository;
+    private final RecentCapturesRepository recentCapturesRepository;
+
+    public HomeFragment(RecentCapturesRepository recentCapturesRepository) {
+        this.recentCapturesRepository = recentCapturesRepository;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -63,8 +64,6 @@ public class HomeFragment extends Fragment implements AddArchiveDialog.Listener,
     private void initAppRepos(){
         ArchiveStore jsonArchiveStore = new JsonArchiveStore(requireContext().getApplicationContext());
         archiveRepository = new ArchiveRepository(jsonArchiveStore);
-        RecentCapturesStore recentCapturesStore = new JsonRecentCapturesStore(requireContext().getApplicationContext());
-        recentCapturesRepository = new RecentCapturesRepository(recentCapturesStore);
         ImageStore mediaImageStore = new MediaImageStore(requireContext().getApplicationContext());
         imageRepository = new ImageRepository(requireContext().getApplicationContext(), mediaImageStore);
         NoteStore csvNoteStore = new CsvNoteStore(requireContext());
@@ -78,8 +77,6 @@ public class HomeFragment extends Fragment implements AddArchiveDialog.Listener,
         noteText = view.findViewById(R.id.textViewNote);
         TextView recordReferenceLabel = view.findViewById(R.id.refLabel);
         Button cameraButton = view.findViewById(R.id.cameraButton);
-        Button filesButton = view.findViewById(R.id.filesButton);
-        Button infoButton = view.findViewById(R.id.infoButton);
         Button clearNoteButton = view.findViewById(R.id.buttonClearNote);
         Button clearReferenceButton = view.findViewById(R.id.buttonClearRef);
 
@@ -118,8 +115,6 @@ public class HomeFragment extends Fragment implements AddArchiveDialog.Listener,
         clearReferenceButton.setOnClickListener(v -> recordReferenceEditText.setText(""));
 
         cameraButton.setOnClickListener(v -> dispatchTakePictureIntent());
-        filesButton.setOnClickListener(v -> openGallery());
-        infoButton.setOnClickListener(v -> InfoDialog.show(requireContext(), recentCapturesRepository.getRecentCaptures()));
     }
 
     private void showMessage(String str) {
@@ -139,15 +134,6 @@ public class HomeFragment extends Fragment implements AddArchiveDialog.Listener,
         alertDialog.setView(lpset);
         alertDialog.setNegativeButton("Close", (dialog, which) -> dialog.cancel());
         alertDialog.show();
-    }
-
-    private void openGallery() {
-        try {
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("content://media/internal/images/media"));
-            startActivity(intent);
-        } catch (Exception e) {
-            Log.e(TAG, "Failed to open gallery", e);
-        }
     }
 
     private void dispatchTakePictureIntent() {
@@ -191,8 +177,9 @@ public class HomeFragment extends Fragment implements AddArchiveDialog.Listener,
                 noteText.setText("");
                 boolean saved = imageRepository.saveImageToGallery(imageFileName, note, tempImageInfo.path, "CapturingThePast");
                 if (saved) {
-                    recentCapturesRepository.addFileToRecentCaptures(imageFileName);
-                    boolean noteSaved = noteRepository.saveNote(imageFileName, note);
+                    Capture capture = new Capture(imageFileName, note);
+                    recentCapturesRepository.addFileToRecentCaptures(capture);
+                    boolean noteSaved = noteRepository.saveNote(capture);
                     tempImageInfo = null;
                     if(noteSaved) showMessage("Note and image saved\n " + imageFileName);
                     else showMessage("Image saved to " + imageFileName + "\nNote could not be saved");

@@ -2,6 +2,7 @@ package com.benskitchen.capturingthepast.persistence;
 
 import android.content.Context;
 import android.util.Log;
+import com.benskitchen.capturingthepast.domainLogic.Capture;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -9,7 +10,6 @@ import org.json.JSONObject;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class JsonRecentCapturesStore implements RecentCapturesStore {
@@ -24,7 +24,7 @@ public class JsonRecentCapturesStore implements RecentCapturesStore {
     }
 
     @Override
-    public List<String> loadRecentFiles() {
+    public List<Capture> loadRecentFiles() {
         File file = new File(context.getFilesDir(), FILE_NAME);
         if (!file.exists()) return new ArrayList<>();
 
@@ -46,15 +46,19 @@ public class JsonRecentCapturesStore implements RecentCapturesStore {
         }
     }
 
-    private List<String> parseRecentFiles(String string) {
-        List<String> recentFiles = new ArrayList<>();
+    private List<Capture> parseRecentFiles(String string) {
+        List<Capture> recentFiles = new ArrayList<>();
         try {
             JSONObject json = new JSONObject(string);
             JSONArray filesArray = json.optJSONArray("recentFiles");
 
             if (filesArray !=null) {
                 for (int i = 0; i < filesArray.length(); i++) {
-                    recentFiles.add(filesArray.getString(i));
+                    JSONObject obj = filesArray.optJSONObject(i);
+                    if (obj == null) continue;
+
+                    Capture c = jsonToCapture(obj);
+                    if (c != null) recentFiles.add(c);
                 }
             }
         } catch (JSONException e) {
@@ -63,13 +67,26 @@ public class JsonRecentCapturesStore implements RecentCapturesStore {
         return recentFiles;
     }
 
+    private Capture jsonToCapture(JSONObject obj) {
+        String fileName = obj.optString("fileName", "");
+        if (fileName.isEmpty()) return null;
+
+        String note = obj.optString("note", "");
+        return new Capture(fileName, note);
+    }
+
     @Override
-    public boolean saveRecentFiles(List<String> files) {
+    public boolean saveRecentFiles(List<Capture> files) {
         if (files == null || files.isEmpty()) return false;
 
         try {
             JSONObject json = new JSONObject();
-            json.put("recentFiles", new JSONArray(files));
+            JSONArray arr = new JSONArray();
+            for (Capture c : files) {
+                if (c == null) continue;
+                arr.put(captureToJson(c));
+            }
+            json.put("recentFiles", arr);
 
             File file = new File(context.getFilesDir(), FILE_NAME);
             try (FileWriter writer = new FileWriter(file)) {
@@ -80,5 +97,13 @@ public class JsonRecentCapturesStore implements RecentCapturesStore {
             Log.e(TAG, "Error saving recent files: " + e.getMessage());
             return false;
         }
+    }
+
+    public JSONObject captureToJson(Capture capture) throws JSONException {
+        JSONObject object = new JSONObject();
+        object.put("fileName", capture.getFileName());
+        String note = capture.getNote();
+        object.put("note", note != null ? note : "");
+        return object;
     }
 }

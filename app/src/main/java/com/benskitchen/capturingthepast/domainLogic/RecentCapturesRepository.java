@@ -6,35 +6,31 @@ import java.util.List;
 
 public class RecentCapturesRepository {
 
-    private static final int MAx_RECENT_FILES = 5;
+    private static final int MAX_RECENT_FILES = 5;
 
     private final RecentCapturesStore recentCapturesStore;
-    private final List<String> recentCaptures;
+    private final List<Capture> recentCaptures;
 
     public RecentCapturesRepository(RecentCapturesStore recentCapturesStore) {
         this.recentCapturesStore = recentCapturesStore;
         this.recentCaptures = recentCapturesStore.loadRecentFiles();
     }
 
-    public boolean addFileToRecentCaptures(String fileName) {
+    public boolean addFileToRecentCaptures(Capture capture) {
+        String fileName = capture.getFileName();
         if (fileName == null || fileName.isEmpty()) return false;
 
-        recentCaptures.add(fileName);
+        recentCaptures.add(capture);
 
-        while (recentCaptures.size() > MAx_RECENT_FILES) {
+        while (recentCaptures.size() > MAX_RECENT_FILES) {
             recentCaptures.remove(0);
         }
 
         return recentCapturesStore.saveRecentFiles(recentCaptures);
     }
 
-    public List<String> getRecentCaptures() {
+    public List<Capture> getRecentCaptures() {
         return List.copyOf(recentCaptures);
-    }
-
-    public boolean clearRecentCaptures() {
-        recentCaptures.clear();
-        return recentCapturesStore.saveRecentFiles(recentCaptures);
     }
 
 }
