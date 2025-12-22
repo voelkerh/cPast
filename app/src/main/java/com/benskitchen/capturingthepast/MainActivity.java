@@ -9,12 +9,16 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import capturingthepast.R;
+import com.benskitchen.capturingthepast.domainLogic.RecentCapturesRepository;
+import com.benskitchen.capturingthepast.persistence.JsonRecentCapturesStore;
+import com.benskitchen.capturingthepast.persistence.RecentCapturesStore;
 import com.benskitchen.capturingthepast.ui.fragments.*;
 import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity  implements NavigationView.OnNavigationItemSelectedListener {
 
     private DrawerLayout drawerLayout;
+    private RecentCapturesRepository recentCapturesRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,8 +36,11 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
+        RecentCapturesStore recentCapturesStore = new JsonRecentCapturesStore(this.getApplicationContext());
+        this.recentCapturesRepository = new RecentCapturesRepository(recentCapturesStore);
+
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment(recentCapturesRepository)).commit();
             navigationView.setCheckedItem(R.id.nav_home);
         }
     }
@@ -44,13 +51,13 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case R.id.nav_home:
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment(recentCapturesRepository)).commit();
                 break;
             case R.id.nav_photos:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new PhotosFragment()).commit();
                 break;
             case R.id.nav_notes:
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new NotesFragment()).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new NotesFragment(recentCapturesRepository)).commit();
                 break;
             case R.id.nav_help:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HelpFragment()).commit();
@@ -59,7 +66,7 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new AboutFragment()).commit();
                 break;
             case R.id.nav_exit:
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment(recentCapturesRepository)).commit();
                 break;
 
         }
