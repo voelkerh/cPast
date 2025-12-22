@@ -5,7 +5,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
-        tools:context="com.benskitchen.capturingthepast.ui.fragments.HelpFragment">
+        tools:context="com.benskitchen.cPast.ui.fragments.HelpFragment">
 
     <LinearLayout
             android:layout_width="match_parent"
@@ -61,10 +61,11 @@
 
             <ImageView
                     android:id="@+id/acc_body_1_image"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_width="140dp"
+                    android:layout_height="140dp"
                     android:layout_marginTop="12dp"
                     android:layout_marginBottom="12dp"
+                    android:layout_gravity="center_horizontal"
                     android:adjustViewBounds="true"
                     android:scaleType="fitCenter"
                     android:src="@drawable/help_add_archive" />
@@ -121,10 +122,11 @@
 
             <ImageView
                     android:id="@+id/acc_body_2_image"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_width="140dp"
+                    android:layout_height="140dp"
                     android:layout_marginTop="12dp"
                     android:layout_marginBottom="12dp"
+                    android:layout_gravity="center_horizontal"
                     android:adjustViewBounds="true"
                     android:scaleType="fitCenter"
                     android:src="@drawable/help_add_recordinfo" />
@@ -239,10 +241,11 @@
 
             <ImageView
                     android:id="@+id/acc_body_4_image"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_width="140dp"
+                    android:layout_height="140dp"
                     android:layout_marginTop="12dp"
                     android:layout_marginBottom="12dp"
+                    android:layout_gravity="center_horizontal"
                     android:adjustViewBounds="true"
                     android:scaleType="fitCenter"
                     android:src="@drawable/help_notes_camera" />
@@ -298,10 +301,11 @@
 
             <ImageView
                     android:id="@+id/acc_body_5_image"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_width="140dp"
+                    android:layout_height="140dp"
                     android:layout_marginTop="12dp"
                     android:layout_marginBottom="12dp"
+                    android:layout_gravity="center_horizontal"
                     android:adjustViewBounds="true"
                     android:scaleType="fitCenter"
                     android:src="@drawable/help_datatransfer" />

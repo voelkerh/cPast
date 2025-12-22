@@ -6,7 +6,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/background"
-        tools:context="com.benskitchen.capturingthepast.ui.fragments.HomeFragment">
+        tools:context="com.benskitchen.cPast.ui.fragments.HomeFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/LayoutRepo"
@@ -59,7 +59,6 @@
                     android:layout_height="match_parent"
                     android:background="@drawable/spinner_bg"
                     android:ems="12"
-                    android:hint="@string/repo"
                     android:padding="10dp"
                     android:textColor="@color/fontColor"
                     android:textSize="24sp"
@@ -232,7 +231,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="#0000"
-                    android:contentDescription="@string/preview_of_the_current_catalogue_number"
                     android:ems="18"
                     android:gravity="center|center_horizontal"
                     android:text="@string/ref_text"
@@ -291,7 +289,6 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:background="@drawable/edittext_bg"
-                    android:contentDescription="@string/preview_of_the_current_catalogue_number"
                     android:ems="18"
                     android:hint="@string/note"
                     android:gravity="top"
@@ -339,31 +336,15 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:background="#0000"
-                android:contentDescription="@string/launch_the_camera"
                 android:fontFamily="@font/fasolid"
                 android:text="@string/fa_camera"
                 android:textColor="@color/colorPrimaryDark"
                 android:textSize="56sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/infoButton"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
-                android:id="@+id/infoButton"
-                android:layout_width="72dp"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:background="#0000"
-                android:contentDescription="@string/show_the_information_panel"
-                android:fontFamily="@font/fasolid"
-                android:text="@string/fa_info"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="56sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/cameraButton"
-                app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
