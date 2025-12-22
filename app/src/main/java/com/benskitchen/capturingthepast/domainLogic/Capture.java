@@ -2,8 +2,8 @@ package com.benskitchen.capturingthepast.domainLogic;
 
 public class Capture {
 
-    private String fileName;
-    private String note;
+    private final String fileName;
+    private final String note;
 
     public Capture(String fileName, String note) {
         this.fileName = fileName;

@@ -2,27 +2,25 @@ package com.benskitchen.capturingthepast.ui.fragments;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
-import android.util.Log;
-import android.widget.*;
-import androidx.appcompat.app.AlertDialog;
-import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.*;
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
 import capturingthepast.R;
 import com.benskitchen.capturingthepast.domainLogic.*;
 import com.benskitchen.capturingthepast.persistence.*;
-import com.benskitchen.capturingthepast.ui.ui_elements.ArchiveAdapter;
-import com.benskitchen.capturingthepast.ui.dialogs.ValidationDialog;
 import com.benskitchen.capturingthepast.ui.dialogs.AddArchiveDialog;
 import com.benskitchen.capturingthepast.ui.dialogs.EditArchiveDialog;
+import com.benskitchen.capturingthepast.ui.dialogs.ValidationDialog;
+import com.benskitchen.capturingthepast.ui.ui_elements.ArchiveAdapter;
 
 import java.io.IOException;
 
@@ -43,7 +41,7 @@ public class HomeFragment extends Fragment implements AddArchiveDialog.Listener,
     private ImageRepository imageRepository;
     private ImageRepository.TempImageInfo tempImageInfo;
     private NoteRepository noteRepository;
-    private RecentCapturesRepository recentCapturesRepository;
+    private final RecentCapturesRepository recentCapturesRepository;
 
     public HomeFragment(RecentCapturesRepository recentCapturesRepository) {
         this.recentCapturesRepository = recentCapturesRepository;
@@ -136,15 +134,6 @@ public class HomeFragment extends Fragment implements AddArchiveDialog.Listener,
         alertDialog.setView(lpset);
         alertDialog.setNegativeButton("Close", (dialog, which) -> dialog.cancel());
         alertDialog.show();
-    }
-
-    private void openGallery() {
-        try {
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("content://media/internal/images/media"));
-            startActivity(intent);
-        } catch (Exception e) {
-            Log.e(TAG, "Failed to open gallery", e);
-        }
     }
 
     private void dispatchTakePictureIntent() {
