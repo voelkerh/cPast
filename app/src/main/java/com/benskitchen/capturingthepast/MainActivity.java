@@ -1,6 +1,9 @@
 package com.benskitchen.capturingthepast;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -19,6 +22,8 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
 
     private DrawerLayout drawerLayout;
     private RecentCapturesRepository recentCapturesRepository;
+
+    public static final String TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,8 +50,6 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
         }
     }
 
-
-
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         switch (menuItem.getItemId()) {
@@ -54,7 +57,7 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment(recentCapturesRepository)).commit();
                 break;
             case R.id.nav_photos:
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new PhotosFragment()).commit();
+                openGallery();
                 break;
             case R.id.nav_notes:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new NotesFragment(recentCapturesRepository)).commit();
@@ -81,6 +84,15 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
             drawerLayout.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
+        }
+    }
+
+    private void openGallery() {
+        try {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("content://media/internal/images/media"));
+            startActivity(intent);
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to open gallery", e);
         }
     }
 }
