@@ -1,19 +1,19 @@
 package com.benskitchen.cPast.persistence;
 
 import android.content.Context;
-
-import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-
-import org.junit.*;
+import com.benskitchen.cPast.domainLogic.Archive;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 @RunWith(RobolectricTestRunner.class)
 public class JsonArchiveStoreTest {
@@ -27,18 +27,21 @@ public class JsonArchiveStoreTest {
 
     @Test
     public void loadArchives_success() {
-        String json = "{\"archives\":{\"key\":\"value\"}}";
+        String json =
+                "{\"archives\":[{\"fullName\":\"full\",\"shortName\":\"short\"}]}";
         InputStream is = new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8));
 
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         JsonArchiveStore store = new JsonArchiveStore(is, os);
 
-        Map<String, String> result = store.loadArchives();
+        List<Archive> result = store.loadArchives();
 
         assertNotNull(result);
         assertEquals(1, result.size());
-        assertEquals("value", result.get("key"));
+        assertEquals("full", result.get(0).getFullName());
+        assertEquals("short", result.get(0).getShortName());
     }
+
 
 
     @Test
@@ -51,7 +54,7 @@ public class JsonArchiveStoreTest {
         Object result = store.loadArchives();
 
         assertNotNull(result);
-        assertTrue(result instanceof Map);
+        assertTrue(result instanceof List);
     }
 
     @Test
@@ -64,7 +67,7 @@ public class JsonArchiveStoreTest {
         Object result = store.loadArchives();
 
         assertNotNull(result);
-        assertTrue(result instanceof Map);
+        assertTrue(result instanceof List);
     }
 
     @Test
@@ -77,14 +80,16 @@ public class JsonArchiveStoreTest {
         Object result = store.loadArchives();
 
         assertNotNull(result);
-        assertTrue(result instanceof Map);
+        assertTrue(result instanceof List);
     }
 
     @Test
     public void saveArchives_success() {
-        Map<String, String> archives = new HashMap<>();
-        archives.put("Bundesarchiv", "BArch");
-        archives.put("Universitätsarchiv", "UAHU");
+        List<Archive> archives = new ArrayList<>();
+        Archive barch = new Archive("Bundesarchiv", "Barch");
+        Archive uahu = new Archive("Universitätsarchiv", "UAHU");
+        archives.add(barch);
+        archives.add(uahu);
 
         InputStream mockStream = mock(InputStream.class);
         ByteArrayOutputStream os = new ByteArrayOutputStream();
@@ -97,23 +102,22 @@ public class JsonArchiveStoreTest {
 
     @Test
     public void saveArchives_handlesNull() {
-        Map<String, String> archives = null;
         InputStream mockStream = mock(InputStream.class);
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         JsonArchiveStore store = new JsonArchiveStore(mockStream, os);
 
-        boolean result = store.saveArchives(archives);
+        boolean result = store.saveArchives(null);
 
         assertFalse(result);
     }
 
     @Test
     public void saveArchives_handlesNullStream() {
-        Map<String, String> archives = new HashMap<>();
-        archives.put("Bundesarchiv", "BArch");
+        List<Archive> archives = new ArrayList<>();
+        Archive barch = new Archive("Bundesarchiv", "Barch");
+        archives.add(barch);
         InputStream mockStream = mock(InputStream.class);
-        ByteArrayOutputStream os = null;
-        JsonArchiveStore store = new JsonArchiveStore(mockStream, os);
+        JsonArchiveStore store = new JsonArchiveStore(mockStream, null);
 
         boolean result = store.saveArchives(archives);
 
@@ -122,8 +126,9 @@ public class JsonArchiveStoreTest {
 
     @Test
     public void saveArchives_handlesIOException() throws IOException {
-        Map<String, String> archives = new HashMap<>();
-        archives.put("Bundesarchiv", "BArch");
+        List<Archive> archives = new ArrayList<>();
+        Archive barch = new Archive("Bundesarchiv", "Barch");
+        archives.add(barch);
 
         OutputStream os = mock(OutputStream.class);
         doThrow(new IOException("Error writing")).when(os).write(any(byte[].class));

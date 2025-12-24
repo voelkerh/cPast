@@ -1,5 +1,7 @@
 package com.benskitchen.cPast.persistence;
 
+import com.benskitchen.cPast.domainLogic.Capture;
+
 public interface NoteStore {
-    boolean saveNote(String time, String imageName, String note);
+    boolean saveNote(Capture capture);
 }

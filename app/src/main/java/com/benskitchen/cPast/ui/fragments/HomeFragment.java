@@ -45,7 +45,6 @@ public class HomeFragment extends Fragment implements AddArchiveDialog.Listener,
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_home, container, false);
     }
 
@@ -74,7 +73,7 @@ public class HomeFragment extends Fragment implements AddArchiveDialog.Listener,
         Button clearNoteButton = view.findViewById(R.id.buttonClearNote);
         Button clearReferenceButton = view.findViewById(R.id.buttonClearRef);
 
-        ArrayAdapter<String> dataAdapter =
+        ArrayAdapter<Archive> dataAdapter =
                 new ArchiveAdapter(requireContext(), archiveRepository.readArchives(), this, this);
         dropdown.setAdapter(dataAdapter);
 
@@ -153,7 +152,7 @@ public class HomeFragment extends Fragment implements AddArchiveDialog.Listener,
                 noteText.setText("");
                 boolean saved = imageRepository.saveImageToGallery(imageFileName, note, tempImageInfo.path, "CapturingThePast");
                 if (saved) {
-                    Capture capture = new Capture(imageFileName, note);
+                    Capture capture = new Capture(getSelectedArchive(), imageFileName, note);
                     recentCapturesRepository.addFileToRecentCaptures(capture);
                     boolean noteSaved = noteRepository.saveNote(capture);
                     tempImageInfo = null;
@@ -189,13 +188,14 @@ public class HomeFragment extends Fragment implements AddArchiveDialog.Listener,
     }
 
     private void updateDropdown(){
-        ArrayAdapter<String> dataAdapter =
+        ArrayAdapter<Archive> dataAdapter =
                 new ArchiveAdapter(requireContext(), archiveRepository.readArchives(), this, this);
         dropdown.setAdapter(dataAdapter);
     }
 
     private String createFileName() {
-        String shortArchiveName = getShortArchiveName();
+        Archive archive = getSelectedArchive();
+        String shortArchiveName = archive == null ? "" : archive.getShortName();
         String recordReference = recordReferenceEditText.getText().toString();
         String counter = "0"; // placeholder, replace when image counter is implemented
         String fileName = RecordReferenceCreator.createRecordReference(shortArchiveName, recordReference, counter);
@@ -203,14 +203,7 @@ public class HomeFragment extends Fragment implements AddArchiveDialog.Listener,
         return fileName;
     }
 
-    private String getShortArchiveName(){
-        Object item = dropdown.getSelectedItem();
-        if (item == null) return "";
-
-        String selectedArchive = item.toString();
-        if (selectedArchive.equals("Select Archive")) return "";
-        String[] parts = selectedArchive.split("-");
-        if (parts.length >= 2) return parts[1].trim();
-        else return selectedArchive.trim();
+    private Archive getSelectedArchive(){
+        return (Archive) dropdown.getSelectedItem();
     }
 }

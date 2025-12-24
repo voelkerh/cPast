@@ -1,14 +1,20 @@
 package com.benskitchen.cPast.domainLogic;
 
+import java.time.LocalDateTime;
+
 public class Capture {
 
+    private final Archive archive;
     private final String fileName;
     private final String note;
+    private final LocalDateTime captureTime;
 
-    public Capture(String fileName, String note) {
+    public Capture(Archive archive, String fileName, String note) {
+        this.archive = archive;
         this.fileName = fileName;
         if (note == null || note.isEmpty()) this.note = "No note taken.";
         else this.note = note;
+        this.captureTime = LocalDateTime.now();
     }
 
     public String getFileName() {
@@ -17,6 +23,14 @@ public class Capture {
 
     public String getNote() {
         return note;
+    }
+
+    public LocalDateTime getCaptureTime() {
+        return captureTime;
+    }
+
+    public Archive getArchive() {
+        return archive;
     }
 
 }

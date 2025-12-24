@@ -2,6 +2,7 @@ package com.benskitchen.cPast.persistence;
 
 import android.content.Context;
 import android.util.Log;
+import com.benskitchen.cPast.domainLogic.Archive;
 import com.benskitchen.cPast.domainLogic.Capture;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -72,7 +73,18 @@ public class JsonRecentCapturesStore implements RecentCapturesStore {
         if (fileName.isEmpty()) return null;
 
         String note = obj.optString("note", "");
-        return new Capture(fileName, note);
+
+        Archive archive = null;
+        JSONObject archObj = obj.optJSONObject("archive");
+        if (archObj != null) {
+            String fullName = archObj.optString("fullName", "").trim();
+            String shortName = archObj.optString("shortName", "").trim();
+            if (!fullName.isEmpty() && !shortName.isEmpty()) {
+                archive = new Archive(fullName, shortName);
+            }
+        }
+
+        return new Capture(archive, fileName, note);
     }
 
     @Override
@@ -104,6 +116,15 @@ public class JsonRecentCapturesStore implements RecentCapturesStore {
         object.put("fileName", capture.getFileName());
         String note = capture.getNote();
         object.put("note", note != null ? note : "");
+
+        Archive archive = capture.getArchive();
+        if (archive != null) {
+            JSONObject arch = new JSONObject();
+            arch.put("fullName", archive.getFullName());
+            arch.put("shortName", archive.getShortName());
+            object.put("archive", arch);
+        }
+
         return object;
     }
 }
