@@ -3,6 +3,7 @@ package com.benskitchen.cPast.ui.fragments;
 import android.os.Bundle;
 import android.widget.TextView;
 import androidx.core.text.HtmlCompat;
+import android.text.method.LinkMovementMethod;
 import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +23,7 @@ public class AboutFragment extends Fragment {
                 getString(R.string.about_fragment_text),
                 HtmlCompat.FROM_HTML_MODE_COMPACT
         ));
+        aboutText.setMovementMethod(LinkMovementMethod.getInstance());
 
         return view;
     }
