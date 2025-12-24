@@ -9,8 +9,9 @@ import com.benskitchen.cPast.persistence.ImageStore;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
-public class ImageRepository {
+public class  ImageRepository {
     private static final String TAG = "ImageRepository";
     private static final String FILE_PROVIDER_AUTHORITY = "com.benskitchen.cPast.fileprovider";
     private final Context context;
@@ -32,7 +33,7 @@ public class ImageRepository {
      * @return a {@link TempImageInfo} object containing the file URI and path,
      *         or {@code null} if the temp file could not be created
      * @see TempImageInfo
-     * @see #saveImageToGallery(String, String, String, String)
+     * @see #saveImageToGallery(String, String, String)
      */
     public TempImageInfo getTempImageInfo() {
         File storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
@@ -46,8 +47,15 @@ public class ImageRepository {
         return null;
     }
 
-    public boolean saveImageToGallery(String imageFileName, String note, String currentPhotoPath, String folderPath) throws IOException {
-        return imageStore.saveImageToGallery(imageFileName, note, currentPhotoPath, folderPath);
+    public boolean saveImageToGallery(String imageFileName, String note, String currentPhotoPath) throws IOException {
+        String[] directoryNames = getNecessaryDirectories(imageFileName);
+        return imageStore.saveImageToGallery(imageFileName, note, currentPhotoPath, directoryNames);
+    }
+
+    public String[] getNecessaryDirectories(String imageFileName) {
+        String baseName = imageFileName.substring(0, imageFileName.length() - 4);
+        String[] parts = baseName.split("_+");
+        return Arrays.copyOf(parts, parts.length - 1);
     }
 
     public static class TempImageInfo {

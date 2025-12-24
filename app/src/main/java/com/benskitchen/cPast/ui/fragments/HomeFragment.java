@@ -150,7 +150,7 @@ public class HomeFragment extends Fragment implements AddArchiveDialog.Listener,
             try {
                 String note = noteText.getText().toString().trim();
                 noteText.setText("");
-                boolean saved = imageRepository.saveImageToGallery(imageFileName, note, tempImageInfo.path, "CapturingThePast");
+                boolean saved = imageRepository.saveImageToGallery(imageFileName, note, tempImageInfo.path);
                 if (saved) {
                     Capture capture = new Capture(getSelectedArchive(), imageFileName, note);
                     recentCapturesRepository.addFileToRecentCaptures(capture);
