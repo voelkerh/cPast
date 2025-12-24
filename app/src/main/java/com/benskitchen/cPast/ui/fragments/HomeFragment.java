@@ -5,14 +5,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.Editable;
-import android.text.Html;
 import android.text.TextWatcher;
-import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import capturingthepast.R;
 import com.benskitchen.cPast.domainLogic.*;
@@ -29,8 +26,6 @@ import static android.widget.Toast.LENGTH_SHORT;
 public class HomeFragment extends Fragment implements AddArchiveDialog.Listener, EditArchiveDialog.Listener {
 
     private static final int REQUEST_IMAGE_CAPTURE = 1;
-    private static final String TAG = "com.benskitchen.cPast.HomeFragment";
-
     // UI components
     private Spinner dropdown;
     private EditText recordReferenceEditText;
@@ -75,7 +70,6 @@ public class HomeFragment extends Fragment implements AddArchiveDialog.Listener,
         recordReferenceEditText = view.findViewById(R.id.editTextRef);
         TextView recordReferenceText = view.findViewById(R.id.textViewRef);
         noteText = view.findViewById(R.id.textViewNote);
-        TextView recordReferenceLabel = view.findViewById(R.id.refLabel);
         Button cameraButton = view.findViewById(R.id.cameraButton);
         Button clearNoteButton = view.findViewById(R.id.buttonClearNote);
         Button clearReferenceButton = view.findViewById(R.id.buttonClearRef);
@@ -120,21 +114,6 @@ public class HomeFragment extends Fragment implements AddArchiveDialog.Listener,
         Toast.makeText(requireContext(), str, LENGTH_SHORT).show();
     }
 
-    private void showDataEntryToolTips(String heading, String message) {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(requireContext());
-        TextView tvTip = new TextView(requireContext());
-        String tipText = "<h4>" + heading + "</h4><p>" + message + "</p>";
-        tvTip.setMovementMethod(LinkMovementMethod.getInstance());
-        tvTip.setText(Html.fromHtml(tipText, Html.FROM_HTML_MODE_LEGACY));
-        LinearLayout lpset = new LinearLayout(requireContext());
-        lpset.setOrientation(LinearLayout.VERTICAL);
-        lpset.addView(tvTip);
-        lpset.setPadding(50, 80, 50, 10);
-        alertDialog.setView(lpset);
-        alertDialog.setNegativeButton("Close", (dialog, which) -> dialog.cancel());
-        alertDialog.show();
-    }
-
     private void dispatchTakePictureIntent() {
         if (!isInputValid()) {
             ValidationDialog.show(requireContext());
@@ -156,10 +135,8 @@ public class HomeFragment extends Fragment implements AddArchiveDialog.Listener,
         Object item = dropdown.getSelectedItem();
         if (item == null || item.toString().equals("Select Archive")) return false;
         String recordReference = recordReferenceEditText.getText().toString();
-        return !recordReference.contains("-") &&
-                !recordReference.contains(";") &&
-                !recordReference.contains("\\") &&
-                !recordReference.contains(",");
+        if (recordReference.isEmpty()) return false;
+        return recordReference.matches("^(?=.*[A-Za-zäöüÄÖÜ])[A-Za-z0-9äöüÄÖÜ_/]+$");
     }
 
     @Override
