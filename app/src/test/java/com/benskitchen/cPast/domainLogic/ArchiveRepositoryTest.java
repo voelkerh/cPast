@@ -1,16 +1,16 @@
 package com.benskitchen.cPast.domainLogic;
 
 import com.benskitchen.cPast.persistence.ArchiveStore;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class ArchiveRepositoryTest {
 
@@ -20,7 +20,7 @@ class ArchiveRepositoryTest {
     @BeforeEach
     void setup() {
         mockStore = mock(ArchiveStore.class);
-        when(mockStore.loadArchives()).thenReturn(new HashMap<>());
+        when(mockStore.loadArchives()).thenReturn(new ArrayList<>());
         when(mockStore.saveArchives(any())).thenReturn(true);
         repository = new ArchiveRepository(mockStore);
     }
@@ -103,10 +103,10 @@ class ArchiveRepositoryTest {
 
     @Test
     void updateArchive_success() {
-        repository.createArchive("Bundesarchiv", "BArch");
+        repository.createArchive("Bundesarchiv", "BuArch");
         boolean result = repository.updateArchive("Bundesarchiv", "BuArch", "Bundesarchiv", "BArch");
         assertTrue(result);
-        assertTrue(repository.readArchives().get(0).contains("BArch"));
+        assertEquals("BArch", repository.readArchives().get(0).getShortName());
         assertEquals(1, repository.readArchives().size());
     }
 
@@ -115,8 +115,8 @@ class ArchiveRepositoryTest {
         repository.createArchive("Bundesarchiv", "BArch");
         boolean result = repository.updateArchive("Bundesarchiv", "BArch", "Landesarchiv", "BArch");
         assertTrue(result);
-        assertTrue(repository.readArchives().get(0).contains("BArch"));
-        assertFalse(repository.readArchives().get(0).contains("Bundesarchiv"));
+        assertEquals("BArch", repository.readArchives().get(0).getShortName());
+        assertNotEquals("Bundesarchiv", repository.readArchives().get(0).getFullName());
         assertEquals(1, repository.readArchives().size());
     }
 
@@ -140,16 +140,16 @@ class ArchiveRepositoryTest {
     @Test
     void readArchive_success() {
         repository.createArchive("Bundesarchiv", "BArch");
-        List<String> archives = repository.readArchives();
+        List<Archive> archives = repository.readArchives();
         assertEquals(1, archives.size());
-        assertTrue(archives.get(0).contains("BArch"));
+        assertEquals("BArch", archives.get(0).getShortName());
     }
 
     @Test
     void normalizeString_trimsWhitespace() {
         repository.createArchive("  Bundesarchiv  ", "  BArch  ");
-        List<String> archives = repository.readArchives();
-        assertEquals("Bundesarchiv - BArch", archives.get(0));
+        List<Archive> archives = repository.readArchives();
+        assertEquals("Bundesarchiv - BArch", archives.get(0).toString());
     }
 
 }

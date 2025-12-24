@@ -3,69 +3,97 @@ package com.benskitchen.cPast.domainLogic;
 import com.benskitchen.cPast.persistence.ArchiveStore;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 public class ArchiveRepository {
 
     private final ArchiveStore archiveStore;
-    private final Map<String, String> archives;
+    private final List<Archive> archives;
 
     public ArchiveRepository(ArchiveStore archiveStore) {
         this.archiveStore = archiveStore;
-        Map<String,String> loaded = archiveStore.loadArchives();
-        this.archives = new LinkedHashMap<>(loaded == null ? Map.of() : loaded);
+        List<Archive> loaded = archiveStore.loadArchives();
+        this.archives = new ArrayList<>(loaded == null ? List.of() : loaded);
     }
 
-    private boolean saveArchives(Map<String, String> archives) {
+    private boolean saveArchives(List<Archive> archives) {
         if (archives == null) return false;
         return archiveStore.saveArchives(archives);
     }
 
     public boolean createArchive(String fullName, String shortName){
         if (fullName == null || shortName == null) return false;
-        if (fullName.isEmpty() || shortName.isEmpty()) return false;
+
         String fullNameNorm = normalizeString(fullName);
         String shortNameNorm = normalizeString(shortName);
-        if (archives.containsKey(fullNameNorm) || archives.containsValue(shortNameNorm)) return false;
-        archives.put(fullNameNorm, shortNameNorm);
+        if (fullName.isEmpty() || shortName.isEmpty()) return false;
+
+        if (findByFullName(archives, fullNameNorm) != null) return false;
+        if (findByShortName(archives, shortNameNorm) != null) return false;
+
+        archives.add(new Archive(fullNameNorm, shortNameNorm));
         return saveArchives(archives);
     }
 
     public boolean deleteArchive(String fullName){
-        if (fullName == null || fullName.isEmpty() || !archives.containsKey(fullName)) return false;
-        archives.remove(fullName);
+        String fullNameNorm = normalizeString(fullName);
+        if (fullNameNorm.isEmpty()) return false;
+
+        Archive existing = findByFullName(archives, fullNameNorm);
+        if (existing == null) return false;
+
+        archives.remove(existing);
         return saveArchives(archives);
     }
 
-    public boolean updateArchive(String oldFullName, String oldShortName, String fullName, String shortName){
-        if (oldFullName == null || fullName == null || oldShortName == null || shortName == null || !archives.containsKey(oldFullName)) return false;
+    public boolean updateArchive(String oldFullName, String oldShortName, String fullName, String shortName) {
+        String oldFullNameNorm = normalizeString(oldFullName);
+        String oldShortNameNorm = normalizeString(oldShortName);
         String fullNameNorm = normalizeString(fullName);
         String shortNameNorm = normalizeString(shortName);
-        archives.put(fullNameNorm, shortNameNorm);
-        if(saveArchives(archives)){
-            if (!oldFullName.equals(fullNameNorm)) {
-                archives.remove(oldFullName);
-            }
-            return true;
-        } else {
-            archives.put(oldFullName, oldShortName);
-            archives.remove(fullNameNorm);
-            return false;
-        }
+
+        if (oldFullNameNorm.isEmpty() || oldShortNameNorm.isEmpty()) return false;
+        if (fullNameNorm.isEmpty() || shortNameNorm.isEmpty()) return false;
+
+        Archive existing = findByFullName(archives, oldFullNameNorm);
+        if (existing == null) return false;
+
+        Archive sameFull = findByFullName(archives, fullNameNorm);
+        if (sameFull != null && sameFull != existing) return false;
+
+        Archive sameShort = findByShortName(archives, shortNameNorm);
+        if (sameShort != null && sameShort != existing) return false;
+
+        existing.setFullName(fullNameNorm);
+        existing.setShortName(shortNameNorm);
+
+        return saveArchives(archives);
     }
 
-    public List<String> readArchives(){
-        List<String> output = new ArrayList<>();
-        for (Map.Entry<String, String> entry : archives.entrySet()) {
-            output.add(entry.getKey() + " - " + entry.getValue());
-        }
-        return output;
+
+    public List<Archive> readArchives(){
+        return archives;
     }
 
     private static String normalizeString(String s){
         return s == null ? "" : s.trim();
     }
+
+    private static Archive findByFullName(List<Archive> archives, String fullNameNorm) {
+        for (Archive archive : archives) {
+            if (archive == null) continue;
+            if (normalizeString(archive.getFullName()).equals(fullNameNorm)) return archive;
+        }
+        return null;
+    }
+
+    private static Archive findByShortName(List<Archive> archives, String shortNameNorm) {
+        for (Archive archive : archives) {
+            if (archive == null) continue;
+            if (normalizeString(archive.getShortName()).equals(shortNameNorm)) return archive;
+        }
+        return null;
+    }
+
 
 }

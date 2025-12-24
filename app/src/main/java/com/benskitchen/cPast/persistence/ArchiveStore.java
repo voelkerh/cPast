@@ -1,9 +1,11 @@
 package com.benskitchen.cPast.persistence;
 
-import java.util.Map;
+import com.benskitchen.cPast.domainLogic.Archive;
+
+import java.util.List;
 
 public interface ArchiveStore {
-    Map<String, String> loadArchives();
+    List<Archive> loadArchives();
 
-    boolean saveArchives(Map<String, String> archives);
+    boolean saveArchives(List<Archive> archives);
 }

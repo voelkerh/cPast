@@ -8,16 +8,22 @@ import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
+import com.benskitchen.cPast.domainLogic.Archive;
+import com.benskitchen.cPast.domainLogic.Capture;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class CsvNoteStore implements NoteStore {
 
     private static final String TAG = "CsvNoteStore";
     private static final String LOG_FILENAME = "cPast_Notes.csv";
     private static final String LOG_DIR = Environment.DIRECTORY_DOCUMENTS + "/CapturingThePast/";
-    private static final String CSV_HEADER = "\"Date\", \"Filename\", \"Note\"\n";
+    private static final String CSV_HEADER = "Date; Time; Archive; File; Note\n";
+    private static final String CSV_DELIMITER = ";";
 
     private final Context context;
 
@@ -26,13 +32,18 @@ public class CsvNoteStore implements NoteStore {
     }
 
     @Override
-    public boolean saveNote(String time, String imageName, String note) {
-        if (note == null || note.isEmpty()) return false;
+    public boolean saveNote(Capture capture) {
+        String note = capture.getNote();
+        String imageName = capture.getFileName();
+        LocalDateTime captureTime = capture.getCaptureTime();
+        Archive archive = capture.getArchive();
+
+        if (note == null || note.isEmpty() || imageName.isEmpty() || captureTime == null || archive == null) return false;
 
         Uri uri = findExistingFile();
         if (uri == null) uri = createNewFile();
 
-        String csvEntry = formatEntry(time, imageName, note);
+        String csvEntry = formatEntry(captureTime, archive, imageName, note);
         return appendToFile(uri, csvEntry);
     }
 
@@ -81,6 +92,7 @@ public class CsvNoteStore implements NoteStore {
         }
 
         try (OutputStream os = context.getContentResolver().openOutputStream(uri)) {
+            os.write(0xEF); os.write(0xBB); os.write(0xBF);
             os.write(CSV_HEADER.getBytes(StandardCharsets.UTF_8));
             return uri;
         } catch (IOException e) {
@@ -89,9 +101,11 @@ public class CsvNoteStore implements NoteStore {
         }
     }
 
-    private String formatEntry(String time, String imageName, String note) {
-        time = time.replace('\u202F', ' ');
-        return csvField(time) + "," + csvField(imageName) + "," + csvField(note) + "\n";
+    private String formatEntry(LocalDateTime dateTime, Archive archive, String imageName, String note) {
+        String date = dateTime.format(DateTimeFormatter.ISO_LOCAL_DATE);
+        String time = dateTime.format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+        String archiveName = archive.getFullName();
+        return csvField(date) + CSV_DELIMITER + csvField(time) + CSV_DELIMITER + csvField(archiveName) + CSV_DELIMITER + csvField(imageName) + CSV_DELIMITER + csvField(note) + "\n";
     }
 
     private static String csvField(String s) {

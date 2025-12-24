@@ -8,20 +8,21 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import capturingthepast.R;
+import com.benskitchen.cPast.domainLogic.Archive;
 import com.benskitchen.cPast.ui.dialogs.AddArchiveDialog;
 import com.benskitchen.cPast.ui.dialogs.EditArchiveDialog;
 
 import java.util.List;
 
-public class ArchiveAdapter extends ArrayAdapter<String> {
+public class ArchiveAdapter extends ArrayAdapter<Archive> {
 
     private final LayoutInflater inflater;
-    private final List<String> archives;
+    private final List<Archive> archives;
     private final Context context;
     private final AddArchiveDialog.Listener addArchiveListener;
     private final EditArchiveDialog.Listener editArchiveListener;
 
-    public ArchiveAdapter(Context context, List<String> archives, AddArchiveDialog.Listener listener, EditArchiveDialog.Listener editListener) {
+    public ArchiveAdapter(Context context, List<Archive> archives, AddArchiveDialog.Listener listener, EditArchiveDialog.Listener editListener) {
         super(context, 0, archives);
         this.context = context;
         this.archives = archives;
@@ -36,7 +37,7 @@ public class ArchiveAdapter extends ArrayAdapter<String> {
     }
 
     @Override
-    public String getItem(int position) {
+    public Archive getItem(int position) {
         if (position < archives.size()) {
             return archives.get(position);
         }
@@ -54,7 +55,7 @@ public class ArchiveAdapter extends ArrayAdapter<String> {
         TextView tv = row.findViewById(R.id.textArchiveSelected);
 
         if (position < archives.size()) {
-            tv.setText(archives.get(position));
+            tv.setText(archives.get(position).toString());
             tv.setTextColor(context.getResources().getColor(R.color.fontColor));
         } else {
             tv.setText("Add archive");
@@ -72,7 +73,7 @@ public class ArchiveAdapter extends ArrayAdapter<String> {
         ImageButton edit = row.findViewById(R.id.btnEditArchive);
 
         if (position < archives.size()) {
-            String archiveName = archives.get(position);
+            String archiveName = archives.get(position).toString();
             name.setText(archiveName);
 
             edit.setVisibility(View.VISIBLE);

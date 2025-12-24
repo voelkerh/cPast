@@ -2,14 +2,15 @@ package com.benskitchen.cPast.persistence;
 
 import android.content.Context;
 import android.util.Log;
+import com.benskitchen.cPast.domainLogic.Archive;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public class JsonArchiveStore implements ArchiveStore {
 
@@ -32,9 +33,9 @@ public class JsonArchiveStore implements ArchiveStore {
     }
 
     @Override
-    public Map<String, String> loadArchives() {
+    public List<Archive> loadArchives() {
         InputStream stream = getInputStream();
-        if (stream == null) return new HashMap<>();
+        if (stream == null) return new ArrayList<>();
 
         try (InputStreamReader isr = new InputStreamReader(stream, StandardCharsets.UTF_8);
              BufferedReader reader = new BufferedReader(isr)) {
@@ -45,14 +46,14 @@ public class JsonArchiveStore implements ArchiveStore {
                 sb.append(line);
             }
 
-            if(sb.length() == 0) return new HashMap<>();
-            return jsonToMap(sb.toString());
+            if(sb.length() == 0) return new ArrayList<>();
+            return jsonToList(sb.toString());
 
         } catch (FileNotFoundException e){
-            return new HashMap<>();
+            return new ArrayList<>();
         } catch (IOException e) {
             Log.e(TAG, e.getMessage());
-            return new HashMap<>();
+            return new ArrayList<>();
         } finally {
             if (context != null) {
                 try {
@@ -76,33 +77,38 @@ public class JsonArchiveStore implements ArchiveStore {
         return null;
     }
 
-    private Map<String, String> jsonToMap(String jsonString) {
-        Map<String, String> archives = new HashMap<>();
+    private List<Archive> jsonToList(String jsonString) {
+        List<Archive> archives = new ArrayList<>();
         try {
             JSONObject root = new JSONObject(jsonString);
-            JSONObject map = root.optJSONObject("archives");
-            if (map != null) {
-                Iterator<String> keys = map.keys();
-                while (keys.hasNext()) {
-                    String key = keys.next();
-                    archives.put(key, map.optString(key, ""));
-                }
+            JSONArray array = root.optJSONArray("archives");
+            if (array == null) return archives;
+
+            for (int i = 0; i < array.length(); i++) {
+                JSONObject obj = array.optJSONObject(i);
+                if (obj == null) continue;
+
+                String fullName = obj.optString("fullName", "").trim();
+                String shortName = obj.optString("shortName", "").trim();
+                if (fullName.isEmpty() || shortName.isEmpty()) continue;
+
+                archives.add(new Archive(fullName, shortName));
             }
         } catch (JSONException e) {
             Log.e(TAG, e.toString());
-            return new HashMap<>();
+            return new ArrayList<>();
         }
         return archives;
     }
 
     @Override
-    public boolean saveArchives(Map<String, String> archives) {
+    public boolean saveArchives(List<Archive> archives) {
         if (archives == null) return false;
         OutputStream stream = getOutputStream();
         if (stream == null) return false;
 
         try {
-            String json = mapToJson(archives);
+            String json = listToJson(archives);
             stream.write(json.getBytes(StandardCharsets.UTF_8));
             stream.flush();
             return true;
@@ -132,17 +138,22 @@ public class JsonArchiveStore implements ArchiveStore {
         return null;
     }
 
-    private String mapToJson(Map<String, String> map) {
+    private String listToJson(List<Archive> archives) {
         try {
             JSONObject root = new JSONObject();
-            JSONObject archive = new JSONObject();
-            for (Map.Entry<String, String> entry : map.entrySet()) {
-                archive.put(entry.getKey(), entry.getValue());
+            JSONArray array = new JSONArray();
+            for (Archive archive : archives) {
+                if (archive == null) continue;
+
+                JSONObject obj = new JSONObject();
+                obj.put("fullName", archive.getFullName());
+                obj.put("shortName", archive.getShortName());
+                array.put(obj);
             }
-            root.put("archives", archive);
+            root.put("archives", array);
             return root.toString(2);
         } catch (JSONException e) {
-            Log.e("JsonArchiveStore", e.toString());
+            Log.e(TAG, e.toString());
             return "{}";
         }
     }
