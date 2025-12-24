@@ -35,9 +35,9 @@
     <string name="notes_label">Notes for next photo:</string>
     <string name="input_warning_heading"><![CDATA[<H2>Wrong Input Format</H2>]]></string>
     <string name="input_warning_text">
-        <![CDATA[<p>1. Make sure to choose an archive.<br /><br />2. Make sure to enter a reference for your archival record. It has to include min. 1 letter.<p><br /><br />3. Separate hierarchy levels in archival records with \'_\' or \'/\'. Other separators cannot be used.<p>]]></string>
+        <![CDATA[<p>1. Make sure to choose an archive.<br /><br />2. Make sure to enter a reference for your archival record. It has to include min. 1 letter.<br /><br />3. Separate hierarchy levels in archival records with \'_\' or \'/\'. Other separators cannot be used.</p>]]></string>
     <string name="about_fragment_title">About</string>
-    <string name="about_fragment_text"><![CDATA[<p>This app is a revised version of Capturing the Past. This app was originally developed in a <a href=https://blogs.sussex.ac.uk/capturing-the-past/about-us/ >research project</a> at the <a href=https://www.sussex.ac.uk/research/centres/sussex-humanities-lab/ >Sussex Humanities Lab</a>. The original project was funded by the <a href=https://ahrc.ukri.org/ >Arts and Humanities Research Council</a>.</p>]]></string>
+    <string name="about_fragment_text"><![CDATA[<p>This app is a revised version of Capturing the Past. This app was originally developed in a <a href="https://blogs.sussex.ac.uk/capturing-the-past/about-us/">research project</a> at the <a href="https://www.sussex.ac.uk/research/centres/sussex-humanities-lab/">Sussex Humanities Lab</a>. The original project was funded by the <a href="https://ahrc.ukri.org/">Arts and Humanities Research Council</a>.</p>]]></string>
     <string name="help_fragment_title">Help</string>
     <string name="help_fragment_text"><![CDATA[<a href=https://capturingthepast.benskitchen.com/ >Software Documentation</a>]]></string>
     <string name="help_fragment_acc_title_1">Add and Select Archive</string>

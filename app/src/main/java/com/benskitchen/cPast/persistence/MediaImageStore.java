@@ -31,7 +31,7 @@ public class MediaImageStore implements ImageStore {
         return new File(storageDir, TEMP_FILE_NAME);
     }
 
-    public boolean saveImageToGallery(String imageFileName, String note, String currentPhotoPath, String folderPath) throws IOException {
+    public boolean saveImageToGallery(String imageFileName, String note, String currentPhotoPath, String[] directoryNames) throws IOException {
         Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath);
         if (bitmap == null) throw new IOException("No bitmap found");
 
@@ -40,7 +40,10 @@ public class MediaImageStore implements ImageStore {
         ContentValues contentValues = new ContentValues();
         contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, imageFileName);
         contentValues.put(MediaStore.MediaColumns.MIME_TYPE, MIME_TYPE);
-        contentValues.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + File.separator + folderPath);
+        String relative = Environment.DIRECTORY_PICTURES
+                + "/CapturingThePast/"
+                + String.join("/", directoryNames) + "/";
+        contentValues.put(MediaStore.MediaColumns.RELATIVE_PATH, relative);
 
         ContentResolver contentResolver = context.getContentResolver();
         Uri imageUri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);

@@ -29,6 +29,7 @@
             android:textSize="20sp"
             android:justificationMode="inter_word"
             android:lineSpacingMultiplier="1.3"
+            android:linksClickable="true"
     />
 
     <TextView
