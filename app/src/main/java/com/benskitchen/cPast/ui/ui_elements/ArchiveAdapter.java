@@ -7,12 +7,11 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.TextView;
-
-import java.util.List;
-
 import capturingthepast.R;
 import com.benskitchen.cPast.ui.dialogs.AddArchiveDialog;
 import com.benskitchen.cPast.ui.dialogs.EditArchiveDialog;
+
+import java.util.List;
 
 public class ArchiveAdapter extends ArrayAdapter<String> {
 
@@ -47,15 +46,24 @@ public class ArchiveAdapter extends ArrayAdapter<String> {
     // When spinner closed, only show archive name
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        TextView tv = new TextView(context);
-        tv.setPadding(16, 16, 16, 16);
+        View row = convertView;
+        if (row == null) {
+            row = inflater.inflate(R.layout.item_archive_selected, parent, false);
+        }
+
+        TextView tv = row.findViewById(R.id.textArchiveSelected);
+
         if (position < archives.size()) {
             tv.setText(archives.get(position));
+            tv.setTextColor(context.getResources().getColor(R.color.fontColor));
         } else {
             tv.setText("Add archive");
+            tv.setTextColor(context.getResources().getColor(android.R.color.white));
         }
-        return tv;
+
+        return row;
     }
+
 
     @Override
     public View getDropDownView(int position, View convertView, ViewGroup parent) {
@@ -83,7 +91,7 @@ public class ArchiveAdapter extends ArrayAdapter<String> {
             name.setText("Add archive");
             name.setTextColor(context.getResources().getColor(android.R.color.white));
             edit.setVisibility(View.GONE);  // no edit symbol
-            row.setBackgroundColor(context.getResources().getColor(R.color.colorPrimary));
+            row.setBackgroundColor(context.getResources().getColor(R.color.colorPrimaryDark));
             row.setOnClickListener(v -> {
                 if (addArchiveListener != null) {
                     AddArchiveDialog.show(context, addArchiveListener);
