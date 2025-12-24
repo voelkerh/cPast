@@ -14,17 +14,20 @@
                 </inset>
             </item>
             <item>
+                <inset
+                        android:insetRight="6dp"
+                        android:insetLeft="0dp"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp">
 
                     <bitmap
-                        android:gravity="center_vertical|right"
-                        android:src="@drawable/arrow_down"/>
+                            android:gravity="center_vertical|right"
+                            android:src="@drawable/arrow_down_blue" />
 
+                </inset>
             </item>
-
         </layer-list>
     </item>
-
-
 </selector>
 
 
