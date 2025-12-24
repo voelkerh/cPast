@@ -11,8 +11,9 @@
     <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/LayoutRepo"
             android:layout_width="match_parent"
-            android:layout_height="80dp"
+            android:layout_height="wrap_content"
             android:layout_marginHorizontal="24dp"
+            android:layout_marginTop="12dp"
             app:layout_constraintBottom_toTopOf="@id/layoutReference"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -21,8 +22,8 @@
         <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layoutRepoLabel"
                 android:layout_width="match_parent"
-                android:layout_height="24dp"
-
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="6dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -50,7 +51,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-
+                app:layout_constraintTop_toBottomOf="@id/layoutRepoLabel"
                 app:layout_constraintVertical_bias="0.1">
 
             <Spinner
@@ -59,9 +60,10 @@
                     android:layout_height="match_parent"
                     android:background="@drawable/spinner_bg"
                     android:ems="12"
-                    android:padding="10dp"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="10dp"
                     android:textColor="@color/fontColor"
-                    android:textSize="24sp"
+                    android:textSize="18sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -73,8 +75,9 @@
     <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/layoutReference"
             android:layout_width="match_parent"
-            android:layout_height="80dp"
+            android:layout_height="wrap_content"
             android:layout_marginHorizontal="24dp"
+            android:layout_marginTop="12dp"
             app:layout_constraintBottom_toTopOf="@id/layoutImageCounter"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -84,8 +87,8 @@
         <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layoutRefLabel"
                 android:layout_width="match_parent"
-                android:layout_height="24dp"
-
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="6dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -111,7 +114,8 @@
                 android:layout_height="48dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent">
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/layoutRefLabel">
 
             <EditText
                     android:id="@+id/editTextRef"
@@ -120,18 +124,19 @@
                     android:background="@drawable/edittext_bg"
                     android:ems="12"
                     android:gravity="left"
-                    android:hint="@string/e_g_par378_31_3_5"
+                    android:hint="@string/record_name_hint"
+                    android:textColorHint="@color/fontColorSecondary"
                     android:importantForAutofill="no"
                     android:inputType="textPersonName"
-                    android:paddingHorizontal="8dp"
-                    android:paddingVertical="8dp"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="10dp"
                     android:text=""
                     android:textSize="18sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintVertical_bias="0.0"/>
             <Button
                     android:id="@+id/buttonClearRef"
@@ -141,7 +146,7 @@
                     android:fontFamily="@font/fasolid"
                     android:text="@string/fa_clear"
                     android:textColor="@color/colorPrimary"
-                    android:textSize="20sp"
+                    android:textSize="18sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
             />
@@ -152,8 +157,9 @@
     <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/layoutImageCounter"
             android:layout_width="match_parent"
-            android:layout_height="24dp"
+            android:layout_height="wrap_content"
             android:layout_marginHorizontal="24dp"
+            android:layout_marginTop="12dp"
             app:layout_constraintBottom_toTopOf="@id/layoutImageName"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -162,7 +168,8 @@
         <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layoutImageCounterLabel"
                 android:layout_width="match_parent"
-                android:layout_height="24dp"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="6dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -170,7 +177,7 @@
             <TextView
                     android:id="@+id/imageCounterLabel"
                     android:layout_width="wrap_content"
-                    android:layout_height="24dp"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="start"
                     android:text="@string/photo_counter_label"
                     android:textColor="@color/fontColor"
@@ -187,8 +194,9 @@
     <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/layoutImageName"
             android:layout_width="match_parent"
-            android:layout_height="80dp"
+            android:layout_height="wrap_content"
             android:layout_marginHorizontal="24dp"
+            android:layout_marginTop="12dp"
             app:layout_constraintBottom_toTopOf="@id/layoutNote"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -197,7 +205,8 @@
         <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layoutImageNameLabel"
                 android:layout_width="match_parent"
-                android:layout_height="24dp"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="6dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -205,7 +214,7 @@
             <TextView
                     android:id="@+id/imageNameLabel"
                     android:layout_width="wrap_content"
-                    android:layout_height="24dp"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="start"
                     android:text="@string/next_photo_name"
                     android:textColor="@color/fontColor"
@@ -246,8 +255,9 @@
     <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/layoutNote"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_height="0dp"
             android:layout_marginHorizontal="24dp"
+            android:layout_marginTop="12dp"
             app:layout_constraintBottom_toTopOf="@id/layoutActions"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -256,7 +266,8 @@
         <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layoutNoteLabel"
                 android:layout_width="match_parent"
-                android:layout_height="24dp"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="6dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -291,11 +302,13 @@
                     android:background="@drawable/edittext_bg"
                     android:ems="18"
                     android:hint="@string/note"
+                    android:textColorHint="@color/fontColorSecondary"
                     android:gravity="top"
                     android:paddingHorizontal="8dp"
                     android:paddingVertical="8dp"
                     android:textSize="18sp"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:ignore="EditableContentDescCheck" />
@@ -308,7 +321,7 @@
                     android:fontFamily="@font/fasolid"
                     android:text="@string/fa_clear"
                     android:textColor="@color/colorPrimary"
-                    android:textSize="20sp"
+                    android:textSize="18sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -319,11 +332,9 @@
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:layout_marginHorizontal="24dp"
-
-
-            android:layout_marginBottom="8dp"
-
-            android:paddingHorizontal="8dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp"
+            android:paddingHorizontal="10dp"
             android:textColor="@color/colorPrimaryDarkTrans"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -332,19 +343,23 @@
 
         <Button
                 android:id="@+id/cameraButton"
-                android:layout_width="72dp"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:background="#0000"
-                android:fontFamily="@font/fasolid"
-                android:text="@string/fa_camera"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="56sp"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minHeight="32dp"
+                android:background="@drawable/btn_rounded"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="10dp"
+                android:textAllCaps="false"
+                android:text="@string/take_photo"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                android:drawableStart="@drawable/home_camera"
+                android:drawablePadding="12dp"
+                android:gravity="center_vertical|center_horizontal"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
