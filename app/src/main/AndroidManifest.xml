@@ -40,12 +40,20 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name="com.benskitchen.cPast.MainActivity" android:screenOrientation="portrait" android:exported="true" >
+        <activity
+                android:name="com.benskitchen.cPast.StartActivity"
+                android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+                android:name="com.benskitchen.cPast.MainActivity"
+                android:screenOrientation="portrait"
+                android:exported="true"
+        />
 
         <provider
             android:name="androidx.core.content.FileProvider"
