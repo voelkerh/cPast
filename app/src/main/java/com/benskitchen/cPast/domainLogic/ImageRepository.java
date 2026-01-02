@@ -52,11 +52,22 @@ public class  ImageRepository {
         return imageStore.saveImageToGallery(imageFileName, note, currentPhotoPath, directoryNames);
     }
 
-    public String[] getNecessaryDirectories(String imageFileName) {
+    private String[] getNecessaryDirectories(String imageFileName) {
         String baseName = imageFileName;
-        if (imageFileName.endsWith(".jpg")) baseName = imageFileName.substring(0, imageFileName.length() - 4);
-        String[] parts = baseName.split("_+");
-        return Arrays.copyOf(parts, parts.length - 1);
+        if (imageFileName.endsWith(".jpg")) {
+            baseName = imageFileName.substring(0, imageFileName.length() - 4);
+            String[] parts = baseName.split("_+");
+            return Arrays.copyOf(parts, parts.length - 1);
+        } else {
+            String[] parts = baseName.split("_+");
+            return Arrays.copyOf(parts, parts.length);
+        }
+
+    }
+
+    public int getHighestCounterForRecord(String baseReference) {
+        String[] directoryNames = getNecessaryDirectories(baseReference);
+        return imageStore.getHighestCounterForRecord(directoryNames);
     }
 
     public static class TempImageInfo {
