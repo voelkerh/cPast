@@ -51,7 +51,6 @@
 
         <activity
                 android:name="com.benskitchen.cPast.MainActivity"
-                android:screenOrientation="portrait"
                 android:exported="true"
         />
 

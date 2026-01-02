@@ -57,4 +57,13 @@
     <string name="close_nav">Close Navigation Drawer</string>
     <string name="take_photo">Take Photo</string>
     <string name="diamond">◆</string>
+    <string name="welcome_title">Welcome</string>
+    <string name="welcome_use">Use cPast in the archive:</string>
+    <string name="welcome_name_photos">Name your photos after record references.</string>
+    <string name="welcome_track">&#x2705; Don\'t lose track.</string>
+    <string name="welcome_sort">Sort your photos along the archive structure.</string>
+    <string name="welcome_time">&#x2705; Save time.</string>
+    <string name="welcome_notes">Save notes with your photos.</string>
+    <string name="welcome_thoughts">&#x2705; Capture your thoughts.</string>
+    <string name="welcome_button">Start</string>
 </resources>

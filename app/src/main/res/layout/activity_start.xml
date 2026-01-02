@@ -13,7 +13,7 @@
             android:layout_weight="0.2">
 
         <TextView
-                android:text="Welcome"
+                android:text="@string/welcome_title"
                 android:textSize="36sp"
                 android:textColor="@color/colorPrimaryDark"
                 android:layout_marginBottom="12dp"
@@ -21,8 +21,9 @@
                 android:layout_height="wrap_content"/>
 
         <TextView
-                android:text="Use cPast in the archive:"
+                android:text="@string/welcome_use"
                 android:textSize="24sp"
+                android:textColor="@color/fontColorSecondary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
@@ -36,7 +37,7 @@
             android:layout_weight="0.4">
 
         <TextView
-            android:text="Name your photos after record references."
+            android:text="@string/welcome_name_photos"
             android:textSize="20sp"
             android:textColor="@color/colorPrimaryDark"
             android:layout_marginBottom="12dp"
@@ -44,14 +45,15 @@
             android:layout_height="wrap_content"
         />
         <TextView
-            android:text="&#x2705; Don't lose track."
+            android:text="@string/welcome_track"
             android:textSize="20sp"
+            android:textColor="@color/fontColorSecondary"
             android:layout_marginBottom="32dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
         />
         <TextView
-            android:text="Sort your photos along the archive structure."
+            android:text="@string/welcome_sort"
             android:textSize="20sp"
             android:textColor="@color/colorPrimaryDark"
             android:layout_marginBottom="12dp"
@@ -59,14 +61,15 @@
             android:layout_height="wrap_content"
         />
         <TextView
-            android:text="&#x2705; Save time."
+            android:text="@string/welcome_time"
             android:textSize="20sp"
+            android:textColor="@color/fontColorSecondary"
             android:layout_marginBottom="32dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
         />
         <TextView
-            android:text="Save notes with your photos."
+            android:text="@string/welcome_notes"
             android:textSize="20sp"
             android:textColor="@color/colorPrimaryDark"
             android:layout_marginBottom="12dp"
@@ -75,8 +78,9 @@
         />
 
         <TextView
-            android:text="&#x2705; Capture your thoughts."
+            android:text="@string/welcome_thoughts"
             android:textSize="20sp"
+            android:textColor="@color/fontColorSecondary"
             android:layout_marginBottom="32dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -93,7 +97,7 @@
 
         <Button
                 android:id="@+id/btn_continue"
-                android:text="Start"
+                android:text="@string/welcome_button"
                 android:background="@drawable/btn_rounded"
                 android:textColor="@android:color/white"
                 android:textSize="18sp"
