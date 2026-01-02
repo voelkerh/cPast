@@ -13,7 +13,6 @@ import android.widget.*;
 import androidx.fragment.app.Fragment;
 import capturingthepast.R;
 import com.benskitchen.cPast.domainLogic.*;
-import com.benskitchen.cPast.persistence.*;
 import com.benskitchen.cPast.ui.dialogs.AddArchiveDialog;
 import com.benskitchen.cPast.ui.dialogs.EditArchiveDialog;
 import com.benskitchen.cPast.ui.dialogs.ValidationDialog;
@@ -30,6 +29,7 @@ public class HomeFragment extends Fragment implements AddArchiveDialog.Listener,
     private Spinner dropdown;
     private EditText recordReferenceEditText;
     private TextView noteText;
+    private TextView imageCounter;
 
     // Domain logic dependencies
     private ArchiveRepository archiveRepository;
@@ -38,7 +38,10 @@ public class HomeFragment extends Fragment implements AddArchiveDialog.Listener,
     private NoteRepository noteRepository;
     private final RecentCapturesRepository recentCapturesRepository;
 
-    public HomeFragment(RecentCapturesRepository recentCapturesRepository) {
+    public HomeFragment(ArchiveRepository archiveRepository, ImageRepository imageRepository, NoteRepository notesRepository, RecentCapturesRepository recentCapturesRepository) {
+        this.archiveRepository = archiveRepository;
+        this.imageRepository = imageRepository;
+        this.noteRepository = notesRepository;
         this.recentCapturesRepository = recentCapturesRepository;
     }
 
@@ -51,23 +54,14 @@ public class HomeFragment extends Fragment implements AddArchiveDialog.Listener,
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initAppRepos();
         initViews(view);
-    }
-
-    private void initAppRepos(){
-        ArchiveStore jsonArchiveStore = new JsonArchiveStore(requireContext().getApplicationContext());
-        archiveRepository = new ArchiveRepository(jsonArchiveStore);
-        ImageStore mediaImageStore = new MediaImageStore(requireContext().getApplicationContext());
-        imageRepository = new ImageRepository(requireContext().getApplicationContext(), mediaImageStore);
-        NoteStore csvNoteStore = new CsvNoteStore(requireContext());
-        noteRepository = new NoteRepository(csvNoteStore);
     }
 
     private void initViews(View view){
         dropdown = view.findViewById(R.id.spinnerArchive);
         recordReferenceEditText = view.findViewById(R.id.editTextRef);
         TextView recordReferenceText = view.findViewById(R.id.textViewRef);
+        imageCounter = view.findViewById(R.id.imageCounter);
         noteText = view.findViewById(R.id.textViewNote);
         Button cameraButton = view.findViewById(R.id.cameraButton);
         Button clearNoteButton = view.findViewById(R.id.buttonClearNote);
