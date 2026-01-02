@@ -25,17 +25,20 @@ import static android.widget.Toast.LENGTH_SHORT;
 public class HomeFragment extends Fragment implements AddArchiveDialog.Listener, EditArchiveDialog.Listener {
 
     private static final int REQUEST_IMAGE_CAPTURE = 1;
+
+    private int currentCounter = 0;
     // UI components
     private Spinner dropdown;
     private EditText recordReferenceEditText;
     private TextView noteText;
     private TextView imageCounter;
+    private TextView recordReferenceText;
 
     // Domain logic dependencies
-    private ArchiveRepository archiveRepository;
-    private ImageRepository imageRepository;
+    private final ArchiveRepository archiveRepository;
+    private final ImageRepository imageRepository;
     private ImageRepository.TempImageInfo tempImageInfo;
-    private NoteRepository noteRepository;
+    private final NoteRepository noteRepository;
     private final RecentCapturesRepository recentCapturesRepository;
 
     public HomeFragment(ArchiveRepository archiveRepository, ImageRepository imageRepository, NoteRepository notesRepository, RecentCapturesRepository recentCapturesRepository) {
@@ -60,7 +63,7 @@ public class HomeFragment extends Fragment implements AddArchiveDialog.Listener,
     private void initViews(View view){
         dropdown = view.findViewById(R.id.spinnerArchive);
         recordReferenceEditText = view.findViewById(R.id.editTextRef);
-        TextView recordReferenceText = view.findViewById(R.id.textViewRef);
+        recordReferenceText = view.findViewById(R.id.textViewRef);
         imageCounter = view.findViewById(R.id.imageCounter);
         noteText = view.findViewById(R.id.textViewNote);
         Button cameraButton = view.findViewById(R.id.cameraButton);
@@ -74,7 +77,13 @@ public class HomeFragment extends Fragment implements AddArchiveDialog.Listener,
         dropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                recordReferenceText.setText(createFileName());
+                String baseReference = getBaseReference();
+
+                currentCounter = imageRepository.getHighestCounterForRecord(baseReference);
+                imageCounter.setText(String.valueOf(currentCounter));
+
+                String nextFileName = createFileName(baseReference, String.valueOf(currentCounter + 1));
+                recordReferenceText.setText(nextFileName);
             }
 
             @Override
@@ -91,7 +100,14 @@ public class HomeFragment extends Fragment implements AddArchiveDialog.Listener,
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                recordReferenceText.setText(createFileName());
+                String baseReference = getBaseReference();
+
+                currentCounter = imageRepository.getHighestCounterForRecord(baseReference);
+                imageCounter.setText(String.valueOf(currentCounter));
+
+                String fileName = createFileName(baseReference, String.valueOf(currentCounter + 1));
+                recordReferenceText.setText(fileName);
+
             }
 
             @Override
@@ -101,6 +117,28 @@ public class HomeFragment extends Fragment implements AddArchiveDialog.Listener,
         clearReferenceButton.setOnClickListener(v -> recordReferenceEditText.setText(""));
 
         cameraButton.setOnClickListener(v -> dispatchTakePictureIntent());
+    }
+
+    /**
+     * Make sure to recalculate counter after visit of other menu fragment.
+     * Ensures to update counter, if user deletes images in photos fragment.
+      */
+    @Override
+    public void onResume() {
+        super.onResume();
+        String baseReference = getBaseReference();
+
+        if (baseReference.isEmpty()) {
+            imageCounter.setText("0");
+            return;
+        }
+
+        currentCounter = imageRepository.getHighestCounterForRecord(baseReference);
+        imageCounter.setText(String.valueOf(currentCounter));
+
+        recordReferenceText.setText(
+                createFileName(baseReference, String.valueOf(currentCounter + 1))
+        );
     }
 
     private void showMessage(String str) {
@@ -135,20 +173,34 @@ public class HomeFragment extends Fragment implements AddArchiveDialog.Listener,
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
+
             if (tempImageInfo == null) {
                 showMessage("Error: No image path available");
                 return;
             }
-            String imageFileName = createFileName();
+
+            String baseReference = getBaseReference();
+            String imageFileName = createFileName(baseReference, String.valueOf(currentCounter + 1));
+
             try {
                 String note = noteText.getText().toString().trim();
                 noteText.setText("");
+
                 boolean saved = imageRepository.saveImageToGallery(imageFileName, note, tempImageInfo.path);
+
                 if (saved) {
+                    currentCounter++;
+                    imageCounter.setText(String.valueOf(currentCounter));
+
+                    String newImageFileName = createFileName(baseReference, String.valueOf(currentCounter + 1));
+                    recordReferenceText.setText(newImageFileName);
+
                     Capture capture = new Capture(getSelectedArchive(), imageFileName, note);
                     recentCapturesRepository.addFileToRecentCaptures(capture);
                     boolean noteSaved = noteRepository.saveNote(capture);
+
                     tempImageInfo = null;
                     if(noteSaved) showMessage("Note and image saved\n " + imageFileName);
                     else showMessage("Image saved to " + imageFileName + "\nNote could not be saved");
@@ -187,14 +239,18 @@ public class HomeFragment extends Fragment implements AddArchiveDialog.Listener,
         dropdown.setAdapter(dataAdapter);
     }
 
-    private String createFileName() {
+    private String createFileName(String baseReference, String counter) {
+        String fileName = RecordReferenceCreator.addCounterAndFileExtension(baseReference, counter);
+        if (fileName.length() > 128) showMessage("Your catalogue reference is very long and may result in unusable file names.");
+        return fileName;
+    }
+
+    private String getBaseReference() {
         Archive archive = getSelectedArchive();
         String shortArchiveName = archive == null ? "" : archive.getShortName();
         String recordReference = recordReferenceEditText.getText().toString();
-        String counter = "0"; // placeholder, replace when image counter is implemented
-        String fileName = RecordReferenceCreator.createRecordReference(shortArchiveName, recordReference, counter);
-        if (fileName.length() > 128) showMessage("Your catalogue reference is very long and may result in unusable file names.");
-        return fileName;
+
+        return RecordReferenceCreator.createBaseReference(shortArchiveName, recordReference);
     }
 
     private Archive getSelectedArchive(){
