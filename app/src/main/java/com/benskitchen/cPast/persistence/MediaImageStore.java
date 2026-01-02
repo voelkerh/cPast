@@ -114,7 +114,7 @@ public class MediaImageStore implements ImageStore {
         String relative = getRelativePath(directoryNames);
 
         String[] projection = { MediaStore.Images.Media.DISPLAY_NAME };
-        String selection = MediaStore.Images.Media.RELATIVE_PATH + "=?";
+        String selection = MediaStore.Images.Media.RELATIVE_PATH + " = ?";
         String[] selectionArgs = { relative };
 
         int max = 0;
@@ -148,7 +148,11 @@ public class MediaImageStore implements ImageStore {
         if (us < 0 || us == base.length() - 1) return 0;
 
         String tail = base.substring(us + 1);
-        try { return Integer.parseInt(tail); }
-        catch (NumberFormatException e) { return 0; }
+        try {
+            return Integer.parseInt(tail);
+        } catch (NumberFormatException e) {
+            Log.w(TAG, "Could not convert to an integer: " + tail);
+            return 0;
+        }
     }
 }
