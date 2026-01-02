@@ -13,7 +13,7 @@ import java.util.Arrays;
 
 public class  ImageRepository {
     private static final String TAG = "ImageRepository";
-    private static final String FILE_PROVIDER_AUTHORITY = "com.benskitchen.cPast.fileprovider";
+    private static final String FILE_PROVIDER_AUTHORITY = "com.voelkerh.cPast.fileprovider";
     private final Context context;
     private final ImageStore imageStore;
 

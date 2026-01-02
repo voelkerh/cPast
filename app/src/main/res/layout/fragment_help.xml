@@ -5,7 +5,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
-        tools:context="com.benskitchen.cPast.ui.fragments.HelpFragment">
+        tools:context="com.voelkerh.cPast.ui.fragments.HelpFragment">
 
     <LinearLayout
             android:layout_width="match_parent"
