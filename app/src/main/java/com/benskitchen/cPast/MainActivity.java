@@ -12,9 +12,11 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import capturingthepast.R;
+import com.benskitchen.cPast.domainLogic.ArchiveRepository;
+import com.benskitchen.cPast.domainLogic.ImageRepository;
+import com.benskitchen.cPast.domainLogic.NoteRepository;
 import com.benskitchen.cPast.domainLogic.RecentCapturesRepository;
-import com.benskitchen.cPast.persistence.JsonRecentCapturesStore;
-import com.benskitchen.cPast.persistence.RecentCapturesStore;
+import com.benskitchen.cPast.persistence.*;
 import com.benskitchen.cPast.ui.fragments.*;
 import com.google.android.material.navigation.NavigationView;
 
@@ -22,6 +24,9 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
 
     private DrawerLayout drawerLayout;
     private RecentCapturesRepository recentCapturesRepository;
+    private ImageRepository imageRepository;
+    private NoteRepository noteRepository;
+    private ArchiveRepository archiveRepository;
 
     public static final String TAG = "MainActivity";
 
@@ -29,6 +34,7 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        initAppRepos();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -41,20 +47,28 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        RecentCapturesStore recentCapturesStore = new JsonRecentCapturesStore(this.getApplicationContext());
-        this.recentCapturesRepository = new RecentCapturesRepository(recentCapturesStore);
-
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment(recentCapturesRepository)).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment(archiveRepository, imageRepository, noteRepository, recentCapturesRepository)).commit();
             navigationView.setCheckedItem(R.id.nav_home);
         }
+    }
+
+    private void initAppRepos(){
+        RecentCapturesStore recentCapturesStore = new JsonRecentCapturesStore(this.getApplicationContext());
+        recentCapturesRepository = new RecentCapturesRepository(recentCapturesStore);
+        ArchiveStore jsonArchiveStore = new JsonArchiveStore(this.getApplicationContext());
+        archiveRepository = new ArchiveRepository(jsonArchiveStore);
+        ImageStore mediaImageStore = new MediaImageStore(this.getApplicationContext());
+        imageRepository = new ImageRepository(this.getApplicationContext(), mediaImageStore);
+        NoteStore csvNoteStore = new CsvNoteStore(this);
+        noteRepository = new NoteRepository(csvNoteStore);
     }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case R.id.nav_home:
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment(recentCapturesRepository)).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment(archiveRepository, imageRepository, noteRepository, recentCapturesRepository)).commit();
                 break;
             case R.id.nav_photos:
                 openGallery();
@@ -69,7 +83,7 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new AboutFragment()).commit();
                 break;
             case R.id.nav_exit:
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment(recentCapturesRepository)).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment(archiveRepository, imageRepository, noteRepository, recentCapturesRepository)).commit();
                 break;
 
         }
