@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="capturingthepast">
+>
     <uses-feature
         android:name="android.hardware.camera"
         android:required="true" />
@@ -41,7 +41,7 @@
         android:theme="@style/AppTheme">
 
         <activity
-                android:name="com.benskitchen.cPast.StartActivity"
+                android:name=".StartActivity"
                 android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -50,13 +50,13 @@
         </activity>
 
         <activity
-                android:name="com.benskitchen.cPast.MainActivity"
+                android:name=".MainActivity"
                 android:exported="true"
         />
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.benskitchen.cPast.fileprovider"
+            android:authorities=".fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
