@@ -3,6 +3,7 @@ package com.benskitchen.cPast.persistence;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -12,8 +13,12 @@ import android.provider.MediaStore;
 import android.util.Log;
 import androidx.exifinterface.media.ExifInterface;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.lang.reflect.Field;
+import java.util.Locale;
 
 public class MediaImageStore implements ImageStore {
     private static final String TAG = "MediaImageStore";
@@ -40,11 +45,8 @@ public class MediaImageStore implements ImageStore {
         ContentValues contentValues = new ContentValues();
         contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, imageFileName);
         contentValues.put(MediaStore.MediaColumns.MIME_TYPE, MIME_TYPE);
-        String relative = Environment.DIRECTORY_PICTURES
-                + "/CapturingThePast/"
-                + String.join("/", directoryNames) + "/";
+        String relative = getRelativePath(directoryNames);
         contentValues.put(MediaStore.MediaColumns.RELATIVE_PATH, relative);
-
         ContentResolver contentResolver = context.getContentResolver();
         Uri imageUri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
 
@@ -68,6 +70,12 @@ public class MediaImageStore implements ImageStore {
         } finally {
             bitmap.recycle();
         }
+    }
+
+    private String getRelativePath(String[] directoryNames) {
+        return Environment.DIRECTORY_PICTURES
+                + "/CapturingThePast/"
+                + String.join("/", directoryNames) + "/";
     }
 
     private void copyExifData(Uri targetUri, ExifInterface sourceExif, String userComment) {
@@ -100,5 +108,47 @@ public class MediaImageStore implements ImageStore {
         } catch (Exception e) {
             Log.e(TAG, e.toString());
         }
+    }
+
+    public int getHighestCounterForRecord(String[] directoryNames) {
+        String relative = getRelativePath(directoryNames);
+
+        String[] projection = { MediaStore.Images.Media.DISPLAY_NAME };
+        String selection = MediaStore.Images.Media.RELATIVE_PATH + "=?";
+        String[] selectionArgs = { relative };
+
+        int max = 0;
+
+        ContentResolver cr = context.getContentResolver();
+        try (Cursor c = cr.query(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                projection,
+                selection,
+                selectionArgs,
+                null
+        )) {
+            if (c == null) return 0;
+
+            int nameCol = c.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME);
+            while (c.moveToNext()) {
+                String name = c.getString(nameCol);
+                int counter = extractCounter(name);
+                if (counter > max) max = counter;
+            }
+        }
+        return max;
+    }
+
+    private int extractCounter(String fileName) {
+        if (fileName == null) return 0;
+        if (!fileName.toLowerCase(Locale.ROOT).endsWith(".jpg")) return 0;
+
+        String base = fileName.substring(0, fileName.length() - 4);
+        int us = base.lastIndexOf('_');
+        if (us < 0 || us == base.length() - 1) return 0;
+
+        String tail = base.substring(us + 1);
+        try { return Integer.parseInt(tail); }
+        catch (NumberFormatException e) { return 0; }
     }
 }

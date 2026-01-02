@@ -53,7 +53,8 @@ public class  ImageRepository {
     }
 
     public String[] getNecessaryDirectories(String imageFileName) {
-        String baseName = imageFileName.substring(0, imageFileName.length() - 4);
+        String baseName = imageFileName;
+        if (imageFileName.endsWith(".jpg")) baseName = imageFileName.substring(0, imageFileName.length() - 4);
         String[] parts = baseName.split("_+");
         return Arrays.copyOf(parts, parts.length - 1);
     }

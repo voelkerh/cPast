@@ -31,7 +31,7 @@
     <string name="reset">Reset</string>
     <string name="deleted">Deleted</string>
     <string name="next_photo_name">File name for the next photo:</string>
-    <string name="photo_counter_label">Photos taken for this record: 0</string>
+    <string name="photo_counter_label">Highest counter for this record:</string>
     <string name="notes_label">Notes for next photo:</string>
     <string name="input_warning_heading"><![CDATA[<H2>Wrong Input Format</H2>]]></string>
     <string name="input_warning_text">
