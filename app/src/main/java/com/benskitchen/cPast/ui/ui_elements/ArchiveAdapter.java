@@ -59,7 +59,7 @@ public class ArchiveAdapter extends ArrayAdapter<Archive> {
             tv.setTextColor(context.getResources().getColor(R.color.fontColor));
         } else {
             tv.setText("Add archive");
-            tv.setTextColor(context.getResources().getColor(android.R.color.white));
+            tv.setTextColor(context.getResources().getColor(R.color.fontColor));
         }
 
         return row;
