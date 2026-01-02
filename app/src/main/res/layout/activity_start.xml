@@ -2,15 +2,21 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingHorizontal="32dp">
+        android:layout_height="match_parent">
+
+    <View
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="@color/colorPrimaryDark"
+            android:layout_marginBottom="24dp"/>
 
     <LinearLayout
             android:orientation="vertical"
             android:gravity="center"
             android:layout_width="match_parent"
+            android:paddingHorizontal="32dp"
             android:layout_height="0dp"
-            android:layout_weight="0.2">
+            android:layout_weight="0.1">
 
         <TextView
                 android:text="@string/welcome_title"
@@ -23,7 +29,7 @@
         <TextView
                 android:text="@string/welcome_use"
                 android:textSize="24sp"
-                android:textColor="@color/fontColorSecondary"
+                android:textColor="@color/colorAccent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
@@ -33,6 +39,7 @@
             android:orientation="vertical"
             android:gravity="center_vertical"
             android:layout_width="match_parent"
+            android:paddingHorizontal="32dp"
             android:layout_height="0dp"
             android:layout_weight="0.4">
 
@@ -47,8 +54,8 @@
         <TextView
             android:text="@string/welcome_track"
             android:textSize="20sp"
-            android:textColor="@color/fontColorSecondary"
-            android:layout_marginBottom="32dp"
+            android:textColor="@color/colorAccent"
+            android:layout_marginBottom="24dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
         />
@@ -63,7 +70,7 @@
         <TextView
             android:text="@string/welcome_time"
             android:textSize="20sp"
-            android:textColor="@color/fontColorSecondary"
+            android:textColor="@color/colorAccent"
             android:layout_marginBottom="32dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -80,7 +87,7 @@
         <TextView
             android:text="@string/welcome_thoughts"
             android:textSize="20sp"
-            android:textColor="@color/fontColorSecondary"
+            android:textColor="@color/colorAccent"
             android:layout_marginBottom="32dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -92,8 +99,9 @@
             android:orientation="vertical"
             android:gravity="center"
             android:layout_width="match_parent"
+            android:paddingHorizontal="32dp"
             android:layout_height="0dp"
-            android:layout_weight="0.2">
+            android:layout_weight="0.1">
 
         <Button
                 android:id="@+id/btn_continue"
@@ -101,6 +109,9 @@
                 android:background="@drawable/btn_rounded"
                 android:textColor="@android:color/white"
                 android:textSize="18sp"
+                android:textAllCaps="false"
+                android:paddingHorizontal="24dp"
+                android:paddingVertical="12dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 

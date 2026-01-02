@@ -20,8 +20,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="2"
-        android:text="Capturing the Past"
+        android:text="@string/app_name"
         android:textColor="#FFFFFF"
-        android:textStyle="bold"/>
+        android:textSize="24sp" />
 
 </LinearLayout>
