@@ -28,7 +28,7 @@
             android:theme="@style/AppTheme">
 
         <activity
-                android:name=".StartActivity"
+                android:name=".ui.start.StartActivity"
                 android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -37,7 +37,7 @@
         </activity>
 
         <activity
-                android:name=".MainActivity"
+                android:name=".ui.navigation.MainActivity"
                 android:exported="true"
         />
 
