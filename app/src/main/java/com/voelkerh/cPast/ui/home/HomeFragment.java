@@ -16,8 +16,8 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import com.voelkerh.cPast.R;
 import com.voelkerh.cPast.di.ViewModelFactory;
-import com.voelkerh.cPast.domain.Archive;
-import com.voelkerh.cPast.domain.TempImageData;
+import com.voelkerh.cPast.domain.model.Archive;
+import com.voelkerh.cPast.domain.model.TempImageData;
 
 import static android.widget.Toast.LENGTH_SHORT;
 

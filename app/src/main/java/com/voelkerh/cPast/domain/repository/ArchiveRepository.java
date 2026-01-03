@@ -1,4 +1,6 @@
-package com.voelkerh.cPast.domain;
+package com.voelkerh.cPast.domain.repository;
+
+import com.voelkerh.cPast.domain.model.Archive;
 
 import java.util.List;
 

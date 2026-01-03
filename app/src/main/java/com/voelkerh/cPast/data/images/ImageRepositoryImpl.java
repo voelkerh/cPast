@@ -5,8 +5,8 @@ import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
 import androidx.core.content.FileProvider;
-import com.voelkerh.cPast.domain.ImageRepository;
-import com.voelkerh.cPast.domain.TempImageData;
+import com.voelkerh.cPast.domain.repository.ImageRepository;
+import com.voelkerh.cPast.domain.model.TempImageData;
 
 import java.io.File;
 import java.io.IOException;

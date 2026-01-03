@@ -2,7 +2,7 @@ package com.voelkerh.cPast.data.archives;
 
 import android.content.Context;
 import android.util.Log;
-import com.voelkerh.cPast.domain.Archive;
+import com.voelkerh.cPast.domain.model.Archive;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

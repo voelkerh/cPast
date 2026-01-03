@@ -1,7 +1,7 @@
 package com.voelkerh.cPast.data.archives;
 
-import com.voelkerh.cPast.domain.Archive;
-import com.voelkerh.cPast.domain.ArchiveRepository;
+import com.voelkerh.cPast.domain.model.Archive;
+import com.voelkerh.cPast.domain.repository.ArchiveRepository;
 
 import java.util.ArrayList;
 import java.util.List;

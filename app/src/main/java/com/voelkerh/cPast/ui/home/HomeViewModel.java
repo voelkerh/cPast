@@ -3,7 +3,14 @@ package com.voelkerh.cPast.ui.home;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-import com.voelkerh.cPast.domain.*;
+import com.voelkerh.cPast.domain.model.Archive;
+import com.voelkerh.cPast.domain.model.Capture;
+import com.voelkerh.cPast.domain.model.TempImageData;
+import com.voelkerh.cPast.domain.repository.ArchiveRepository;
+import com.voelkerh.cPast.domain.repository.ImageRepository;
+import com.voelkerh.cPast.domain.repository.NotesRepository;
+import com.voelkerh.cPast.domain.repository.RecentCapturesRepository;
+import com.voelkerh.cPast.domain.service.RecordReferenceCreator;
 
 import java.util.List;
 

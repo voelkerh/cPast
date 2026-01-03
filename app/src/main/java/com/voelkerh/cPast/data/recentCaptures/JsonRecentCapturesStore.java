@@ -2,8 +2,8 @@ package com.voelkerh.cPast.data.recentCaptures;
 
 import android.content.Context;
 import android.util.Log;
-import com.voelkerh.cPast.domain.Archive;
-import com.voelkerh.cPast.domain.Capture;
+import com.voelkerh.cPast.domain.model.Archive;
+import com.voelkerh.cPast.domain.model.Capture;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

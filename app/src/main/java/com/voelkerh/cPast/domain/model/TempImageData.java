@@ -1,4 +1,4 @@
-package com.voelkerh.cPast.domain;
+package com.voelkerh.cPast.domain.model;
 
 import android.net.Uri;
 

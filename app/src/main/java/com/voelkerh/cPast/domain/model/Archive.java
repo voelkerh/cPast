@@ -1,4 +1,6 @@
-package com.voelkerh.cPast.domain;
+package com.voelkerh.cPast.domain.model;
+
+import org.jetbrains.annotations.NotNull;
 
 public class Archive {
 
@@ -30,6 +32,7 @@ public class Archive {
         return true;
     }
 
+    @NotNull
     @Override
     public String toString() {
         return fullName + " - " + shortName;

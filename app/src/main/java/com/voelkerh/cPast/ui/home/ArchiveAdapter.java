@@ -9,7 +9,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import androidx.core.content.ContextCompat;
 import com.voelkerh.cPast.R;
-import com.voelkerh.cPast.domain.Archive;
+import com.voelkerh.cPast.domain.model.Archive;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;

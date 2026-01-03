@@ -3,8 +3,8 @@ package com.voelkerh.cPast.ui.notes;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-import com.voelkerh.cPast.domain.Capture;
-import com.voelkerh.cPast.domain.RecentCapturesRepository;
+import com.voelkerh.cPast.domain.model.Capture;
+import com.voelkerh.cPast.domain.repository.RecentCapturesRepository;
 
 import java.util.List;
 

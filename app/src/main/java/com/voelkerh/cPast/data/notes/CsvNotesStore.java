@@ -8,8 +8,8 @@ import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
-import com.voelkerh.cPast.domain.Archive;
-import com.voelkerh.cPast.domain.Capture;
+import com.voelkerh.cPast.domain.model.Archive;
+import com.voelkerh.cPast.domain.model.Capture;
 
 import java.io.IOException;
 import java.io.OutputStream;

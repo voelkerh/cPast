@@ -1,7 +1,7 @@
 package com.voelkerh.cPast.data.recentCaptures;
 
-import com.voelkerh.cPast.domain.Capture;
-import com.voelkerh.cPast.domain.RecentCapturesRepository;
+import com.voelkerh.cPast.domain.model.Capture;
+import com.voelkerh.cPast.domain.repository.RecentCapturesRepository;
 
 import java.util.List;
 

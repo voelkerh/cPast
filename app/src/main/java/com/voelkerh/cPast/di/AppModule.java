@@ -9,10 +9,10 @@ import com.voelkerh.cPast.data.notes.CsvNotesStore;
 import com.voelkerh.cPast.data.notes.NotesRepositoryImpl;
 import com.voelkerh.cPast.data.recentCaptures.JsonRecentCapturesStore;
 import com.voelkerh.cPast.data.recentCaptures.RecentCapturesRepositoryImpl;
-import com.voelkerh.cPast.domain.ArchiveRepository;
-import com.voelkerh.cPast.domain.ImageRepository;
-import com.voelkerh.cPast.domain.NotesRepository;
-import com.voelkerh.cPast.domain.RecentCapturesRepository;
+import com.voelkerh.cPast.domain.repository.ArchiveRepository;
+import com.voelkerh.cPast.domain.repository.ImageRepository;
+import com.voelkerh.cPast.domain.repository.NotesRepository;
+import com.voelkerh.cPast.domain.repository.RecentCapturesRepository;
 
 /**
  * Dependency injection container that provides app-wide dependencies.

@@ -1,7 +1,7 @@
 package com.voelkerh.cPast.data.notes;
 
-import com.voelkerh.cPast.domain.NotesRepository;
-import com.voelkerh.cPast.domain.Capture;
+import com.voelkerh.cPast.domain.repository.NotesRepository;
+import com.voelkerh.cPast.domain.model.Capture;
 
 import java.time.LocalDateTime;
 
