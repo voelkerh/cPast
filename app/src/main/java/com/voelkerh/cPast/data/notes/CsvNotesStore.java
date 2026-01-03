@@ -17,7 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class CsvNotesStore {
+public class CsvNotesStore implements NotesStore {
 
     private static final String TAG = "CsvNoteStore";
     private static final String LOG_FILENAME = "cPast_Notes.csv";
@@ -37,6 +37,7 @@ public class CsvNotesStore {
         return "\"" + s + "\"";
     }
 
+    @Override
     public boolean saveNote(Capture capture) {
         String note = capture.getNote();
         String imageName = capture.getFileName();

@@ -7,9 +7,9 @@ import java.time.LocalDateTime;
 
 public class NotesRepositoryImpl implements NotesRepository {
 
-    private final CsvNotesStore noteStore;
+    private final NotesStore noteStore;
 
-    public NotesRepositoryImpl(CsvNotesStore noteStore) {
+    public NotesRepositoryImpl(NotesStore noteStore) {
         this.noteStore = noteStore;
     }
 

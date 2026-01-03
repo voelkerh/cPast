@@ -7,6 +7,7 @@ import com.voelkerh.cPast.data.images.ImageRepositoryImpl;
 import com.voelkerh.cPast.data.images.MediaImageStore;
 import com.voelkerh.cPast.data.notes.CsvNotesStore;
 import com.voelkerh.cPast.data.notes.NotesRepositoryImpl;
+import com.voelkerh.cPast.data.notes.NotesStore;
 import com.voelkerh.cPast.data.recentCaptures.JsonRecentCapturesStore;
 import com.voelkerh.cPast.data.recentCaptures.RecentCapturesRepositoryImpl;
 import com.voelkerh.cPast.domain.repository.ArchiveRepository;
@@ -34,8 +35,8 @@ public class AppModule {
         MediaImageStore mediaImageStore = new MediaImageStore(context);
         this.imageRepository = new ImageRepositoryImpl(context, mediaImageStore);
 
-        CsvNotesStore csvNotesStore = new CsvNotesStore(context);
-        this.notesRepository = new NotesRepositoryImpl(csvNotesStore);
+        NotesStore notesStore = new CsvNotesStore(context);
+        this.notesRepository = new NotesRepositoryImpl(notesStore);
 
         JsonRecentCapturesStore jsonRecentCapturesStore = new JsonRecentCapturesStore(context);
         this.recentCapturesRepository = new RecentCapturesRepositoryImpl(jsonRecentCapturesStore);
