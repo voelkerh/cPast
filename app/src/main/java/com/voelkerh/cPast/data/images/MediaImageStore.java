@@ -1,4 +1,4 @@
-package com.voelkerh.cPast.data;
+package com.voelkerh.cPast.data.images;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -20,7 +20,7 @@ import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.util.Locale;
 
-public class MediaImageStore implements ImageStore {
+public class MediaImageStore {
     private static final String TAG = "MediaImageStore";
     private static final String TEMP_FILE_NAME = "temp.jpg";
     private static final String MIME_TYPE = "image/jpeg";

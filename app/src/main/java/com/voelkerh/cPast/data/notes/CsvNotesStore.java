@@ -1,4 +1,4 @@
-package com.voelkerh.cPast.data;
+package com.voelkerh.cPast.data.notes;
 
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -17,7 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class CsvNoteStore implements NoteStore {
+public class CsvNotesStore {
 
     private static final String TAG = "CsvNoteStore";
     private static final String LOG_FILENAME = "cPast_Notes.csv";
@@ -27,7 +27,7 @@ public class CsvNoteStore implements NoteStore {
 
     private final Context context;
 
-    public CsvNoteStore(Context context) {
+    public CsvNotesStore(Context context) {
         this.context = context;
     }
 
@@ -37,7 +37,6 @@ public class CsvNoteStore implements NoteStore {
         return "\"" + s + "\"";
     }
 
-    @Override
     public boolean saveNote(Capture capture) {
         String note = capture.getNote();
         String imageName = capture.getFileName();

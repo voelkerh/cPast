@@ -1,4 +1,4 @@
-package com.voelkerh.cPast.data;
+package com.voelkerh.cPast.data.archives;
 
 import android.content.Context;
 import android.util.Log;
@@ -12,7 +12,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JsonArchiveStore implements ArchiveStore {
+public class JsonArchiveStore {
 
     private static final String TAG = "JsonArchiveStore";
     private static final String FILE = "archives.json";
@@ -32,7 +32,6 @@ public class JsonArchiveStore implements ArchiveStore {
         this.outputStream = outputStream;
     }
 
-    @Override
     public List<Archive> loadArchives() {
         InputStream stream = getInputStream();
         if (stream == null) return new ArrayList<>();
@@ -101,7 +100,6 @@ public class JsonArchiveStore implements ArchiveStore {
         return archives;
     }
 
-    @Override
     public boolean saveArchives(List<Archive> archives) {
         if (archives == null) return false;
         OutputStream stream = getOutputStream();

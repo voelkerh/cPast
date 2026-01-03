@@ -1,17 +1,19 @@
-package com.voelkerh.cPast.domain;
+package com.voelkerh.cPast.data.notes;
 
-import com.voelkerh.cPast.data.NoteStore;
+import com.voelkerh.cPast.domain.NotesRepository;
+import com.voelkerh.cPast.domain.Capture;
 
 import java.time.LocalDateTime;
 
-public class NoteRepository {
+public class NotesRepositoryImpl implements NotesRepository {
 
-    private final NoteStore noteStore;
+    private final CsvNotesStore noteStore;
 
-    public NoteRepository(NoteStore noteStore) {
+    public NotesRepositoryImpl(CsvNotesStore noteStore) {
         this.noteStore = noteStore;
     }
 
+    @Override
     public boolean saveNote(Capture capture) {
         String imageFileName = capture.getFileName();
         String note = capture.getNote();

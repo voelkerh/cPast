@@ -1,4 +1,4 @@
-package com.voelkerh.cPast.data;
+package com.voelkerh.cPast.data.recentCaptures;
 
 import android.content.Context;
 import android.util.Log;
@@ -13,7 +13,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JsonRecentCapturesStore implements RecentCapturesStore {
+public class JsonRecentCapturesStore {
 
     private static final String TAG = "JsonSettingsStore";
     private static final String FILE_NAME = "AppSettings.json";
@@ -24,7 +24,6 @@ public class JsonRecentCapturesStore implements RecentCapturesStore {
         this.context = context;
     }
 
-    @Override
     public List<Capture> loadRecentFiles() {
         File file = new File(context.getFilesDir(), FILE_NAME);
         if (!file.exists()) return new ArrayList<>();
@@ -87,7 +86,6 @@ public class JsonRecentCapturesStore implements RecentCapturesStore {
         return new Capture(archive, fileName, note);
     }
 
-    @Override
     public boolean saveRecentFiles(List<Capture> files) {
         if (files == null || files.isEmpty()) return false;
 

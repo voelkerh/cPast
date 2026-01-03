@@ -1,6 +1,7 @@
 package com.voelkerh.cPast.data;
 
 import android.content.Context;
+import com.voelkerh.cPast.data.archives.JsonArchiveStore;
 import com.voelkerh.cPast.domain.Archive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
