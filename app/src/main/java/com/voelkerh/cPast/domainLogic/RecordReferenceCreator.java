@@ -4,7 +4,7 @@ public class RecordReferenceCreator {
 
     public static String createBaseReference(String strArchiveShort, String strRecordReference) {
         StringBuilder sb = new StringBuilder(strArchiveShort);
-        if (!strRecordReference.isEmpty()){
+        if (!strRecordReference.isEmpty()) {
             sb.append('_').append(strRecordReference);
         }
 
@@ -20,7 +20,7 @@ public class RecordReferenceCreator {
 
     public static String addCounterAndFileExtension(String baseReference, String strCounter) {
         StringBuilder sb = new StringBuilder(baseReference);
-        if (!strCounter.isEmpty() && !baseReference.isEmpty()){
+        if (!strCounter.isEmpty() && !baseReference.isEmpty()) {
             sb.append('_').append(strCounter);
         }
         sb.append(".jpg");

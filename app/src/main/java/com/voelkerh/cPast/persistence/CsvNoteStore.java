@@ -31,6 +31,12 @@ public class CsvNoteStore implements NoteStore {
         this.context = context;
     }
 
+    private static String csvField(String s) {
+        if (s == null) return "\"\"";
+        s = s.replace("\"", "\"\"");
+        return "\"" + s + "\"";
+    }
+
     @Override
     public boolean saveNote(Capture capture) {
         String note = capture.getNote();
@@ -38,7 +44,8 @@ public class CsvNoteStore implements NoteStore {
         LocalDateTime captureTime = capture.getCaptureTime();
         Archive archive = capture.getArchive();
 
-        if (note == null || note.isEmpty() || imageName.isEmpty() || captureTime == null || archive == null) return false;
+        if (note == null || note.isEmpty() || imageName.isEmpty() || captureTime == null || archive == null)
+            return false;
 
         Uri uri = findExistingFile();
         if (uri == null) uri = createNewFile();
@@ -92,7 +99,9 @@ public class CsvNoteStore implements NoteStore {
         }
 
         try (OutputStream os = context.getContentResolver().openOutputStream(uri)) {
-            os.write(0xEF); os.write(0xBB); os.write(0xBF);
+            os.write(0xEF);
+            os.write(0xBB);
+            os.write(0xBF);
             os.write(CSV_HEADER.getBytes(StandardCharsets.UTF_8));
             return uri;
         } catch (IOException e) {
@@ -108,14 +117,8 @@ public class CsvNoteStore implements NoteStore {
         return csvField(date) + CSV_DELIMITER + csvField(time) + CSV_DELIMITER + csvField(archiveName) + CSV_DELIMITER + csvField(imageName) + CSV_DELIMITER + csvField(note) + "\n";
     }
 
-    private static String csvField(String s) {
-        if (s == null) return "\"\"";
-        s = s.replace("\"", "\"\"");
-        return "\"" + s + "\"";
-    }
-
     private boolean appendToFile(Uri uri, String note) {
-        if(uri == null) return false;
+        if (uri == null) return false;
 
         try (OutputStream os = context.getContentResolver().openOutputStream(uri, "wa")) {
             os.write(note.getBytes(StandardCharsets.UTF_8));

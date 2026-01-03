@@ -29,9 +29,9 @@ public class JsonRecentCapturesStore implements RecentCapturesStore {
         File file = new File(context.getFilesDir(), FILE_NAME);
         if (!file.exists()) return new ArrayList<>();
 
-        try(FileInputStream fis = new FileInputStream(file);
-            InputStreamReader isr = new InputStreamReader(fis, StandardCharsets.UTF_8);
-            BufferedReader br = new BufferedReader(isr)) {
+        try (FileInputStream fis = new FileInputStream(file);
+             InputStreamReader isr = new InputStreamReader(fis, StandardCharsets.UTF_8);
+             BufferedReader br = new BufferedReader(isr)) {
 
             StringBuilder sb = new StringBuilder();
             String line;
@@ -41,7 +41,7 @@ public class JsonRecentCapturesStore implements RecentCapturesStore {
 
             return parseRecentFiles(sb.toString());
 
-        } catch (IOException e){
+        } catch (IOException e) {
             Log.e(TAG, "Error while loading recent files: " + e.getMessage());
             return new ArrayList<>();
         }
@@ -53,7 +53,7 @@ public class JsonRecentCapturesStore implements RecentCapturesStore {
             JSONObject json = new JSONObject(string);
             JSONArray filesArray = json.optJSONArray("recentFiles");
 
-            if (filesArray !=null) {
+            if (filesArray != null) {
                 for (int i = 0; i < filesArray.length(); i++) {
                     JSONObject obj = filesArray.optJSONObject(i);
                     if (obj == null) continue;

@@ -11,7 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
-public class  ImageRepository {
+public class ImageRepository {
     private static final String TAG = "ImageRepository";
     private static final String FILE_PROVIDER_AUTHORITY = "com.voelkerh.cPast.fileprovider";
     private final Context context;
@@ -31,7 +31,7 @@ public class  ImageRepository {
      * (for later processing and moving the image to the gallery).
      *
      * @return a {@link TempImageInfo} object containing the file URI and path,
-     *         or {@code null} if the temp file could not be created
+     * or {@code null} if the temp file could not be created
      * @see TempImageInfo
      * @see #saveImageToGallery(String, String, String)
      */

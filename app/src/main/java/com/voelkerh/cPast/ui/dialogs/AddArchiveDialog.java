@@ -14,10 +14,6 @@ import com.voelkerh.cPast.R;
 
 public class AddArchiveDialog {
 
-    public interface Listener {
-        void onArchiveCreated(String fullName, String shortName);
-    }
-
     public static void show(Context context, Listener listener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
@@ -77,5 +73,9 @@ public class AddArchiveDialog {
 
         positiveButton.setTextColor(ContextCompat.getColor(context, R.color.colorPrimaryDark));
         neutralButton.setTextColor(Color.GRAY);
+    }
+
+    public interface Listener {
+        void onArchiveCreated(String fullName, String shortName);
     }
 }

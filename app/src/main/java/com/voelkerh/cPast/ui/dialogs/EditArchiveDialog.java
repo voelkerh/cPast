@@ -16,11 +16,6 @@ import com.voelkerh.cPast.R;
 public class EditArchiveDialog {
 
 
-    public interface Listener {
-        void onArchiveEdited(String oldFullName, String oldShortName, String shortArchiveName, String fullArchiveName);
-        void onArchiveDeleted(String fullArchiveName);
-    }
-
     public static void show(Context context, String archiveName, Listener listener) {
         String fullArchiveName = archiveName.split("-")[0].trim();
         String shortArchiveName = archiveName.split("-")[1].trim();
@@ -93,5 +88,11 @@ public class EditArchiveDialog {
         positiveButton.setTextColor(ContextCompat.getColor(context, R.color.colorPrimaryDark));
         negativeButton.setTextColor(ContextCompat.getColor(context, R.color.design_default_color_error));
         neutralButton.setTextColor(Color.GRAY);
+    }
+
+    public interface Listener {
+        void onArchiveEdited(String oldFullName, String oldShortName, String shortArchiveName, String fullArchiveName);
+
+        void onArchiveDeleted(String fullArchiveName);
     }
 }

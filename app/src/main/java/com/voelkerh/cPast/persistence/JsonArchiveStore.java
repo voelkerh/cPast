@@ -20,13 +20,13 @@ public class JsonArchiveStore implements ArchiveStore {
     private final InputStream inputStream;
     private final OutputStream outputStream;
 
-    public JsonArchiveStore(Context context){
+    public JsonArchiveStore(Context context) {
         this.context = context;
         this.inputStream = null;
         this.outputStream = null;
     }
 
-    public JsonArchiveStore(InputStream inputStream, OutputStream outputStream){
+    public JsonArchiveStore(InputStream inputStream, OutputStream outputStream) {
         this.context = null;
         this.inputStream = inputStream;
         this.outputStream = outputStream;
@@ -46,10 +46,10 @@ public class JsonArchiveStore implements ArchiveStore {
                 sb.append(line);
             }
 
-            if(sb.length() == 0) return new ArrayList<>();
+            if (sb.length() == 0) return new ArrayList<>();
             return jsonToList(sb.toString());
 
-        } catch (FileNotFoundException e){
+        } catch (FileNotFoundException e) {
             return new ArrayList<>();
         } catch (IOException e) {
             Log.e(TAG, e.getMessage());
@@ -65,9 +65,9 @@ public class JsonArchiveStore implements ArchiveStore {
         }
     }
 
-    private InputStream getInputStream(){
-        if(inputStream != null) return this.inputStream;
-        if(context != null) {
+    private InputStream getInputStream() {
+        if (inputStream != null) return this.inputStream;
+        if (context != null) {
             try {
                 return context.openFileInput(FILE);
             } catch (FileNotFoundException e) {
@@ -126,7 +126,7 @@ public class JsonArchiveStore implements ArchiveStore {
         }
     }
 
-    private OutputStream getOutputStream(){
+    private OutputStream getOutputStream() {
         if (outputStream != null) return this.outputStream;
         if (context != null) {
             try {

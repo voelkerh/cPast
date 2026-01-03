@@ -53,7 +53,7 @@ public class MediaImageStore implements ImageStore {
         if (imageUri == null) throw new IOException("Failed to create MediaStore entry");
 
         try (ParcelFileDescriptor pfd = contentResolver.openFileDescriptor(imageUri, "w");
-            OutputStream os = new FileOutputStream(pfd.getFileDescriptor())) {
+             OutputStream os = new FileOutputStream(pfd.getFileDescriptor())) {
 
             bitmap.compress(Bitmap.CompressFormat.JPEG, JPEG_QUALITY, os);
             pfd.getFileDescriptor().sync();
@@ -113,9 +113,9 @@ public class MediaImageStore implements ImageStore {
     public int getHighestCounterForRecord(String[] directoryNames) {
         String relative = getRelativePath(directoryNames);
 
-        String[] projection = { MediaStore.Images.Media.DISPLAY_NAME };
+        String[] projection = {MediaStore.Images.Media.DISPLAY_NAME};
         String selection = MediaStore.Images.Media.RELATIVE_PATH + " = ?";
-        String[] selectionArgs = { relative };
+        String[] selectionArgs = {relative};
 
         int max = 0;
 

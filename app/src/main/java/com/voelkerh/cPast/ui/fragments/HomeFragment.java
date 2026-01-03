@@ -25,7 +25,11 @@ import static android.widget.Toast.LENGTH_SHORT;
 public class HomeFragment extends Fragment implements AddArchiveDialog.Listener, EditArchiveDialog.Listener {
 
     private static final int REQUEST_IMAGE_CAPTURE = 1;
-
+    // Domain logic dependencies
+    private final ArchiveRepository archiveRepository;
+    private final ImageRepository imageRepository;
+    private final NoteRepository noteRepository;
+    private final RecentCapturesRepository recentCapturesRepository;
     private int currentCounter = 0;
     // UI components
     private Spinner dropdown;
@@ -33,13 +37,7 @@ public class HomeFragment extends Fragment implements AddArchiveDialog.Listener,
     private TextView noteText;
     private TextView imageCounter;
     private TextView recordReferenceText;
-
-    // Domain logic dependencies
-    private final ArchiveRepository archiveRepository;
-    private final ImageRepository imageRepository;
     private ImageRepository.TempImageInfo tempImageInfo;
-    private final NoteRepository noteRepository;
-    private final RecentCapturesRepository recentCapturesRepository;
 
     public HomeFragment(ArchiveRepository archiveRepository, ImageRepository imageRepository, NoteRepository notesRepository, RecentCapturesRepository recentCapturesRepository) {
         this.archiveRepository = archiveRepository;
@@ -60,7 +58,7 @@ public class HomeFragment extends Fragment implements AddArchiveDialog.Listener,
         initViews(view);
     }
 
-    private void initViews(View view){
+    private void initViews(View view) {
         dropdown = view.findViewById(R.id.spinnerArchive);
         recordReferenceEditText = view.findViewById(R.id.editTextRef);
         recordReferenceText = view.findViewById(R.id.textViewRef);
@@ -122,7 +120,7 @@ public class HomeFragment extends Fragment implements AddArchiveDialog.Listener,
     /**
      * Make sure to recalculate counter after visit of other menu fragment.
      * Ensures to update counter, if user deletes images in photos fragment.
-      */
+     */
     @Override
     public void onResume() {
         super.onResume();
@@ -157,8 +155,7 @@ public class HomeFragment extends Fragment implements AddArchiveDialog.Listener,
             if (tempImageInfo != null) {
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, tempImageInfo.uri);
                 startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-            }
-            else showMessage("No photoURI to capture image");
+            } else showMessage("No photoURI to capture image");
         }
     }
 
@@ -202,7 +199,7 @@ public class HomeFragment extends Fragment implements AddArchiveDialog.Listener,
                     boolean noteSaved = noteRepository.saveNote(capture);
 
                     tempImageInfo = null;
-                    if(noteSaved) showMessage("Note and image saved\n " + imageFileName);
+                    if (noteSaved) showMessage("Note and image saved\n " + imageFileName);
                     else showMessage("Image saved to " + imageFileName + "\nNote could not be saved");
                 }
             } catch (IOException e) {
@@ -230,10 +227,10 @@ public class HomeFragment extends Fragment implements AddArchiveDialog.Listener,
     public void onArchiveDeleted(String fullArchiveName) {
         archiveRepository.deleteArchive(fullArchiveName);
         updateDropdown();
-        showMessage(getString(R.string.deleted)+ " - " + fullArchiveName);
+        showMessage(getString(R.string.deleted) + " - " + fullArchiveName);
     }
 
-    private void updateDropdown(){
+    private void updateDropdown() {
         ArrayAdapter<Archive> dataAdapter =
                 new ArchiveAdapter(requireContext(), archiveRepository.readArchives(), this, this);
         dropdown.setAdapter(dataAdapter);
@@ -241,7 +238,8 @@ public class HomeFragment extends Fragment implements AddArchiveDialog.Listener,
 
     private String createFileName(String baseReference, String counter) {
         String fileName = RecordReferenceCreator.addCounterAndFileExtension(baseReference, counter);
-        if (fileName.length() > 128) showMessage("Your catalogue reference is very long and may result in unusable file names.");
+        if (fileName.length() > 128)
+            showMessage("Your catalogue reference is very long and may result in unusable file names.");
         return fileName;
     }
 
@@ -253,7 +251,7 @@ public class HomeFragment extends Fragment implements AddArchiveDialog.Listener,
         return RecordReferenceCreator.createBaseReference(shortArchiveName, recordReference);
     }
 
-    private Archive getSelectedArchive(){
+    private Archive getSelectedArchive() {
         return (Archive) dropdown.getSelectedItem();
     }
 }

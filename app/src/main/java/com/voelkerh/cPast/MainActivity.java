@@ -22,15 +22,14 @@ import com.voelkerh.cPast.ui.fragments.HelpFragment;
 import com.voelkerh.cPast.ui.fragments.HomeFragment;
 import com.voelkerh.cPast.ui.fragments.NotesFragment;
 
-public class MainActivity extends AppCompatActivity  implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
+    public static final String TAG = "MainActivity";
     private DrawerLayout drawerLayout;
     private RecentCapturesRepository recentCapturesRepository;
     private ImageRepository imageRepository;
     private NoteRepository noteRepository;
     private ArchiveRepository archiveRepository;
-
-    public static final String TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +54,7 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
         }
     }
 
-    private void initAppRepos(){
+    private void initAppRepos() {
         RecentCapturesStore recentCapturesStore = new JsonRecentCapturesStore(this.getApplicationContext());
         recentCapturesRepository = new RecentCapturesRepository(recentCapturesStore);
         ArchiveStore jsonArchiveStore = new JsonArchiveStore(this.getApplicationContext());
