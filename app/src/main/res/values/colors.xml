@@ -7,7 +7,6 @@
 
     <color name="background">#FFFFFF</color>
     <color name="colorPrimaryDarkTrans">#F8F8F8F7</color>
-    <color name="colorPrimaryDarkTransD">#FFCFCFCF</color>
 
     <color name="fontColor">#212121</color>
     <color name="fontColorSecondary">#414141</color>
