@@ -7,8 +7,10 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import androidx.core.content.ContextCompat;
 import com.voelkerh.cPast.R;
 import com.voelkerh.cPast.domain.Archive;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -54,10 +56,10 @@ public class ArchiveAdapter extends ArrayAdapter<Archive> {
 
         if (position < archives.size()) {
             tv.setText(archives.get(position).toString());
-            tv.setTextColor(context.getResources().getColor(R.color.fontColor));
+            tv.setTextColor(ContextCompat.getColor(context, R.color.fontColor));
         } else {
-            tv.setText("Add archive");
-            tv.setTextColor(context.getResources().getColor(R.color.fontColor));
+            tv.setText(R.string.add_archive);
+            tv.setTextColor(ContextCompat.getColor(context, R.color.fontColor));
         }
 
         return row;
@@ -65,7 +67,7 @@ public class ArchiveAdapter extends ArrayAdapter<Archive> {
 
 
     @Override
-    public View getDropDownView(int position, View convertView, ViewGroup parent) {
+    public View getDropDownView(int position, View convertView, @NotNull ViewGroup parent) {
         View row = inflater.inflate(R.layout.item_archive, parent, false);
         TextView name = row.findViewById(R.id.textArchiveName);
         ImageButton edit = row.findViewById(R.id.btnEditArchive);
@@ -75,22 +77,20 @@ public class ArchiveAdapter extends ArrayAdapter<Archive> {
             name.setText(archiveName);
 
             edit.setVisibility(View.VISIBLE);
-            edit.setOnClickListener(v -> {
-                v.post(() -> {
-                    if (editArchiveListener != null) {
-                        EditArchiveDialog.show(context, archiveName, editArchiveListener);
-                    }
-                });
-            });
+            edit.setOnClickListener(v -> v.post(() -> {
+                if (editArchiveListener != null) {
+                    EditArchiveDialog.show(context, archiveName, editArchiveListener);
+                }
+            }));
 
             edit.setFocusable(false);
             edit.setFocusableInTouchMode(false);
 
         } else {
-            name.setText("Add archive");
-            name.setTextColor(context.getResources().getColor(android.R.color.white));
+            name.setText(R.string.add_archive);
+            name.setTextColor(ContextCompat.getColor(context, android.R.color.white));
             edit.setVisibility(View.GONE);  // no edit symbol
-            row.setBackgroundColor(context.getResources().getColor(R.color.colorPrimaryDark));
+            row.setBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimaryDark));
             row.setOnClickListener(v -> {
                 if (addArchiveListener != null) {
                     AddArchiveDialog.show(context, addArchiveListener);

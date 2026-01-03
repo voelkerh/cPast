@@ -1,6 +1,5 @@
 package com.voelkerh.cPast.ui.home;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -10,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -22,8 +23,6 @@ import static android.widget.Toast.LENGTH_SHORT;
 
 public class HomeFragment extends Fragment implements AddArchiveDialog.Listener, EditArchiveDialog.Listener {
 
-    private static final int REQUEST_IMAGE_CAPTURE = 1;
-
     private HomeViewModel homeViewModel;
     private String tempImagePath;
 
@@ -34,11 +33,18 @@ public class HomeFragment extends Fragment implements AddArchiveDialog.Listener,
     private TextView noteText;
     private TextView imageCounter;
 
+    private ActivityResultLauncher<Intent> takePictureLauncher;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        homeViewModel = new ViewModelProvider(this, new ViewModelFactory())
-                .get(HomeViewModel.class);
+        homeViewModel = new ViewModelProvider(this, new ViewModelFactory()).get(HomeViewModel.class);
+
+        takePictureLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+            if (result.getResultCode() == android.app.Activity.RESULT_OK) {
+                handleCameraResult();
+            }
+        });
     }
 
     @Override
@@ -149,28 +155,22 @@ public class HomeFragment extends Fragment implements AddArchiveDialog.Listener,
                 tempImagePath = tempData.path;
                 android.net.Uri uri = tempData.uri;
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                takePictureLauncher.launch(takePictureIntent);
             }
         }
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
-
-            if (tempImagePath == null) {
-                showMessage("Error: No image path available");
-                return;
-            }
-
-            String note = noteText.getText().toString().trim();
-            homeViewModel.saveCapturedImage(tempImagePath, note);
-
-            noteText.setText("");
-            tempImagePath = null;
+    private void handleCameraResult() {
+        if (tempImagePath == null) {
+            showMessage("Error: No image path available");
+            return;
         }
+
+        String note = noteText.getText().toString().trim();
+        homeViewModel.saveCapturedImage(tempImagePath, note);
+
+        noteText.setText("");
+        tempImagePath = null;
     }
 
     @Override

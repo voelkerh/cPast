@@ -55,7 +55,6 @@ public class JsonArchiveStoreTest {
         Object result = store.loadArchives();
 
         assertNotNull(result);
-        assertTrue(result instanceof List);
     }
 
     @Test
@@ -68,7 +67,6 @@ public class JsonArchiveStoreTest {
         Object result = store.loadArchives();
 
         assertNotNull(result);
-        assertTrue(result instanceof List);
     }
 
     @Test
@@ -81,7 +79,6 @@ public class JsonArchiveStoreTest {
         Object result = store.loadArchives();
 
         assertNotNull(result);
-        assertTrue(result instanceof List);
     }
 
     @Test

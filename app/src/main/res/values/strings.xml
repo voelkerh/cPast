@@ -1,15 +1,16 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">cPast</string>
     <string name="ref_text">.jpg</string>
     <string name="fa_clear">&#xF00D;</string>
     <string name="repository">Current archive:</string>
     <string name="catalogue_reference">Reference of archival record:</string>
     <string name="note">Note</string>
-    <string name="record_name_hint">E.g. DQ1_14614</string>
+    <string name="record_name_hint" tools:ignore="Typos">E.g. DQ1_14614</string>
     <string name="heading_edit_archive"><![CDATA[<H2>Edit Archive</H2>]]></string>
     <string name="heading_delete_archive"><![CDATA[<H2>Delete Archive</H2>]]></string>
     <string name="delete_archive_warning"><![CDATA[Do you really want to delete this archive?]]></string>
     <string name="add_repo_heading"><![CDATA[<H2>Add Archive</H2>]]></string>
+    <string name="add_archive">Add Archive</string>
     <string name="full_archive_name_label">Full name</string>
     <string name="full_archive_name_hint">E.g. Bundesarchiv</string>
     <string name="short_archive_name_label"><![CDATA[Short form <br />(as you would cite this archive)]]></string>
@@ -27,13 +28,13 @@
         <![CDATA[<p>This app is a revised version of Capturing the Past. This app was originally developed in a <a href="https://blogs.sussex.ac.uk/capturing-the-past/about-us/">research project</a> at the <a href="https://www.sussex.ac.uk/research/centres/sussex-humanities-lab/">Sussex Humanities Lab</a>. The original project was funded by the <a href="https://ahrc.ukri.org/">Arts and Humanities Research Council</a>.</p>]]></string>
     <string name="help_fragment_title">Help</string>
     <string name="help_fragment_acc_title_1">Add and Select Archive</string>
-    <string name="help_fragment_acc_body_1_text">
+    <string name="help_fragment_acc_body_1_text" tools:ignore="Typos">
         <![CDATA[<p>- Enter the full archive name and the short form as you would cite the archive.</p><p>- The short form will be part of the photo name:</p><p><b><u>BArch</u></b>_DQ1_14614_1.jpg</p>]]></string>
     <string name="help_fragment_acc_title_2">Add record information</string>
-    <string name="help_fragment_acc_body_2_text">
+    <string name="help_fragment_acc_body_2_text" tools:ignore="Typos">
         <![CDATA[<p>- Enter the reference for the next record to photograph.</p><p>- The reference will be part of the photo name:</p><p>BArch_<b><u>DQ1</u>_<u>14614</u></b>_<b><u>1</u></b>.jpg</p><p>- The photo name ends with a counter. It increases as you take photos of the record.</p>]]></string>
     <string name="help_fragment_acc_title_3">Define folder structure via record name</string>
-    <string name="help_fragment_acc_body_3_text">
+    <string name="help_fragment_acc_body_3_text" tools:ignore="Typos">
         <![CDATA[<p>- Add hierarchy levels using \"_\" or \"/\" in the record reference.</p><p>- BArch<b><u>_</u></b>DQ1<b><u>_</u></b>14614<b><u>_</u></b>1.jpg will result in:</p>]]></string>
     <string name="help_fragment_acc_title_4">Take notes and photos</string>
     <string name="help_fragment_acc_body_4_text">
@@ -58,4 +59,12 @@
     <string name="welcome_notes">Save notes with your photos.</string>
     <string name="welcome_thoughts">&#x2714; Capture your thoughts.</string>
     <string name="welcome_button">Start</string>
+    <string name="edit_button">Edit Archive</string>
+    <string name="file_image">Photo of historical files</string>
+    <string name="nav_home">Home</string>
+    <string name="nav_photos">Photos</string>
+    <string name="nav_notes">Notes</string>
+    <string name="nav_help">Help</string>
+    <string name="nav_about">About</string>
+    <string name="nav_close">Close</string>
 </resources>
