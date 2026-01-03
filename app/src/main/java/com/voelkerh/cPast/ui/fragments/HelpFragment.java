@@ -1,14 +1,14 @@
 package com.voelkerh.cPast.ui.fragments;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import androidx.core.text.HtmlCompat;
 import androidx.fragment.app.Fragment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import com.voelkerh.cPast.R;
 
 public class HelpFragment extends Fragment {

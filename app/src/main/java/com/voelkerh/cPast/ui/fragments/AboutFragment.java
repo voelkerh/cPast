@@ -1,13 +1,13 @@
 package com.voelkerh.cPast.ui.fragments;
 
 import android.os.Bundle;
-import android.widget.TextView;
-import androidx.core.text.HtmlCompat;
 import android.text.method.LinkMovementMethod;
-import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+import androidx.core.text.HtmlCompat;
+import androidx.fragment.app.Fragment;
 import com.voelkerh.cPast.R;
 
 public class AboutFragment extends Fragment {
