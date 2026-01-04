@@ -1,21 +1,21 @@
 <LinearLayout
-     xmlns:android="http://schemas.android.com/apk/res/android"
-     xmlns:tools="http://schemas.android.com/tools"
-     android:layout_width="match_parent"
-     android:layout_height="match_parent"
-     android:orientation="vertical"
-     tools:context="com.benskitchen.cPast.ui.fragments.AboutFragment">
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context="com.voelkerh.cPast.ui.about.AboutFragment">
 
     <TextView
-        android:id="@+id/about_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/about_fragment_title"
-        android:textAlignment="center"
-        android:textSize="24sp"
-        android:textColor="@color/colorPrimaryDark"
-        android:textStyle="bold"
-        android:padding="32dp"
+            android:id="@+id/about_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/about_fragment_title"
+            android:textAlignment="center"
+            android:textSize="24sp"
+            android:textColor="@color/colorPrimaryDark"
+            android:textStyle="bold"
+            android:padding="32dp"
     />
 
     <TextView

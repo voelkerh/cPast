@@ -1,47 +1,47 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <menu
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:showIn = "navigation_view">
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        tools:showIn="navigation_view">
 
     <group
-        android:checkableBehavior="single">
+            android:checkableBehavior="single">
 
         <item
-            android:id="@+id/nav_home"
-            android:icon="@drawable/nav_home"
-            android:title="Home"/>
+                android:id="@+id/nav_home"
+                android:icon="@drawable/nav_home"
+                android:title="@string/nav_home"/>
 
         <item
-            android:id="@+id/nav_photos"
-            android:icon="@drawable/nav_photos"
-            android:title="Photos"/>
+                android:id="@+id/nav_photos"
+                android:icon="@drawable/nav_photos"
+                android:title="@string/nav_photos"/>
 
         <item
-            android:id="@+id/nav_notes"
-            android:icon="@drawable/nav_notes"
-            android:title="Notes"/>
+                android:id="@+id/nav_notes"
+                android:icon="@drawable/nav_notes"
+                android:title="@string/nav_notes"/>
 
         <item
-            android:id="@+id/nav_help"
-            android:icon="@drawable/nav_help"
-            android:title="Help"/>
+                android:id="@+id/nav_help"
+                android:icon="@drawable/nav_help"
+                android:title="@string/nav_help"/>
 
         <item
-            android:id="@+id/nav_about"
-            android:icon="@drawable/nav_about"
-            android:title="About"/>
+                android:id="@+id/nav_about"
+                android:icon="@drawable/nav_about"
+                android:title="@string/nav_about"/>
 
     </group>
 
     <item
-        android:title="">
+            android:title="">
 
         <menu>
             <item
-                android:id="@+id/nav_exit"
-                android:icon="@drawable/nav_exit"
-                android:title="Close"/>
+                    android:id="@+id/nav_exit"
+                    android:icon="@drawable/nav_exit"
+                    android:title="@string/nav_close"/>
         </menu>
 
     </item>
