@@ -3,7 +3,6 @@ package com.voelkerh.cPast.di;
 import android.content.Context;
 import com.voelkerh.cPast.data.archives.ArchiveRepositoryImpl;
 import com.voelkerh.cPast.data.images.ImageRepositoryImpl;
-import com.voelkerh.cPast.data.images.MediaImageStore;
 import com.voelkerh.cPast.data.notes.CsvNotesRepositoryImpl;
 import com.voelkerh.cPast.data.recentCaptures.RecentCapturesRepositoryImpl;
 import com.voelkerh.cPast.domain.repository.ArchiveRepository;
@@ -11,14 +10,15 @@ import com.voelkerh.cPast.domain.repository.ImageRepository;
 import com.voelkerh.cPast.domain.repository.NotesRepository;
 import com.voelkerh.cPast.domain.repository.RecentCapturesRepository;
 import com.voelkerh.cPast.domain.usecase.ManageArchivesUseCase;
+import com.voelkerh.cPast.domain.usecase.ManageImagesUseCase;
 import com.voelkerh.cPast.domain.usecase.ManageRecentCapturesUseCase;
 import com.voelkerh.cPast.domain.usecase.WriteNotesUseCase;
 
 /**
  * Dependency injection container that provides app-wide dependencies.
  *
- * <p>This class serves as composition root. It provides the {@link ViewModelFactory} with all necessary repositories.
- * It ensures that a single instance of each repository is created and shared application-wide.
+ * <p>This class serves as the composition root. It provides the {@link ViewModelFactory} with all necessary use cases.
+ * It ensures that a single instance of each use case is created and shared application-wide.
  * This is the only class that knows about concrete implementations from all layers.</p>
  */
 public class AppModule {
@@ -26,7 +26,7 @@ public class AppModule {
     private static AppModule instance;
 
     private final ManageArchivesUseCase manageArchivesUseCase;
-    private final ImageRepository imageRepository;
+    private final ManageImagesUseCase manageImagesUseCase;
     private final WriteNotesUseCase writeNotesUseCase;
     private final ManageRecentCapturesUseCase manageRecentCapturesUseCase;
 
@@ -34,8 +34,8 @@ public class AppModule {
         ArchiveRepository archiveRepository = new ArchiveRepositoryImpl(context);
         this.manageArchivesUseCase = new ManageArchivesUseCase(archiveRepository);
 
-        MediaImageStore mediaImageStore = new MediaImageStore(context);
-        this.imageRepository = new ImageRepositoryImpl(context, mediaImageStore);
+        ImageRepository imageRepository = new ImageRepositoryImpl(context);
+        this.manageImagesUseCase = new ManageImagesUseCase(imageRepository);
 
         NotesRepository notesRepository = new CsvNotesRepositoryImpl(context);
         this.writeNotesUseCase = new WriteNotesUseCase(notesRepository);
@@ -48,7 +48,7 @@ public class AppModule {
      * Initializes the {@link AppModule} singleton.
      *
      * <p>This method is called once upon application startup by {@link com.voelkerh.cPast.CPastApplication#onCreate()}.
-     * Only afterward the {@link AppModule} can be called via {@link #getInstance()}.</p>
+     * After initialization, the module can be called via {@link #getInstance()}.</p>
      *
      * @param context application context
      */
@@ -83,14 +83,14 @@ public class AppModule {
     }
 
     /**
-     * Returns the application-wide {@link ImageRepository}.
+     * Returns the application-wide {@link ManageImagesUseCase}.
      *
      * <p>The returned instance is shared and provides access to operations related to photo captures.</p>
      *
-     * @return application-wide {@link ImageRepository}
+     * @return application-wide {@link ManageImagesUseCase}
      */
-    public ImageRepository getImageRepository() {
-        return imageRepository;
+    public ManageImagesUseCase getManageImagesUseCase() {
+        return manageImagesUseCase;
     }
 
     /**

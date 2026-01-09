@@ -6,9 +6,9 @@ import androidx.lifecycle.ViewModel;
 import com.voelkerh.cPast.domain.model.Archive;
 import com.voelkerh.cPast.domain.model.Capture;
 import com.voelkerh.cPast.domain.model.TempImageData;
-import com.voelkerh.cPast.domain.repository.ImageRepository;
 import com.voelkerh.cPast.domain.service.RecordReferenceCreator;
 import com.voelkerh.cPast.domain.usecase.ManageArchivesUseCase;
+import com.voelkerh.cPast.domain.usecase.ManageImagesUseCase;
 import com.voelkerh.cPast.domain.usecase.ManageRecentCapturesUseCase;
 import com.voelkerh.cPast.domain.usecase.WriteNotesUseCase;
 
@@ -18,7 +18,7 @@ public class HomeViewModel extends ViewModel {
 
     private final ManageArchivesUseCase manageArchivesUseCase;
     private final WriteNotesUseCase writeNotesUseCase;
-    private final ImageRepository imageRepository;
+    private final ManageImagesUseCase manageImagesUseCase;
     private final ManageRecentCapturesUseCase manageRecentCapturesUseCase;
 
     private final MutableLiveData<List<Archive>> archives = new MutableLiveData<>();
@@ -30,9 +30,9 @@ public class HomeViewModel extends ViewModel {
     private Archive selectedArchive;
     private String currentRecordReference = "";
 
-    public HomeViewModel(ManageArchivesUseCase manageArchivesUseCase, ImageRepository imageRepository, WriteNotesUseCase writeNotesUseCase, ManageRecentCapturesUseCase manageRecentCapturesUseCase) {
+    public HomeViewModel(ManageArchivesUseCase manageArchivesUseCase, ManageImagesUseCase manageImagesUseCase, WriteNotesUseCase writeNotesUseCase, ManageRecentCapturesUseCase manageRecentCapturesUseCase) {
         this.manageArchivesUseCase = manageArchivesUseCase;
-        this.imageRepository = imageRepository;
+        this.manageImagesUseCase = manageImagesUseCase;
         this.writeNotesUseCase = writeNotesUseCase;
         this.manageRecentCapturesUseCase = manageRecentCapturesUseCase;
         loadArchives();
@@ -80,7 +80,7 @@ public class HomeViewModel extends ViewModel {
         String imageFileName = createFileName(baseReference, String.valueOf(counter + 1));
 
         try {
-            boolean saved = imageRepository.saveImageToGallery(imageFileName, note, tempImagePath);
+            boolean saved = manageImagesUseCase.saveImageToGallery(imageFileName, note, tempImagePath);
 
             if (saved) {
                 currentCounter.setValue(counter + 1);
@@ -143,7 +143,7 @@ public class HomeViewModel extends ViewModel {
             return;
         }
 
-        int counter = imageRepository.getHighestCounterForRecord(baseReference);
+        int counter = manageImagesUseCase.getHighestCounterForRecord(baseReference);
         currentCounter.setValue(counter);
 
         String fileName = createFileName(baseReference, String.valueOf(counter + 1));
@@ -164,7 +164,7 @@ public class HomeViewModel extends ViewModel {
     }
 
     public TempImageData prepareCameraCapture() {
-        TempImageData tempData = imageRepository.getTempImageData();
+        TempImageData tempData = manageImagesUseCase.getTempImageData();
         if (tempData == null) {
             errorMessage.setValue("No photoURI to capture image");
             return null;
