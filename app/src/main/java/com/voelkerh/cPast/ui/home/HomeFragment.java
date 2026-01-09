@@ -46,7 +46,6 @@ public class HomeFragment extends Fragment implements AddArchiveDialog.Listener,
     private EditText recordReferenceEditText;
     private TextView recordReferenceText;
     private TextView noteText;
-    private TextView imageCounter;
 
     private ActivityResultLauncher<Intent> takePictureLauncher;
 
@@ -79,7 +78,6 @@ public class HomeFragment extends Fragment implements AddArchiveDialog.Listener,
         dropdown = view.findViewById(R.id.spinnerArchive);
         recordReferenceEditText = view.findViewById(R.id.editTextRef);
         recordReferenceText = view.findViewById(R.id.textViewRef);
-        imageCounter = view.findViewById(R.id.imageCounter);
         noteText = view.findViewById(R.id.textViewNote);
         Button cameraButton = view.findViewById(R.id.cameraButton);
         Button clearNoteButton = view.findViewById(R.id.buttonClearNote);
@@ -124,8 +122,6 @@ public class HomeFragment extends Fragment implements AddArchiveDialog.Listener,
             );
             dropdown.setAdapter(adapter);
         });
-
-        homeViewModel.getCurrentCounter().observe(getViewLifecycleOwner(), counter -> imageCounter.setText(String.valueOf(counter)));
 
         homeViewModel.getNextFileName().observe(getViewLifecycleOwner(), fileName -> recordReferenceText.setText(fileName));
 

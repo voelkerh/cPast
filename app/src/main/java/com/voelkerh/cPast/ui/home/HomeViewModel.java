@@ -77,13 +77,6 @@ public class HomeViewModel extends ViewModel {
     }
 
     /**
-     * @return current numeric counter for the selected record
-     */
-    public LiveData<Integer> getCurrentCounter() {
-        return currentCounter;
-    }
-
-    /**
      * @return next suggested image file name
      */
     public LiveData<String> getNextFileName() {

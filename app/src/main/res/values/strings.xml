@@ -4,7 +4,7 @@
     <string name="fa_clear">&#xF00D;</string>
     <string name="repository">Current archive:</string>
     <string name="catalogue_reference">Reference of archival record:</string>
-    <string name="note">Note</string>
+    <string name="note">Enter note</string>
     <string name="record_name_hint" tools:ignore="Typos">E.g. DQ1_14614</string>
     <string name="heading_edit_archive"><![CDATA[<H2>Edit Archive</H2>]]></string>
     <string name="heading_delete_archive"><![CDATA[<H2>Delete Archive</H2>]]></string>
@@ -17,7 +17,7 @@
     <string name="short_archive_name_hint">E.g. BArch</string>
     <string name="ok">OK</string>
     <string name="deleted">Deleted</string>
-    <string name="next_photo_name">File name for the next photo:</string>
+    <string name="next_photo_name">File name for next photo:</string>
     <string name="photo_counter_label">Highest counter for this record:</string>
     <string name="notes_label">Notes for next photo:</string>
     <string name="input_warning_heading"><![CDATA[<H2>Wrong Input Format</H2>]]></string>
