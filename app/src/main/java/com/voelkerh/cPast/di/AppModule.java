@@ -4,9 +4,7 @@ import android.content.Context;
 import com.voelkerh.cPast.data.archives.ArchiveRepositoryImpl;
 import com.voelkerh.cPast.data.images.ImageRepositoryImpl;
 import com.voelkerh.cPast.data.images.MediaImageStore;
-import com.voelkerh.cPast.data.notes.CsvNotesStore;
-import com.voelkerh.cPast.data.notes.NotesRepositoryImpl;
-import com.voelkerh.cPast.data.notes.NotesStore;
+import com.voelkerh.cPast.data.notes.CsvNotesRepositoryImpl;
 import com.voelkerh.cPast.data.recentCaptures.JsonRecentCapturesStore;
 import com.voelkerh.cPast.data.recentCaptures.RecentCapturesRepositoryImpl;
 import com.voelkerh.cPast.domain.repository.ArchiveRepository;
@@ -14,6 +12,7 @@ import com.voelkerh.cPast.domain.repository.ImageRepository;
 import com.voelkerh.cPast.domain.repository.NotesRepository;
 import com.voelkerh.cPast.domain.repository.RecentCapturesRepository;
 import com.voelkerh.cPast.domain.usecase.ManageArchivesUseCase;
+import com.voelkerh.cPast.domain.usecase.WriteNotesUseCase;
 
 /**
  * Dependency injection container that provides app-wide dependencies.
@@ -28,7 +27,7 @@ public class AppModule {
 
     private final ManageArchivesUseCase manageArchivesUseCase;
     private final ImageRepository imageRepository;
-    private final NotesRepository notesRepository;
+    private final WriteNotesUseCase writeNotesUseCase;
     private final RecentCapturesRepository recentCapturesRepository;
 
     private AppModule(Context context) {
@@ -38,8 +37,8 @@ public class AppModule {
         MediaImageStore mediaImageStore = new MediaImageStore(context);
         this.imageRepository = new ImageRepositoryImpl(context, mediaImageStore);
 
-        NotesStore notesStore = new CsvNotesStore(context);
-        this.notesRepository = new NotesRepositoryImpl(notesStore);
+        NotesRepository notesRepository = new CsvNotesRepositoryImpl(context);
+        this.writeNotesUseCase = new WriteNotesUseCase(notesRepository);
 
         JsonRecentCapturesStore jsonRecentCapturesStore = new JsonRecentCapturesStore(context);
         this.recentCapturesRepository = new RecentCapturesRepositoryImpl(jsonRecentCapturesStore);
@@ -95,14 +94,14 @@ public class AppModule {
     }
 
     /**
-     * Returns the application-wide {@link NotesRepository}.
+     * Returns the application-wide {@link WriteNotesUseCase}.
      *
      * <p>The returned instance is shared and provides access to operations related to the notes file.</p>
      *
-     * @return application-wide {@link NotesRepository}
+     * @return application-wide {@link WriteNotesUseCase}
      */
-    public NotesRepository getNotesRepository() {
-        return notesRepository;
+    public WriteNotesUseCase getWriteNotesUseCase() {
+        return writeNotesUseCase;
     }
 
     /**

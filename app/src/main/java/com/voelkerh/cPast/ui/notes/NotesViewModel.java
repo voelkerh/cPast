@@ -8,17 +8,33 @@ import com.voelkerh.cPast.domain.repository.RecentCapturesRepository;
 
 import java.util.List;
 
+/**
+ * ViewModel that provides information about recent captures to {@link NotesFragment}.
+ *
+ * <p>The ViewModel loads a list of recent {@link Capture} objects from {@link RecentCapturesRepository} upon creation.
+ * It transforms the data into a textual representation and then provides it via {@link MutableLiveData}.</p>
+ */
 public class NotesViewModel extends ViewModel {
 
     private final RecentCapturesRepository recentCapturesRepository;
 
     private final MutableLiveData<String> recentCaptures = new MutableLiveData<>();
 
+    /**
+     * Creates the ViewModel and loads recent captures using the provided repository.
+     *
+     * @param recentCapturesRepository repository used to retrieve recent capture data
+     */
     public NotesViewModel(RecentCapturesRepository recentCapturesRepository) {
         this.recentCapturesRepository = recentCapturesRepository;
         loadRecentCaptures();
     }
 
+    /**
+     * Provides list of recent captures as textual representation for observation by UI fragments.
+     *
+     * @return observable {@link LiveData} with formatted recent capture information
+     */
     public LiveData<String> getRecentCaptures() {
         return recentCaptures;
     }

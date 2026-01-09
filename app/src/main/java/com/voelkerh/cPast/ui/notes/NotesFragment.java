@@ -11,9 +11,19 @@ import androidx.lifecycle.ViewModelProvider;
 import com.voelkerh.cPast.R;
 import com.voelkerh.cPast.di.ViewModelFactory;
 
+/**
+ * Fragment that displays the storage location of the notes file
+ * and the latest notes based on information about recent captures.
+ *
+ * <p>The fragment depends on a ViewModel that is provided by {@link ViewModelFactory}.
+ * The fragment observes {@link androidx.lifecycle.LiveData} from {@link NotesViewModel}.
+ * The content to display contains HTML markup and is rendered using {@link HtmlCompat}.</p>
+ *
+ * <p>This fragment is part of the UI layer and does not contain any business logic.</p>
+ */
 public class NotesFragment extends Fragment {
 
-    NotesViewModel notesViewModel;
+    private NotesViewModel notesViewModel;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
