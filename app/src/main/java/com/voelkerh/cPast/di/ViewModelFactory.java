@@ -7,8 +7,10 @@ import com.voelkerh.cPast.ui.home.HomeViewModel;
 import com.voelkerh.cPast.ui.notes.NotesViewModel;
 
 /**
- * Factory for creating ViewModels with dependencies for ui fragments.
- * Gets dependencies from AppModule automatically so the fragments do not need to know them.
+ * Factory for creating ViewModel instances with their required dependencies.
+ *
+ * <p>This factory centralizes ViewModel creation and resolves all required dependencies via {@link AppModule},
+ * ensuring that UI fragments do not depend on use cases, repositories or their construction logic.</p>
  */
 public class ViewModelFactory implements ViewModelProvider.Factory {
 
@@ -18,14 +20,14 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         if (modelClass.isAssignableFrom(NotesViewModel.class)) {
             return (T) new NotesViewModel(
-                    AppModule.getInstance().getRecentCapturesRepository()
+                    AppModule.getInstance().getManageRecentCapturesUseCase()
             );
         } else if (modelClass.isAssignableFrom(HomeViewModel.class)) {
             return (T) new HomeViewModel(
-                    AppModule.getInstance().getArchiveRepository(),
-                    AppModule.getInstance().getImageRepository(),
-                    AppModule.getInstance().getNotesRepository(),
-                    AppModule.getInstance().getRecentCapturesRepository()
+                    AppModule.getInstance().getManageArchivesUseCase(),
+                    AppModule.getInstance().getManageImagesUseCase(),
+                    AppModule.getInstance().getWriteNotesUseCase(),
+                    AppModule.getInstance().getManageRecentCapturesUseCase()
             );
         }
         throw new IllegalArgumentException("Unknown ViewModel class: " + modelClass.getName());

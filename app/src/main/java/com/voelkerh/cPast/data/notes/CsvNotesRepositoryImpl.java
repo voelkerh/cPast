@@ -9,6 +9,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import com.voelkerh.cPast.domain.model.Archive;
+import com.voelkerh.cPast.domain.repository.NotesRepository;
 import com.voelkerh.cPast.domain.model.Capture;
 
 import java.io.IOException;
@@ -17,7 +18,13 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class CsvNotesStore implements NotesStore {
+/**
+ * Data-layer repository that persists notes with relevant information from {@link Capture} entities in a csv file.
+ *
+ * <p>This implementation handles serialization and storage concerns only.
+ * Other implementations in this package may persist notes using different output formats.</p>
+ */
+public class CsvNotesRepositoryImpl implements NotesRepository {
 
     private static final String TAG = "CsvNoteStore";
     private static final String LOG_FILENAME = "cPast_Notes.csv";
@@ -27,25 +34,23 @@ public class CsvNotesStore implements NotesStore {
 
     private final Context context;
 
-    public CsvNotesStore(Context context) {
+    /**
+     * Creates a repository instance using the Android MediaStore.
+     *
+     * <p>As this implementation uses Android MediaStore tests need to be instrumented.</p>
+     *
+     * @param context application context used to access private storage
+     */
+    public CsvNotesRepositoryImpl(Context context) {
         this.context = context;
     }
 
-    private static String csvField(String s) {
-        if (s == null) return "\"\"";
-        s = s.replace("\"", "\"\"");
-        return "\"" + s + "\"";
-    }
-
     @Override
-    public boolean saveNote(Capture capture) {
+    public boolean save(Capture capture) {
         String note = capture.getNote();
         String imageName = capture.getFileName();
         LocalDateTime captureTime = capture.getCaptureTime();
         Archive archive = capture.getArchive();
-
-        if (note == null || note.isEmpty() || imageName.isEmpty() || captureTime == null || archive == null)
-            return false;
 
         Uri uri = findExistingFile();
         if (uri == null) uri = createNewFile();
@@ -110,6 +115,12 @@ public class CsvNotesStore implements NotesStore {
         }
     }
 
+    private String csvField(String s) {
+        if (s == null) return "\"\"";
+        s = s.replace("\"", "\"\"");
+        return "\"" + s + "\"";
+    }
+
     private String formatEntry(LocalDateTime dateTime, Archive archive, String imageName, String note) {
         String date = dateTime.format(DateTimeFormatter.ISO_LOCAL_DATE);
         String time = dateTime.format(DateTimeFormatter.ofPattern("HH:mm:ss"));
@@ -128,5 +139,4 @@ public class CsvNotesStore implements NotesStore {
             return false;
         }
     }
-
 }

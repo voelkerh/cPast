@@ -1,102 +1,181 @@
 package com.voelkerh.cPast.data.archives;
 
+import android.content.Context;
+import android.util.Log;
 import com.voelkerh.cPast.domain.model.Archive;
 import com.voelkerh.cPast.domain.repository.ArchiveRepository;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Data-layer repository that persists {@link Archive} entities as JSON.
+ *
+ * <p>This implementation stores and retrieves archives from application-private storage.
+ * It contains no business validation logic.</p>
+ */
 public class ArchiveRepositoryImpl implements ArchiveRepository {
 
-    private final JsonArchiveStore archiveStore;
-    private final List<Archive> archives;
+    private static final String TAG = "ArchiveRepositoryImpl";
+    private static final String FILE = "archives.json";
+    private final Context context;
+    private final InputStream inputStream;
+    private final OutputStream outputStream;
 
-    public ArchiveRepositoryImpl(JsonArchiveStore archiveStore) {
-        this.archiveStore = archiveStore;
-        List<Archive> loaded = archiveStore.loadArchives();
-        this.archives = new ArrayList<>(loaded == null ? List.of() : loaded);
+    /**
+     * Creates a repository instance with application-internal file storage.
+     *
+     * @param context application context used to access private storage
+     */
+    public ArchiveRepositoryImpl(Context context) {
+        this.context = context;
+        this.inputStream = null;
+        this.outputStream = null;
     }
 
-    private static String normalizeString(String s) {
-        return s == null ? "" : s.trim();
+    /**
+     * Creates a repository instance with provided streams.
+     *
+     * <p>This constructor is intended for testing.</p>
+     *
+     * @param inputStream  stream used for reading archive data
+     * @param outputStream stream used for writing archive data
+     */
+    public ArchiveRepositoryImpl(InputStream inputStream, OutputStream outputStream) {
+        this.context = null;
+        this.inputStream = inputStream;
+        this.outputStream = outputStream;
     }
 
-    private static Archive findByFullName(List<Archive> archives, String fullNameNorm) {
-        for (Archive archive : archives) {
-            if (archive == null) continue;
-            if (normalizeString(archive.getFullName()).equals(fullNameNorm)) return archive;
+    @Override
+    public List<Archive> load() {
+        InputStream stream = getInputStream();
+        if (stream == null) return new ArrayList<>();
+
+        try (InputStreamReader isr = new InputStreamReader(stream, StandardCharsets.UTF_8);
+             BufferedReader reader = new BufferedReader(isr)) {
+
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line);
+            }
+
+            if (sb.length() == 0) return new ArrayList<>();
+            return jsonToList(sb.toString());
+
+        } catch (FileNotFoundException e) {
+            return new ArrayList<>();
+        } catch (IOException e) {
+            Log.e(TAG, e.getMessage());
+            return new ArrayList<>();
+        } finally {
+            if (context != null) {
+                try {
+                    stream.close();
+                } catch (IOException e) {
+                    Log.e(TAG, "Error closing input stream", e);
+                }
+            }
+        }
+    }
+
+    private InputStream getInputStream() {
+        if (inputStream != null) return this.inputStream;
+        if (context != null) {
+            try {
+                return context.openFileInput(FILE);
+            } catch (FileNotFoundException e) {
+                return null;
+            }
         }
         return null;
     }
 
-    private static Archive findByShortName(List<Archive> archives, String shortNameNorm) {
-        for (Archive archive : archives) {
-            if (archive == null) continue;
-            if (normalizeString(archive.getShortName()).equals(shortNameNorm)) return archive;
+    private List<Archive> jsonToList(String jsonString) {
+        List<Archive> archives = new ArrayList<>();
+        try {
+            JSONObject root = new JSONObject(jsonString);
+            JSONArray array = root.optJSONArray("archives");
+            if (array == null) return archives;
+
+            for (int i = 0; i < array.length(); i++) {
+                JSONObject obj = array.optJSONObject(i);
+                if (obj == null) continue;
+
+                String fullName = obj.optString("fullName", "").trim();
+                String shortName = obj.optString("shortName", "").trim();
+                if (fullName.isEmpty() || shortName.isEmpty()) continue;
+
+                archives.add(new Archive(fullName, shortName));
+            }
+        } catch (JSONException e) {
+            Log.e(TAG, e.toString());
+            return new ArrayList<>();
         }
-        return null;
+        return archives;
     }
 
-    private boolean saveArchives(List<Archive> archives) {
+    @Override
+    public boolean save(List<Archive> archives) {
         if (archives == null) return false;
-        return archiveStore.saveArchives(archives);
+        OutputStream stream = getOutputStream();
+        if (stream == null) return false;
+
+        try {
+            String json = listToJson(archives);
+            stream.write(json.getBytes(StandardCharsets.UTF_8));
+            stream.flush();
+            return true;
+        } catch (IOException e) {
+            Log.e(TAG, e.toString());
+            return false;
+        } finally {
+            if (context != null) {
+                try {
+                    stream.close();
+                } catch (IOException e) {
+                    Log.e(TAG, "Error closing output stream", e);
+                }
+            }
+        }
     }
 
-    @Override
-    public boolean createArchive(String fullName, String shortName) {
-        if (fullName == null || shortName == null) return false;
-
-        String fullNameNorm = normalizeString(fullName);
-        String shortNameNorm = normalizeString(shortName);
-        if (fullName.isEmpty() || shortName.isEmpty()) return false;
-
-        if (findByFullName(archives, fullNameNorm) != null) return false;
-        if (findByShortName(archives, shortNameNorm) != null) return false;
-
-        archives.add(new Archive(fullNameNorm, shortNameNorm));
-        return saveArchives(archives);
+    private OutputStream getOutputStream() {
+        if (outputStream != null) return this.outputStream;
+        if (context != null) {
+            try {
+                return context.openFileOutput(FILE, Context.MODE_PRIVATE);
+            } catch (FileNotFoundException e) {
+                return null;
+            }
+        }
+        return null;
     }
 
-    @Override
-    public boolean deleteArchive(String fullName) {
-        String fullNameNorm = normalizeString(fullName);
-        if (fullNameNorm.isEmpty()) return false;
+    private String listToJson(List<Archive> archives) {
+        try {
+            JSONObject root = new JSONObject();
+            JSONArray array = new JSONArray();
+            for (Archive archive : archives) {
+                if (archive == null) continue;
 
-        Archive existing = findByFullName(archives, fullNameNorm);
-        if (existing == null) return false;
-
-        archives.remove(existing);
-        return saveArchives(archives);
-    }
-
-    @Override
-    public boolean updateArchive(String oldFullName, String oldShortName, String fullName, String shortName) {
-        String oldFullNameNorm = normalizeString(oldFullName);
-        String oldShortNameNorm = normalizeString(oldShortName);
-        String fullNameNorm = normalizeString(fullName);
-        String shortNameNorm = normalizeString(shortName);
-
-        if (oldFullNameNorm.isEmpty() || oldShortNameNorm.isEmpty()) return false;
-        if (fullNameNorm.isEmpty() || shortNameNorm.isEmpty()) return false;
-
-        Archive existing = findByFullName(archives, oldFullNameNorm);
-        if (existing == null) return false;
-
-        Archive sameFull = findByFullName(archives, fullNameNorm);
-        if (sameFull != null && sameFull != existing) return false;
-
-        Archive sameShort = findByShortName(archives, shortNameNorm);
-        if (sameShort != null && sameShort != existing) return false;
-
-        existing.setFullName(fullNameNorm);
-        existing.setShortName(shortNameNorm);
-
-        return saveArchives(archives);
-    }
-
-    @Override
-    public List<Archive> readArchives() {
-        return List.copyOf(archives);
+                JSONObject obj = new JSONObject();
+                obj.put("fullName", archive.getFullName());
+                obj.put("shortName", archive.getShortName());
+                array.put(obj);
+            }
+            root.put("archives", array);
+            return root.toString(2);
+        } catch (JSONException e) {
+            Log.e(TAG, e.toString());
+            return "{}";
+        }
     }
 
 }
