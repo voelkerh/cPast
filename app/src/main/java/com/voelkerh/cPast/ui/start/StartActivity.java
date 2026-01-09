@@ -6,6 +6,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.voelkerh.cPast.ui.navigation.MainActivity;
 import com.voelkerh.cPast.R;
 
+/**
+ * Entry activity of the application.
+ *
+ * <p>This activity launches an informative screen upon application start.
+ * It forwards the user to the {@link MainActivity} after interaction.
+ * It is not part of the main navigation flow.</p>
+ *
+ * <p>This activity does not handle any business logic.</p>
+ */
 public class StartActivity extends AppCompatActivity {
 
     @Override

@@ -14,6 +14,20 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+/**
+ * Custom {@link ArrayAdapter} for displaying {@link Archive} entries in a Spinner.
+ *
+ * <p>This adapter extends the standard Spinner behavior by:
+ * <ul>
+ *   <li>Rendering archive entries with an inline edit button</li>
+ *   <li>Providing an additional trailing item for creating new archives</li>
+ *   <li>Using different layouts for the selected view and the dropdown list</li>
+ * </ul>
+ *
+ * <p>User interactions are delegated to {@link AddArchiveDialog.Listener} and
+ * {@link EditArchiveDialog.Listener}. This adapter belongs to the UI layer and
+ * contains no business logic.</p>
+ */
 public class ArchiveAdapter extends ArrayAdapter<Archive> {
 
     private final LayoutInflater inflater;
@@ -31,9 +45,12 @@ public class ArchiveAdapter extends ArrayAdapter<Archive> {
         this.editArchiveListener = editListener;
     }
 
+    /**
+     * Returns the number of Spinner items, including an additional entry for triggering archive creation.
+     */
     @Override
     public int getCount() {
-        return archives.size() + 1; // plus 1 for "Add archive"
+        return archives.size() + 1;
     }
 
     @Override
@@ -65,7 +82,11 @@ public class ArchiveAdapter extends ArrayAdapter<Archive> {
         return row;
     }
 
-
+    /**
+     * Creates the dropdown view for each Spinner item.
+     *
+     * <p>Archive entries display an edit button, while the last entry acts as an action item to create a new archive.</p>
+     */
     @Override
     public View getDropDownView(int position, View convertView, @NotNull ViewGroup parent) {
         View row = inflater.inflate(R.layout.item_archive, parent, false);

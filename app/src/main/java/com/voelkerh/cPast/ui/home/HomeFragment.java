@@ -21,6 +21,21 @@ import com.voelkerh.cPast.domain.model.TempImageData;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
+/**
+ * Home screen fragment that coordinates user input for capturing images.
+ *
+ * <p>This fragment allows the user to:
+ * <ul>
+ *   <li>Select or manage archives</li>
+ *   <li>Enter a record reference and optional note</li>
+ *   <li>Trigger image capture via the camera app</li>
+ * </ul>
+ *
+ * <p>It observes {@link HomeViewModel} state and delegates all business logic to the ViewModel.
+ * Image capture is handled using the Activity Result API with a temporary file provided by the domain layer.</p>
+ *
+ * <p>This class belongs to the UI layer and contains no business logic.</p>
+ */
 public class HomeFragment extends Fragment implements AddArchiveDialog.Listener, EditArchiveDialog.Listener {
 
     private HomeViewModel homeViewModel;
@@ -31,7 +46,6 @@ public class HomeFragment extends Fragment implements AddArchiveDialog.Listener,
     private EditText recordReferenceEditText;
     private TextView recordReferenceText;
     private TextView noteText;
-    private TextView imageCounter;
 
     private ActivityResultLauncher<Intent> takePictureLauncher;
 
@@ -64,7 +78,6 @@ public class HomeFragment extends Fragment implements AddArchiveDialog.Listener,
         dropdown = view.findViewById(R.id.spinnerArchive);
         recordReferenceEditText = view.findViewById(R.id.editTextRef);
         recordReferenceText = view.findViewById(R.id.textViewRef);
-        imageCounter = view.findViewById(R.id.imageCounter);
         noteText = view.findViewById(R.id.textViewNote);
         Button cameraButton = view.findViewById(R.id.cameraButton);
         Button clearNoteButton = view.findViewById(R.id.buttonClearNote);
@@ -109,8 +122,6 @@ public class HomeFragment extends Fragment implements AddArchiveDialog.Listener,
             );
             dropdown.setAdapter(adapter);
         });
-
-        homeViewModel.getCurrentCounter().observe(getViewLifecycleOwner(), counter -> imageCounter.setText(String.valueOf(counter)));
 
         homeViewModel.getNextFileName().observe(getViewLifecycleOwner(), fileName -> recordReferenceText.setText(fileName));
 

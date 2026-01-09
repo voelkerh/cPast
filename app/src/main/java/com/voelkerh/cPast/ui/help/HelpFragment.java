@@ -11,6 +11,14 @@ import androidx.core.text.HtmlCompat;
 import androidx.fragment.app.Fragment;
 import com.voelkerh.cPast.R;
 
+/**
+ * Fragment that displays help for application functionalities.
+ *
+ * <p>The content to display contains HTML markup and is rendered using {@link HtmlCompat}.
+ * Accordion elements are imitated by rotating arrows and toggling the visibility of text bodies on click.</p>
+ *
+ * <p>This fragment is part of the UI layer and does not contain any business logic.</p>
+ */
 public class HelpFragment extends Fragment {
 
     private View currentlyOpenBody = null;

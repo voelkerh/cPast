@@ -10,6 +10,13 @@ import androidx.core.text.HtmlCompat;
 import androidx.fragment.app.Fragment;
 import com.voelkerh.cPast.R;
 
+/**
+ * Fragment that displays background information and acknowledgments.
+ *
+ * <p>The content to display contains HTML markup and is rendered using {@link HtmlCompat}.</p>
+ *
+ * <p>This fragment is part of the UI layer and does not contain any business logic.</p>
+ */
 public class AboutFragment extends Fragment {
 
     @Override
