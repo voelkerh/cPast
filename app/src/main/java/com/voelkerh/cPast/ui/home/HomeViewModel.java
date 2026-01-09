@@ -6,20 +6,20 @@ import androidx.lifecycle.ViewModel;
 import com.voelkerh.cPast.domain.model.Archive;
 import com.voelkerh.cPast.domain.model.Capture;
 import com.voelkerh.cPast.domain.model.TempImageData;
-import com.voelkerh.cPast.domain.repository.ArchiveRepository;
 import com.voelkerh.cPast.domain.repository.ImageRepository;
-import com.voelkerh.cPast.domain.repository.NotesRepository;
-import com.voelkerh.cPast.domain.repository.RecentCapturesRepository;
 import com.voelkerh.cPast.domain.service.RecordReferenceCreator;
+import com.voelkerh.cPast.domain.usecase.ManageArchivesUseCase;
+import com.voelkerh.cPast.domain.usecase.ManageRecentCapturesUseCase;
+import com.voelkerh.cPast.domain.usecase.WriteNotesUseCase;
 
 import java.util.List;
 
 public class HomeViewModel extends ViewModel {
 
-    private final ArchiveRepository archiveRepository;
+    private final ManageArchivesUseCase manageArchivesUseCase;
+    private final WriteNotesUseCase writeNotesUseCase;
     private final ImageRepository imageRepository;
-    private final NotesRepository noteRepository;
-    private final RecentCapturesRepository recentCapturesRepository;
+    private final ManageRecentCapturesUseCase manageRecentCapturesUseCase;
 
     private final MutableLiveData<List<Archive>> archives = new MutableLiveData<>();
     private final MutableLiveData<Integer> currentCounter = new MutableLiveData<>(0);
@@ -30,12 +30,11 @@ public class HomeViewModel extends ViewModel {
     private Archive selectedArchive;
     private String currentRecordReference = "";
 
-    public HomeViewModel(ArchiveRepository archiveRepository, ImageRepository imageRepository, NotesRepository noteRepository, RecentCapturesRepository recentCapturesRepository) {
-        this.archiveRepository = archiveRepository;
+    public HomeViewModel(ManageArchivesUseCase manageArchivesUseCase, ImageRepository imageRepository, WriteNotesUseCase writeNotesUseCase, ManageRecentCapturesUseCase manageRecentCapturesUseCase) {
+        this.manageArchivesUseCase = manageArchivesUseCase;
         this.imageRepository = imageRepository;
-        this.noteRepository = noteRepository;
-        this.recentCapturesRepository = recentCapturesRepository;
-
+        this.writeNotesUseCase = writeNotesUseCase;
+        this.manageRecentCapturesUseCase = manageRecentCapturesUseCase;
         loadArchives();
     }
 
@@ -90,9 +89,9 @@ public class HomeViewModel extends ViewModel {
                 nextFileName.setValue(newFileName);
 
                 Capture capture = new Capture(selectedArchive, imageFileName, note);
-                recentCapturesRepository.addFileToRecentCaptures(capture);
+                manageRecentCapturesUseCase.addFileToRecentCaptures(capture);
 
-                boolean noteSaved = noteRepository.saveNote(capture);
+                boolean noteSaved = writeNotesUseCase.saveNote(capture);
 
                 if (noteSaved) {
                     successMessage.setValue("Note and image saved\n " + imageFileName);
@@ -106,7 +105,7 @@ public class HomeViewModel extends ViewModel {
     }
 
     public void createArchive(String fullName, String shortName) {
-        boolean created = archiveRepository.createArchive(fullName, shortName);
+        boolean created = manageArchivesUseCase.createArchive(fullName, shortName);
         if (created) {
             successMessage.setValue(fullName + " created");
             loadArchives();
@@ -115,13 +114,13 @@ public class HomeViewModel extends ViewModel {
     }
 
     public void updateArchive(String oldFullName, String oldShortName, String fullArchiveName, String shortArchiveName) {
-        archiveRepository.updateArchive(oldFullName, oldShortName, fullArchiveName, shortArchiveName);
+        manageArchivesUseCase.updateArchive(oldFullName, oldShortName, fullArchiveName, shortArchiveName);
         successMessage.setValue(fullArchiveName + " updated");
         loadArchives();
     }
 
     public void deleteArchive(String fullArchiveName) {
-        archiveRepository.deleteArchive(fullArchiveName);
+        manageArchivesUseCase.deleteArchive(fullArchiveName);
         successMessage.setValue("Deleted -" + fullArchiveName);
         loadArchives();
     }
@@ -131,7 +130,7 @@ public class HomeViewModel extends ViewModel {
     }
 
     private void loadArchives() {
-        List<Archive> archiveList = archiveRepository.readArchives();
+        List<Archive> archiveList = manageArchivesUseCase.readArchives();
         archives.setValue(archiveList);
     }
 

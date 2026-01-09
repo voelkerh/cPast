@@ -23,7 +23,7 @@ public interface ArchiveRepository {
      * Persists a given list of archives.
      *
      * @param archives the archives to persist
-     * @return boolean if the operation completed successfully,
+     * @return boolean if the operation completed successfully
      */
     boolean save(List<Archive> archives);
 }

@@ -21,14 +21,14 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         if (modelClass.isAssignableFrom(NotesViewModel.class)) {
             return (T) new NotesViewModel(
-                    AppModule.getInstance().getRecentCapturesRepository()
+                    AppModule.getInstance().getManageRecentCapturesUseCase()
             );
         } else if (modelClass.isAssignableFrom(HomeViewModel.class)) {
             return (T) new HomeViewModel(
                     AppModule.getInstance().getManageArchivesUseCase(),
                     AppModule.getInstance().getImageRepository(),
                     AppModule.getInstance().getWriteNotesUseCase(),
-                    AppModule.getInstance().getRecentCapturesRepository()
+                    AppModule.getInstance().getManageRecentCapturesUseCase()
             );
         }
         throw new IllegalArgumentException("Unknown ViewModel class: " + modelClass.getName());

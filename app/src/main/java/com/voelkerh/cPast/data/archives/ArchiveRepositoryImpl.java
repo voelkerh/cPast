@@ -16,10 +16,9 @@ import java.util.List;
 /**
  * Data-layer repository that persists {@link Archive} entities as JSON.
  *
- * <p>This implementation stores archives in application-private storage.
+ * <p>This implementation stores and retrieves archives from application-private storage.
  * It contains no business validation logic.</p>
  */
-
 public class ArchiveRepositoryImpl implements ArchiveRepository {
 
     private static final String TAG = "ArchiveRepositoryImpl";

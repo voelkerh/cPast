@@ -5,13 +5,13 @@ import com.voelkerh.cPast.data.archives.ArchiveRepositoryImpl;
 import com.voelkerh.cPast.data.images.ImageRepositoryImpl;
 import com.voelkerh.cPast.data.images.MediaImageStore;
 import com.voelkerh.cPast.data.notes.CsvNotesRepositoryImpl;
-import com.voelkerh.cPast.data.recentCaptures.JsonRecentCapturesStore;
 import com.voelkerh.cPast.data.recentCaptures.RecentCapturesRepositoryImpl;
 import com.voelkerh.cPast.domain.repository.ArchiveRepository;
 import com.voelkerh.cPast.domain.repository.ImageRepository;
 import com.voelkerh.cPast.domain.repository.NotesRepository;
 import com.voelkerh.cPast.domain.repository.RecentCapturesRepository;
 import com.voelkerh.cPast.domain.usecase.ManageArchivesUseCase;
+import com.voelkerh.cPast.domain.usecase.ManageRecentCapturesUseCase;
 import com.voelkerh.cPast.domain.usecase.WriteNotesUseCase;
 
 /**
@@ -28,7 +28,7 @@ public class AppModule {
     private final ManageArchivesUseCase manageArchivesUseCase;
     private final ImageRepository imageRepository;
     private final WriteNotesUseCase writeNotesUseCase;
-    private final RecentCapturesRepository recentCapturesRepository;
+    private final ManageRecentCapturesUseCase manageRecentCapturesUseCase;
 
     private AppModule(Context context) {
         ArchiveRepository archiveRepository = new ArchiveRepositoryImpl(context);
@@ -40,8 +40,8 @@ public class AppModule {
         NotesRepository notesRepository = new CsvNotesRepositoryImpl(context);
         this.writeNotesUseCase = new WriteNotesUseCase(notesRepository);
 
-        JsonRecentCapturesStore jsonRecentCapturesStore = new JsonRecentCapturesStore(context);
-        this.recentCapturesRepository = new RecentCapturesRepositoryImpl(jsonRecentCapturesStore);
+        RecentCapturesRepository recentCapturesRepository = new RecentCapturesRepositoryImpl(context);
+        this.manageRecentCapturesUseCase = new ManageRecentCapturesUseCase(recentCapturesRepository);
     }
 
     /**
@@ -105,13 +105,13 @@ public class AppModule {
     }
 
     /**
-     * Returns the application-wide {@link RecentCapturesRepository}.
+     * Returns the application-wide {@link ManageRecentCapturesUseCase}.
      *
      * <p>The returned instance is shared and provides access to operations related to a list of recent captures.</p>
      *
-     * @return application-wide {@link RecentCapturesRepository}
+     * @return application-wide {@link ManageRecentCapturesUseCase}
      */
-    public RecentCapturesRepository getRecentCapturesRepository() {
-        return recentCapturesRepository;
+    public ManageRecentCapturesUseCase getManageRecentCapturesUseCase() {
+        return manageRecentCapturesUseCase;
     }
 }

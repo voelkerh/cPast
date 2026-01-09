@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Use case that manages the lifecycle of {@link Archive} entities.
+ * Use case that manages a list of {@link Archive} entities.
  *
  * <p>This class encapsulates all business rules related to creating, updating,
  * deleting, and reading archives. It maintains an in-memory representation of

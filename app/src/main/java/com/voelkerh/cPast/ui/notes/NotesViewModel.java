@@ -4,29 +4,29 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import com.voelkerh.cPast.domain.model.Capture;
-import com.voelkerh.cPast.domain.repository.RecentCapturesRepository;
+import com.voelkerh.cPast.domain.usecase.ManageRecentCapturesUseCase;
 
 import java.util.List;
 
 /**
  * ViewModel that provides information about recent captures to {@link NotesFragment}.
  *
- * <p>The ViewModel loads a list of recent {@link Capture} objects from {@link RecentCapturesRepository} upon creation.
+ * <p>The ViewModel loads a list of recent {@link Capture} objects from {@link ManageRecentCapturesUseCase} upon creation.
  * It transforms the data into a textual representation and then provides it via {@link MutableLiveData}.</p>
  */
 public class NotesViewModel extends ViewModel {
 
-    private final RecentCapturesRepository recentCapturesRepository;
+    private final ManageRecentCapturesUseCase manageRecentCapturesUseCase;
 
     private final MutableLiveData<String> recentCaptures = new MutableLiveData<>();
 
     /**
      * Creates the ViewModel and loads recent captures using the provided repository.
      *
-     * @param recentCapturesRepository repository used to retrieve recent capture data
+     * @param manageRecentCapturesUseCase use case used to retrieve recent capture data
      */
-    public NotesViewModel(RecentCapturesRepository recentCapturesRepository) {
-        this.recentCapturesRepository = recentCapturesRepository;
+    public NotesViewModel(ManageRecentCapturesUseCase manageRecentCapturesUseCase) {
+        this.manageRecentCapturesUseCase = manageRecentCapturesUseCase;
         loadRecentCaptures();
     }
 
@@ -40,7 +40,7 @@ public class NotesViewModel extends ViewModel {
     }
 
     private void loadRecentCaptures() {
-        List<Capture> recentFiles = recentCapturesRepository.getRecentCaptures();
+        List<Capture> recentFiles = manageRecentCapturesUseCase.getRecentCaptures();
 
         if (recentFiles.isEmpty()) {
             recentCaptures.setValue("No recent captures");
