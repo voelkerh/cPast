@@ -1,6 +1,5 @@
-package com.voelkerh.cPast.domain;
+package com.voelkerh.cPast.domain.model;
 
-import com.voelkerh.cPast.domain.model.Archive;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

@@ -1,7 +1,5 @@
-package com.voelkerh.cPast.domain;
+package com.voelkerh.cPast.domain.model;
 
-import com.voelkerh.cPast.domain.model.Archive;
-import com.voelkerh.cPast.domain.model.Capture;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
