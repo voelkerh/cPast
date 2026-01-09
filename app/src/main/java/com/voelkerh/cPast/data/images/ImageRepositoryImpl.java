@@ -13,8 +13,8 @@ import android.provider.MediaStore;
 import android.util.Log;
 import androidx.core.content.FileProvider;
 import androidx.exifinterface.media.ExifInterface;
-import com.voelkerh.cPast.domain.repository.ImageRepository;
 import com.voelkerh.cPast.domain.model.TempImageData;
+import com.voelkerh.cPast.domain.repository.ImageRepository;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -80,12 +80,14 @@ public class ImageRepositoryImpl implements ImageRepository {
 
         ExifInterface sourceExif = loadExif(currentPhotoPath);
         if (sourceExif == null) {
+            Log.e(TAG, "ExifInterface could not be loaded");
             bitmap.recycle();
             return false;
         }
 
         Uri imageUri = createMediaStoreEntry(imageFileName, directoryNames);
         if (imageUri == null) {
+            Log.e(TAG, "Failed to create MediaStore entry");
             bitmap.recycle();
             return false;
         }
@@ -93,6 +95,7 @@ public class ImageRepositoryImpl implements ImageRepository {
         boolean success = writeImageAndExif(imageUri, bitmap, sourceExif, imageFileName, note);
 
         if (!success) {
+            Log.e(TAG, "Failed to write image and Exif");
             context.getContentResolver().delete(imageUri, null, null);
         }
 
@@ -185,8 +188,7 @@ public class ImageRepositoryImpl implements ImageRepository {
         String relative = getRelativePath(directoryNames);
 
         String[] projection = {MediaStore.Images.Media.DISPLAY_NAME};
-        String selection = MediaStore.Images.Media.RELATIVE_PATH + " = ? AND "
-                + MediaStore.Images.Media.MIME_TYPE + " = ?";
+        String selection = MediaStore.Images.Media.RELATIVE_PATH + " = ?";
         String[] selectionArgs = {relative};
 
         int max = 0;

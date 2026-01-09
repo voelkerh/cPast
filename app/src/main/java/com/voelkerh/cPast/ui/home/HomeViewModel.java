@@ -81,7 +81,6 @@ public class HomeViewModel extends ViewModel {
 
         try {
             boolean saved = manageImagesUseCase.saveImageToGallery(imageFileName, note, tempImagePath);
-
             if (saved) {
                 currentCounter.setValue(counter + 1);
 
@@ -99,6 +98,7 @@ public class HomeViewModel extends ViewModel {
                     successMessage.setValue("Image saved to " + imageFileName + "\nNote could not be saved");
                 }
             }
+            else errorMessage.setValue("Image could not be saved.");
         } catch (Exception e) {
             errorMessage.setValue("Error: Image not saved.\n" + e.getMessage());
         }
