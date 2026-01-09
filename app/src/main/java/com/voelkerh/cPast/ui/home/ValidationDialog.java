@@ -8,10 +8,23 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
+import androidx.core.text.HtmlCompat;
 import com.voelkerh.cPast.R;
 
+/**
+ * Dialog that provides information about input requirements after attempt to take photo with invalid reference information.
+ *
+ * <p>The content to display contains HTML markup and is rendered using {@link HtmlCompat}.</p>
+ *
+ * <p>This dialog is part of the UI layer and does not contain any business logic.</p>
+ */
 public class ValidationDialog {
 
+    /**
+     * Displays the validation dialog explaining the required input format.
+     *
+     * @param context context used to build and display the dialog
+     */
     public static void show(Context context) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
 

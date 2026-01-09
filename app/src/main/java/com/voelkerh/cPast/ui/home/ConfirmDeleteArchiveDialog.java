@@ -12,8 +12,22 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import com.voelkerh.cPast.R;
 
+/**
+ * Dialog that requests a confirmation if users want to delete an archive.
+ *
+ * <p>The listener gets passed the archive name and a listener which is called to delete the respective archive.</p>
+ *
+ * <p>This dialog is part of the UI layer and does not contain any business logic.</p>
+ */
 public class ConfirmDeleteArchiveDialog {
 
+    /**
+     * Displays the confirmation dialog displaying the archive chosen to delete.
+     *
+     * @param context context used to build and display the dialog
+     * @param listener listener implementing deletion logic
+     * @param fullArchiveName archive name used for display and passed to listener for deletion
+     */
     public static void show(Context context, EditArchiveDialog.Listener listener, String fullArchiveName) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
 

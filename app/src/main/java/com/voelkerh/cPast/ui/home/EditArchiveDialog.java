@@ -11,11 +11,23 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
+import androidx.core.text.HtmlCompat;
 import com.voelkerh.cPast.R;
 
+/**
+ * Dialog that allows to edit the full or short archive name and to delete a chosen archive.
+ *
+ * <p>The content to display contains HTML markup and is rendered using {@link HtmlCompat}.</p>
+ *
+ * <p>This dialog is part of the UI layer and does not contain any business logic.</p>
+ */
 public class EditArchiveDialog {
 
-
+    /**
+     * Displays the edit dialog with input fields.
+     *
+     * @param context context used to build and display the dialog
+     */
     public static void show(Context context, String archiveName, Listener listener) {
         String fullArchiveName = archiveName.split("-")[0].trim();
         String shortArchiveName = archiveName.split("-")[1].trim();
@@ -90,9 +102,28 @@ public class EditArchiveDialog {
         neutralButton.setTextColor(Color.GRAY);
     }
 
+    /**
+     * Callback interface for user actions performed in the edit archive dialog.
+     *
+     * <p>Implementations are responsible for handling edit and delete actions initiated by the user.
+     * No validation or persistence logic is performed by the dialog itself.</p>
+     */
     public interface Listener {
+        /**
+         * Called when the user confirms changes to an archive.
+         *
+         * @param oldFullName original full name of the archive
+         * @param oldShortName original short name of the archive
+         * @param shortArchiveName updated short name
+         * @param fullArchiveName updated full name
+         */
         void onArchiveEdited(String oldFullName, String oldShortName, String shortArchiveName, String fullArchiveName);
 
+        /**
+         * Called when the user requests deletion of an archive.
+         *
+         * @param fullArchiveName full name of the archive to delete
+         */
         void onArchiveDeleted(String fullArchiveName);
     }
 }

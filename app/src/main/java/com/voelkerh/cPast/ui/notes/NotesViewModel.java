@@ -21,7 +21,7 @@ public class NotesViewModel extends ViewModel {
     private final MutableLiveData<String> recentCaptures = new MutableLiveData<>();
 
     /**
-     * Creates the ViewModel and loads recent captures using the provided repository.
+     * Creates the ViewModel and loads recent captures using the provided use case.
      *
      * @param manageRecentCapturesUseCase use case used to retrieve recent capture data
      */

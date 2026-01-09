@@ -20,9 +20,19 @@ import com.voelkerh.cPast.ui.help.HelpFragment;
 import com.voelkerh.cPast.ui.home.HomeFragment;
 import com.voelkerh.cPast.ui.notes.NotesFragment;
 
+/**
+ * Main activity hosting the main navigation flow of the application.
+ *
+ * <p>This activity provides a drawer-based navigation.
+ * It serves as central container for the UI fragments (home, notes, help, about) and calls the gallery app (photos).</p>
+ *
+ * <p>Navigation actions are handled via a {@link NavigationView}.</p>
+ *
+ * <p>This activity does not handle any business logic.</p>
+ */
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    public static final String TAG = "MainActivity";
+    private static final String TAG = "MainActivity";
     private DrawerLayout drawerLayout;
 
     @Override

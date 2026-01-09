@@ -21,6 +21,21 @@ import com.voelkerh.cPast.domain.model.TempImageData;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
+/**
+ * Home screen fragment that coordinates user input for capturing images.
+ *
+ * <p>This fragment allows the user to:
+ * <ul>
+ *   <li>Select or manage archives</li>
+ *   <li>Enter a record reference and optional note</li>
+ *   <li>Trigger image capture via the camera app</li>
+ * </ul>
+ *
+ * <p>It observes {@link HomeViewModel} state and delegates all business logic to the ViewModel.
+ * Image capture is handled using the Activity Result API with a temporary file provided by the domain layer.</p>
+ *
+ * <p>This class belongs to the UI layer and contains no business logic.</p>
+ */
 public class HomeFragment extends Fragment implements AddArchiveDialog.Listener, EditArchiveDialog.Listener {
 
     private HomeViewModel homeViewModel;

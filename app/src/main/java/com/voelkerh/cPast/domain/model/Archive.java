@@ -2,6 +2,12 @@ package com.voelkerh.cPast.domain.model;
 
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Domain model representing an archive.
+ *
+ * <p>An archive is identified by a human-readable full name and a short
+ * identifier used for references and file naming.</p>
+ */
 public class Archive {
 
     private String fullName;

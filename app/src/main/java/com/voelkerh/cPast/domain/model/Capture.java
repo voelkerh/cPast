@@ -2,6 +2,11 @@ package com.voelkerh.cPast.domain.model;
 
 import java.time.LocalDateTime;
 
+/**
+ * Domain model representing a single captured image.
+ *
+ * <p>A capture combines an {@link Archive}, a file name, an optional note, and the timestamp at which the image was created.</p>
+ */
 public class Capture {
 
     private final Archive archive;
