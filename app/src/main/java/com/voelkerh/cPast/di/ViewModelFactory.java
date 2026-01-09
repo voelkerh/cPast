@@ -11,7 +11,7 @@ import com.voelkerh.cPast.ui.notes.NotesViewModel;
  *
  * <p>This factory centralizes ViewModel creation and resolves all required
  * dependencies via {@link AppModule}, ensuring that UI fragments do not
- * depend on repositories or their construction logic.</p>
+ * depend on use cases, repositories or their construction logic.</p>
  */
 public class ViewModelFactory implements ViewModelProvider.Factory {
 
@@ -27,7 +27,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
             return (T) new HomeViewModel(
                     AppModule.getInstance().getManageArchivesUseCase(),
                     AppModule.getInstance().getImageRepository(),
-                    AppModule.getInstance().getNotesRepository(),
+                    AppModule.getInstance().getWriteNotesUseCase(),
                     AppModule.getInstance().getRecentCapturesRepository()
             );
         }
