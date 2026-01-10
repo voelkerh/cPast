@@ -86,4 +86,14 @@ public class ArchiveTest {
 
         assertFalse(actual);
     }
+
+    @Test
+    void toString_returnsString() {
+        Archive archive = new Archive("Bundesarchiv", "BArch");
+
+        String expected = "Bundesarchiv - BArch";
+        String actual = archive.toString();
+
+        assertEquals(expected, actual);
+    }
 }
