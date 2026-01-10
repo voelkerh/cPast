@@ -30,8 +30,6 @@ public class RecentCapturesRepositoryImpl implements RecentCapturesRepository {
     /**
      * Creates a repository instance with application-private file storage.
      *
-     * <p>As this implementation uses Android MediaStore tests need to be instrumented.</p>
-     *
      * @param context application context used to access internal storage
      */
     public RecentCapturesRepositoryImpl(Context context) {

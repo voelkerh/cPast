@@ -61,4 +61,13 @@ public class ManageRecentCapturesUseCase {
     public List<Capture> getRecentCaptures() {
         return List.copyOf(recentCaptures);
     }
+
+    /**
+     * Returns the maximum number of recent captures saved to the list.
+     *
+     * @return the maximum number
+     */
+    public int getMaxRecentFiles() {
+        return MAX_RECENT_FILES;
+    }
 }
