@@ -37,7 +37,6 @@ public class HomeViewModel extends ViewModel {
     private final ManageRecentCapturesUseCase manageRecentCapturesUseCase;
 
     private final MutableLiveData<List<Archive>> archives = new MutableLiveData<>();
-    private final MutableLiveData<Integer> currentCounter = new MutableLiveData<>(0);
     private final MutableLiveData<String> nextFileName = new MutableLiveData<>("");
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
     private final MutableLiveData<String> successMessage = new MutableLiveData<>();
@@ -142,19 +141,17 @@ public class HomeViewModel extends ViewModel {
      */
     public void saveCapturedImage(String tempImagePath, String note) {
         String baseReference = getBaseReference();
-        int counter = currentCounter.getValue() != null ? currentCounter.getValue() : 0;
+        int counter = manageImagesUseCase.getHighestCounterForRecord(baseReference);
         String imageFileName = createFileName(baseReference, String.valueOf(counter + 1));
 
         try {
             boolean saved = manageImagesUseCase.saveImageToGallery(imageFileName, note, tempImagePath);
             if (saved) {
-                currentCounter.setValue(counter + 1);
-
                 String newFileName = createFileName(baseReference, String.valueOf(counter + 2));
                 nextFileName.setValue(newFileName);
 
                 Capture capture = new Capture(selectedArchive, imageFileName, note);
-                manageRecentCapturesUseCase.addFileToRecentCaptures(capture);
+                manageRecentCapturesUseCase.addRecentCapture(capture);
 
                 boolean noteSaved = writeNotesUseCase.saveNote(capture);
 
@@ -186,18 +183,24 @@ public class HomeViewModel extends ViewModel {
      * Updates an existing archive and refreshes the archive list.
      */
     public void updateArchive(String oldFullName, String oldShortName, String fullArchiveName, String shortArchiveName) {
-        manageArchivesUseCase.updateArchive(oldFullName, oldShortName, fullArchiveName, shortArchiveName);
-        successMessage.setValue(fullArchiveName + " updated");
-        loadArchives();
+        boolean updated = manageArchivesUseCase.updateArchive(oldFullName, oldShortName, fullArchiveName, shortArchiveName);
+        if (updated) {
+            successMessage.setValue(fullArchiveName + " updated");
+            loadArchives();
+        }
+        else errorMessage.setValue(fullArchiveName + " could not be updated");
     }
 
     /**
      * Deletes an archive and refreshes the archive list.
      */
     public void deleteArchive(String fullArchiveName) {
-        manageArchivesUseCase.deleteArchive(fullArchiveName);
-        successMessage.setValue("Deleted -" + fullArchiveName);
-        loadArchives();
+        boolean deleted = manageArchivesUseCase.deleteArchive(fullArchiveName);
+        if (deleted) {
+            successMessage.setValue(fullArchiveName + " deleted");
+            loadArchives();
+        }
+        else errorMessage.setValue(fullArchiveName + " could not be deleted");
     }
 
     public void refreshCounter() {
@@ -213,13 +216,11 @@ public class HomeViewModel extends ViewModel {
         String baseReference = getBaseReference();
 
         if (baseReference.isEmpty()) {
-            currentCounter.setValue(0);
             nextFileName.setValue("");
             return;
         }
 
         int counter = manageImagesUseCase.getHighestCounterForRecord(baseReference);
-        currentCounter.setValue(counter);
 
         String fileName = createFileName(baseReference, String.valueOf(counter + 1));
         nextFileName.setValue(fileName);

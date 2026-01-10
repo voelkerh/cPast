@@ -34,58 +34,58 @@ public class ManageRecentCapturesUseCaseTest {
     }
 
     @Test
-    void addFileToRecentCaptures_returnsTrue() {
+    void addRecentCapture_returnsTrue() {
         RecentCapturesRepository recentCapturesRepository = mock(RecentCapturesRepository.class);
         when(recentCapturesRepository.save(any())).thenReturn(true);
         ManageRecentCapturesUseCase manageRecentCapturesUseCase = new ManageRecentCapturesUseCase(recentCapturesRepository);
         Capture capture = new Capture(mock(Archive.class), "file.jpg", "note");
 
-        boolean actual = manageRecentCapturesUseCase.addFileToRecentCaptures(capture);
+        boolean actual = manageRecentCapturesUseCase.addRecentCapture(capture);
 
         verify(recentCapturesRepository, times(1)).save(any());
         assertTrue(actual);
     }
 
     @Test
-    void addFileToRecentCaptures_returnsFalseWhenCaptureNull() {
+    void addRecentCapture_returnsFalseWhenCaptureNull() {
         RecentCapturesRepository recentCapturesRepository = mock(RecentCapturesRepository.class);
         ManageRecentCapturesUseCase manageRecentCapturesUseCase = new ManageRecentCapturesUseCase(recentCapturesRepository);
         Capture capture = null;
 
-        boolean actual = manageRecentCapturesUseCase.addFileToRecentCaptures(capture);
+        boolean actual = manageRecentCapturesUseCase.addRecentCapture(capture);
 
         assertFalse(actual);
     }
 
     @Test
-    void addFileToRecentCaptures_returnsFalseWhenFileNameIsNull() {
+    void addRecentCapture_returnsFalseWhenCaptureNameIsNull() {
         RecentCapturesRepository recentCapturesRepository = mock(RecentCapturesRepository.class);
         ManageRecentCapturesUseCase manageRecentCapturesUseCase = new ManageRecentCapturesUseCase(recentCapturesRepository);
         Capture capture = new Capture(mock(Archive.class), null, "note");
 
-        boolean actual = manageRecentCapturesUseCase.addFileToRecentCaptures(capture);
+        boolean actual = manageRecentCapturesUseCase.addRecentCapture(capture);
 
         assertFalse(actual);
     }
 
     @Test
-    void addFileToRecentCaptures_returnsFalseWhenFileNameIsEmpty() {
+    void addRecentCapture_returnsFalseWhenCaptureNameIsEmpty() {
         RecentCapturesRepository recentCapturesRepository = mock(RecentCapturesRepository.class);
         ManageRecentCapturesUseCase manageRecentCapturesUseCase = new ManageRecentCapturesUseCase(recentCapturesRepository);
         Capture capture = new Capture(mock(Archive.class), "", "note");
 
-        boolean actual = manageRecentCapturesUseCase.addFileToRecentCaptures(capture);
+        boolean actual = manageRecentCapturesUseCase.addRecentCapture(capture);
 
         assertFalse(actual);
     }
 
     @Test
-    void addFileToRecentCaptures_captureListLonger() {
+    void addRecentCapture_captureListLonger() {
         RecentCapturesRepository recentCapturesRepository = mock(RecentCapturesRepository.class);
         ManageRecentCapturesUseCase manageRecentCapturesUseCase = new ManageRecentCapturesUseCase(recentCapturesRepository);
         Capture capture = new Capture(mock(Archive.class), "file.jpg", "note");
 
-        manageRecentCapturesUseCase.addFileToRecentCaptures(capture);
+        manageRecentCapturesUseCase.addRecentCapture(capture);
         int expected = 1;
         int actual = manageRecentCapturesUseCase.getRecentCaptures().size();
 
@@ -93,7 +93,7 @@ public class ManageRecentCapturesUseCaseTest {
     }
 
     @Test
-    void addFileToRecentCaptures_captureNotLongerThanMax() {
+    void addRecentCapture_captureListNotLongerThanMax() {
         RecentCapturesRepository recentCapturesRepository = mock(RecentCapturesRepository.class);
         when(recentCapturesRepository.save(any())).thenReturn(true);
         ManageRecentCapturesUseCase manageRecentCapturesUseCase = new ManageRecentCapturesUseCase(recentCapturesRepository);
@@ -104,12 +104,12 @@ public class ManageRecentCapturesUseCaseTest {
         Capture capture5 = new Capture(mock(Archive.class), "file.jpg", "note");
         Capture capture6 = new Capture(mock(Archive.class), "file.jpg", "note");
 
-        manageRecentCapturesUseCase.addFileToRecentCaptures(capture1);
-        manageRecentCapturesUseCase.addFileToRecentCaptures(capture2);
-        manageRecentCapturesUseCase.addFileToRecentCaptures(capture3);
-        manageRecentCapturesUseCase.addFileToRecentCaptures(capture4);
-        manageRecentCapturesUseCase.addFileToRecentCaptures(capture5);
-        manageRecentCapturesUseCase.addFileToRecentCaptures(capture6);
+        manageRecentCapturesUseCase.addRecentCapture(capture1);
+        manageRecentCapturesUseCase.addRecentCapture(capture2);
+        manageRecentCapturesUseCase.addRecentCapture(capture3);
+        manageRecentCapturesUseCase.addRecentCapture(capture4);
+        manageRecentCapturesUseCase.addRecentCapture(capture5);
+        manageRecentCapturesUseCase.addRecentCapture(capture6);
         int expected = manageRecentCapturesUseCase.getMaxRecentFiles();
         int actual = manageRecentCapturesUseCase.getRecentCaptures().size();
 
@@ -122,8 +122,8 @@ public class ManageRecentCapturesUseCaseTest {
         ManageRecentCapturesUseCase manageRecentCapturesUseCase = new ManageRecentCapturesUseCase(recentCapturesRepository);
         Capture capture1 = new Capture(mock(Archive.class), "file.jpg", "note");
         Capture capture2 = new Capture(mock(Archive.class), "file.jpg", "note");
-        manageRecentCapturesUseCase.addFileToRecentCaptures(capture1);
-        manageRecentCapturesUseCase.addFileToRecentCaptures(capture2);
+        manageRecentCapturesUseCase.addRecentCapture(capture1);
+        manageRecentCapturesUseCase.addRecentCapture(capture2);
 
         List<Capture> recentCaptures = manageRecentCapturesUseCase.getRecentCaptures();
         int expected = 2;

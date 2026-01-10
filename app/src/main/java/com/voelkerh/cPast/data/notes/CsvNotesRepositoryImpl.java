@@ -27,8 +27,8 @@ import java.time.format.DateTimeFormatter;
 public class CsvNotesRepositoryImpl implements NotesRepository {
 
     private static final String TAG = "CsvNoteStore";
-    private static final String LOG_FILENAME = "cPast_Notes.csv";
-    private static final String LOG_DIR = Environment.DIRECTORY_DOCUMENTS + "/CapturingThePast/";
+    private static final String FILE_NAME = "cPast_Notes.csv";
+    private static final String TARGET_DIR = Environment.DIRECTORY_DOCUMENTS + "/CapturingThePast/";
     private static final String CSV_HEADER = "Date; Time; Archive; File; Note\n";
     private static final String CSV_DELIMITER = ";";
 
@@ -62,7 +62,7 @@ public class CsvNotesRepositoryImpl implements NotesRepository {
     Uri findExistingFile() {
         Uri contentUri = MediaStore.Files.getContentUri("external");
         String selection = MediaStore.MediaColumns.RELATIVE_PATH + "=?";
-        String[] selectionArgs = new String[]{LOG_DIR};
+        String[] selectionArgs = new String[]{TARGET_DIR};
 
         try (Cursor cursor = context.getContentResolver().query(
                 contentUri, null, selection, selectionArgs, null)) {
@@ -80,7 +80,7 @@ public class CsvNotesRepositoryImpl implements NotesRepository {
 
             while (cursor.moveToNext()) {
                 String fileName = cursor.getString(nameIndex);
-                if (LOG_FILENAME.equals(fileName)) {
+                if (FILE_NAME.equals(fileName)) {
                     long id = cursor.getLong(idIndex);
                     return ContentUris.withAppendedId(contentUri, id);
                 }
@@ -91,9 +91,9 @@ public class CsvNotesRepositoryImpl implements NotesRepository {
 
     Uri createNewFile() {
         ContentValues values = new ContentValues();
-        values.put(MediaStore.MediaColumns.DISPLAY_NAME, LOG_FILENAME);
+        values.put(MediaStore.MediaColumns.DISPLAY_NAME, FILE_NAME);
         values.put(MediaStore.MediaColumns.MIME_TYPE, "text/csv");
-        values.put(MediaStore.MediaColumns.RELATIVE_PATH, LOG_DIR);
+        values.put(MediaStore.MediaColumns.RELATIVE_PATH, TARGET_DIR);
 
         Uri uri = context.getContentResolver().insert(
                 MediaStore.Files.getContentUri("external"), values);
