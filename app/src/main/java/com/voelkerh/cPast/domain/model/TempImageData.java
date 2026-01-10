@@ -10,12 +10,19 @@ import android.net.Uri;
  */
 public class TempImageData {
 
-    public final Uri uri;
-    public final String path;
+    private final Uri uri;
+    private final String path;
 
     public TempImageData(Uri uri, String path) {
         this.uri = uri;
         this.path = path;
     }
 
+    public String getPath() {
+        return path;
+    }
+
+    public Uri getUri() {
+        return uri;
+    }
 }

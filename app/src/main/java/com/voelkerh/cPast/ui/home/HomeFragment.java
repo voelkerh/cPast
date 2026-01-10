@@ -163,8 +163,8 @@ public class HomeFragment extends Fragment implements AddArchiveDialog.Listener,
             TempImageData tempData = homeViewModel.prepareCameraCapture();
 
             if (tempData != null) {
-                tempImagePath = tempData.path;
-                android.net.Uri uri = tempData.uri;
+                tempImagePath = tempData.getPath();
+                android.net.Uri uri = tempData.getUri();
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
                 takePictureLauncher.launch(takePictureIntent);
             }

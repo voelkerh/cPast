@@ -16,21 +16,22 @@ public class RecordReferenceCreator {
      * result is then sanitized by removing whitespace, replacing path separators
      * and special characters, and collapsing multiple underscores.</p>
      *
-     * @param strArchiveShort short identifier of the archive
-     * @param strRecordReference record-specific reference or signature
+     * @param shortArchiveName short identifier of the archive
+     * @param recordReference record-specific reference or signature
      * @return sanitized base reference suitable for use in file names
      */
-    public static String createBaseReference(String strArchiveShort, String strRecordReference) {
-        StringBuilder sb = new StringBuilder(strArchiveShort);
-        if (!strRecordReference.isEmpty()) {
-            sb.append('_').append(strRecordReference);
+    public static String createBaseReference(String shortArchiveName, String recordReference) {
+        if (shortArchiveName == null || shortArchiveName.isEmpty() || recordReference == null) return "";
+        StringBuilder sb = new StringBuilder(shortArchiveName);
+        if (!recordReference.isEmpty()) {
+            sb.append('_').append(recordReference);
         }
 
         return sb.toString()
                 .replace(" ", "")
                 .replace("//", "/")
                 .replace("/", "_")
-                .replaceAll("[!@#$%^&*]", "_")
+                .replaceAll("[!@#$%^&.*-]", "_")
                 .replaceAll("\\\\\\\\", "\\\\")
                 .replaceAll("\\\\", "_")
                 .replaceAll("_{2,}", "_");
@@ -44,21 +45,21 @@ public class RecordReferenceCreator {
      * The resulting string is sanitized to ensure a consistent and filesystem-safe file name.</p>
      *
      * @param baseReference base record reference
-     * @param strCounter numeric counter to distinguish multiple images of the same record
+     * @param counter numeric counter to distinguish multiple images of the same record
      * @return sanitized image file name with counter and {@code .jpg} extension
      */
-    public static String addCounterAndFileExtension(String baseReference, String strCounter) {
+    public static String addCounterAndFileExtension(String baseReference, String counter) {
+        if (baseReference == null || baseReference.isEmpty() || counter == null || counter.isEmpty()) return "";
         StringBuilder sb = new StringBuilder(baseReference);
-        if (!strCounter.isEmpty() && !baseReference.isEmpty()) {
-            sb.append('_').append(strCounter);
-        }
+        sb.append('_').append(counter);
         sb.append(".jpg");
 
         return sb.toString()
                 .replace(" ", "")
                 .replace("//", "/")
                 .replace("/", "_")
-                .replaceAll("[!@#$%^&*]", "_")
+                .replaceAll("^[!@#$%^&*\\-_]+", "")
+                .replaceAll("[!@#$%^&*\\-_]", "_")
                 .replaceAll("\\\\\\\\", "\\\\")
                 .replaceAll("\\\\", "_")
                 .replaceAll("_{2,}", "_");

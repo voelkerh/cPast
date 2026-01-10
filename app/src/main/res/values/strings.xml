@@ -45,7 +45,7 @@
     <string name="notes_fragment_title">Notes</string>
     <string name="notes_fragment_text_info">
         <![CDATA[<p>Your notes are saved in <b>cPast_Notes.csv</b> in the Documents directory on your phone.</p>]]></string>
-    <string name="notes_fragment_text_files"><![CDATA[<p>Latest photos captured \n(Most recent first):</p>]]></string>
+    <string name="notes_fragment_text_files"><![CDATA[<p>Latest photos captured<br>(Most recent first):</p>]]></string>
     <string name="open_nav">Open Navigation Drawer</string>
     <string name="close_nav">Close Navigation Drawer</string>
     <string name="take_photo">Take Photo</string>

@@ -37,7 +37,7 @@ public class CsvNotesRepositoryImpl implements NotesRepository {
     /**
      * Creates a repository instance using the Android MediaStore.
      *
-     * <p>As this implementation uses Android MediaStore tests need to be instrumented.</p>
+     * <p>As this implementation uses Android MediaStore further tests need to be instrumented.</p>
      *
      * @param context application context used to access private storage
      */
@@ -59,7 +59,7 @@ public class CsvNotesRepositoryImpl implements NotesRepository {
         return appendToFile(uri, csvEntry);
     }
 
-    private Uri findExistingFile() {
+    Uri findExistingFile() {
         Uri contentUri = MediaStore.Files.getContentUri("external");
         String selection = MediaStore.MediaColumns.RELATIVE_PATH + "=?";
         String[] selectionArgs = new String[]{LOG_DIR};
@@ -89,7 +89,7 @@ public class CsvNotesRepositoryImpl implements NotesRepository {
         return null;
     }
 
-    private Uri createNewFile() {
+    Uri createNewFile() {
         ContentValues values = new ContentValues();
         values.put(MediaStore.MediaColumns.DISPLAY_NAME, LOG_FILENAME);
         values.put(MediaStore.MediaColumns.MIME_TYPE, "text/csv");
@@ -128,7 +128,7 @@ public class CsvNotesRepositoryImpl implements NotesRepository {
         return csvField(date) + CSV_DELIMITER + csvField(time) + CSV_DELIMITER + csvField(archiveName) + CSV_DELIMITER + csvField(imageName) + CSV_DELIMITER + csvField(note) + "\n";
     }
 
-    private boolean appendToFile(Uri uri, String note) {
+    boolean appendToFile(Uri uri, String note) {
         if (uri == null) return false;
 
         try (OutputStream os = context.getContentResolver().openOutputStream(uri, "wa")) {

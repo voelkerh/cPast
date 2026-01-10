@@ -41,10 +41,10 @@ public class ManageArchivesUseCase {
 
         String fullNameNorm = normalizeString(fullName);
         String shortNameNorm = normalizeString(shortName);
-        if (fullName.isEmpty() || shortName.isEmpty()) return false;
+        if (fullNameNorm.isEmpty() || shortNameNorm.isEmpty()) return false;
 
-        if (findByFullName(archives, fullNameNorm) != null) return false;
-        if (findByShortName(archives, shortNameNorm) != null) return false;
+        if (findByFullName(fullNameNorm) != null) return false;
+        if (findByShortName(shortNameNorm) != null) return false;
 
         archives.add(new Archive(fullNameNorm, shortNameNorm));
         return archiveRepository.save(archives);
@@ -60,7 +60,7 @@ public class ManageArchivesUseCase {
         String fullNameNorm = normalizeString(fullName);
         if (fullNameNorm.isEmpty()) return false;
 
-        Archive existing = findByFullName(archives, fullNameNorm);
+        Archive existing = findByFullName(fullNameNorm);
         if (existing == null) return false;
 
         archives.remove(existing);
@@ -88,13 +88,13 @@ public class ManageArchivesUseCase {
         if (oldFullNameNorm.isEmpty() || oldShortNameNorm.isEmpty()) return false;
         if (fullNameNorm.isEmpty() || shortNameNorm.isEmpty()) return false;
 
-        Archive existing = findByFullName(archives, oldFullNameNorm);
+        Archive existing = findByFullName(oldFullNameNorm);
         if (existing == null) return false;
 
-        Archive sameFull = findByFullName(archives, fullNameNorm);
+        Archive sameFull = findByFullName(fullNameNorm);
         if (sameFull != null && sameFull != existing) return false;
 
-        Archive sameShort = findByShortName(archives, shortNameNorm);
+        Archive sameShort = findByShortName(shortNameNorm);
         if (sameShort != null && sameShort != existing) return false;
 
         existing.setFullName(fullNameNorm);
@@ -112,11 +112,17 @@ public class ManageArchivesUseCase {
         return List.copyOf(archives);
     }
 
-    private static String normalizeString(String s) {
-        return s == null ? "" : s.trim();
+    private String normalizeString(String s) {
+        if (s == null) return "";
+
+        String normalized = s.strip();
+        normalized = normalized.replaceAll("[^\\p{L}\\p{N} ]", "");
+        normalized = normalized.replaceAll(" +", " ");
+
+        return normalized;
     }
 
-    private static Archive findByFullName(List<Archive> archives, String fullNameNorm) {
+    private Archive findByFullName(String fullNameNorm) {
         for (Archive archive : archives) {
             if (archive == null) continue;
             if (normalizeString(archive.getFullName()).equals(fullNameNorm)) return archive;
@@ -124,7 +130,7 @@ public class ManageArchivesUseCase {
         return null;
     }
 
-    private static Archive findByShortName(List<Archive> archives, String shortNameNorm) {
+    private Archive findByShortName(String shortNameNorm) {
         for (Archive archive : archives) {
             if (archive == null) continue;
             if (normalizeString(archive.getShortName()).equals(shortNameNorm)) return archive;

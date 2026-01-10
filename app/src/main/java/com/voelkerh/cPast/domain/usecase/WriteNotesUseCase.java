@@ -29,14 +29,14 @@ public class WriteNotesUseCase {
      * content is empty.</p>
      *
      * @param capture the capture containing note data
-     * @return boolean if the note was successfully validated and persisted
+     * @return boolea if the note was successfully validated and persisted
      */
     public boolean saveNote(Capture capture) {
         if (capture == null) return false;
 
         if (capture.getFileName() == null ||
                 capture.getNote() == null ||
-                capture.getNote().isEmpty() ||
+                capture.getNote().equals("No note taken.") ||
                 capture.getCaptureTime() == null ||
                 capture.getArchive() == null) {
             return false;
