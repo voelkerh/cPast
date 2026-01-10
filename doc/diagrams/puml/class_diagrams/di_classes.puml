@@ -1,0 +1,37 @@
+@startuml
+
+top to bottom direction
+
+package "com" #CCCCCC {
+    package "voelkerh"  #DDDDDD {
+        package "cPast" #EEEEEE {
+            package "di"  #FFFFFF {
+                class AppModule << (S,#FF7700) Singleton >> {
+                    - {static} AppModule instance
+                    - ManageArchivesUseCase manageArchivesUseCase
+                    - ManageImagesUseCase manageImagesUseCase
+                    - WriteNotesUseCase writeNotesUseCase
+                    - ManageRecentCapturesUseCase manageRecentCapturesUseCase
+                    - AppModule()
+                    + {static} void init()
+                    + {static} AppModule getInstance()
+                    + ManageArchivesUseCase getManageArchivesUseCase()
+                    + ManageImagesUseCase getManageImagesUseCase()
+                    + WriteNotesUseCase getWriteNotesUseCase()
+                    + ManageRecentCapturesUseCase getManageRecentCapturesUseCase()
+                }
+                class ViewModelFactory {
+                    + <T extends ViewModel> T create()
+                }
+            }
+
+            class CPastApplication  #FFFFFF {
+                + void onCreate()
+            }
+            CPastApplication -r-> AppModule
+            ViewModelFactory -u-> AppModule
+        }
+    }
+}
+
+@enduml

@@ -1,0 +1,177 @@
+@startuml
+
+top to bottom direction
+
+package "com" #CCCCCC {
+    package "voelkerh"  #DDDDDD {
+        package "cPast" #EEEEEE {
+
+            package "domain" as DO #FFFFFF {
+
+            package "ui" as U #FFFFFF {
+                package "about" as ab {
+                    class AboutFragment {
+                        + View onCreateView()
+                    }
+                }
+
+                package "help" as he {
+                    class HelpFragment {
+                        - View currentlyOpenBody
+                        - ImageView currentlyOpenArrow
+                        + View onCreateView()
+                        - void setUpAccordionElement()
+                        - void setHtml()
+                    }
+                }
+
+                package "home" as ho {
+
+                    class ArchiveAdapter {
+                        - LayoutInflater inflater
+                        - List<Archive> archives
+                        - AddArchiveDialog_Listener addArchiveListener
+                        - EditArchiveDialog_Listener editArchiveListener
+                        + ArchiveAdapter()
+                        + int getCount()
+                        + Archive getItem()
+                        + View getView()
+                        + View getDropDownView()
+                    }
+
+                    class ValidationDialog {
+                        + {static} void show()
+                    }
+                    class AddArchiveDialog {
+                        + {static} void show()
+                    }
+
+                    interface AddArchiveDialog_Listener {
+                        + void on ArchiveCreated()
+                    }
+
+                    AddArchiveDialog --> AddArchiveDialog_Listener
+                    ArchiveAdapter o-- AddArchiveDialog_Listener
+
+                    class ConfirmDeleteArchiveDialog {
+                        + {static} void show()
+                    }
+                    class EditArchiveDialog {
+                        + {static} void show()
+                    }
+
+                    interface EditArchiveDialog_Listener {
+                        + void onArchiveEdited()
+                        + void onArchiveDeleted()
+                    }
+
+                    EditArchiveDialog --> EditArchiveDialog_Listener
+                    ConfirmDeleteArchiveDialog ..> EditArchiveDialog_Listener
+                    ArchiveAdapter o-- EditArchiveDialog_Listener
+
+                    class HomeFragment {
+                        - HomeViewModel homeViewModel
+                        - String tempImagePath
+                        - Spinner dropDown
+                        - EditText recordReferenceEditText
+                        - TextView recordReferenceText
+                        - TextView noteText
+                        - ActivityResultLauncher<Intent> takePictureLauncher
+                        + void onCreate()
+                        + void onCreateView()
+                        + void onViewCreated()
+                        + void onResume()
+                        + void onArchiveCreated()
+                        + void onArchiveEdited()
+                        + void onArchiveDeleted()
+                        - void initViews()
+                        - void observeViewModel()
+                        - void dispatchPictureIntent()
+                        - void handleCameraResult()
+                        - void showMessage()
+                    }
+                    class HomeViewModel {
+                        - ManageArchiveUseCase manageArchiveUseCase
+                        - WriteNotesUseCase writeNotesUseCase
+                        - ManageImagesUseCase manageImagesUseCase
+                        - ManageRecentCapturesUseCase manageRecentCapturesUseCase
+                        - MutableLiveData<List<Archive>> archives
+                        - MutableLiveData<String> nextFileName
+                        - MutableLiveData<String> errorMessage
+                        - MutableLiveData<String> successMessage
+                        - Archive selectedArchive
+                        - String currentRecordReference
+                        + HomeViewModel()
+                        + LiveData<List<Archive>> getArchives()
+                        + LiveData<String> getNextFileName()
+                        + LiveData<String> getErrorMessage()
+                        + LiveData<String> getSuccessMessage()
+                        + void onArchiveSelected()
+                        + void onRecordReferenceChanges()
+                        + boolean isInputValid()
+                        + void saveCapturedImage()
+                        + void createArchive()
+                        + void updateArchive()
+                        + void deleteArchive()
+                        + void refreshCounter()
+                        + TempImageData prepareCameraCapture()
+                        - void loadArchives()
+                        - void updateCounterAndFileName()
+                        - String getBaseReference()
+                        - String createFileName()
+                    }
+                    HomeFragment --> HomeViewModel
+                    HomeFragment -r-> ValidationDialog
+                    HomeFragment --> ArchiveAdapter
+                    HomeFragment <|.. AddArchiveDialog_Listener
+                    HomeFragment <|.. EditArchiveDialog_Listener
+                    ArchiveAdapter --> EditArchiveDialog
+                    EditArchiveDialog --> ConfirmDeleteArchiveDialog
+                    ArchiveAdapter --> AddArchiveDialog
+                    ValidationDialog -[hidden]-> ArchiveAdapter
+                }
+
+                package "notes" as no {
+                    class NotesFragment {
+                        - NotesViewModel notesViewModel
+                        + void onCreate()
+                        + View onCreateView()
+                    }
+                    class NotesViewModel {
+                        - ManageRecentCapturesUseCase manageRecentCapturesUseCase
+                        - MutableLiveData<String> recentCaptures
+                        + NotesViewModel()
+                        + LiveData<String> getRecentCaptures()
+                        - void loadRecentCaptures()
+                    }
+                    NotesFragment --> NotesViewModel
+                }
+
+                package "navigation" as na {
+                    class MainActivity{
+                        - DrawerLayout drawerLayout
+                        # void onCreate()
+                        + boolean onNavigationItemSelected()
+                        - void loadFragment()
+                        - boolean isHomeFragmentVisible()
+                        - void openGallery()
+                    }
+                    MainActivity --> HomeFragment
+                    MainActivity -r-> AboutFragment
+                    MainActivity -l-> HelpFragment
+                    MainActivity --> NotesFragment
+                }
+
+                package "start" as st {
+                    class StartActivity {
+                        # void onCreate()
+                    }
+                    StartActivity --> MainActivity
+                }
+            }
+
+        }
+    }
+}
+
+@enduml
