@@ -1,0 +1,123 @@
+@startuml
+
+top to bottom direction
+
+package "com" #CCCCCC {
+    package "voelkerh"  #DDDDDD {
+        package "cPast" #EEEEEE {
+
+            package "domain" as DO #FFFFFF {
+
+                package "repository" as RE {
+                    interface ArchiveRepository
+                    interface ImageRepository
+                    interface NotesRepository
+                    interface RecentCapturesRepository
+                }
+
+                package "usecase" as UC {
+                    class ManageArchivesUseCase
+                    ManageArchivesUseCase --> ArchiveRepository
+                    class ManageImagesUseCase
+                    ManageImagesUseCase --> ImageRepository
+                    class ManageRecentCapturesUseCase
+                    ManageRecentCapturesUseCase --> RecentCapturesRepository
+                    class WriteNotesUseCase
+                    WriteNotesUseCase --> NotesRepository
+                }
+
+                package "model" as M {
+                    class Archive
+                    class Capture
+                    class TempImageData
+                }
+
+                package "service" as S {
+                    class RecordReferenceCreator
+                }
+                S -[hidden]-> UC
+            }
+
+            package "data" as DA #FFFFFF {
+
+                package "archives" as A {
+                    class ArchiveRepositoryImpl
+                    ArchiveRepository <|.. ArchiveRepositoryImpl
+                }
+
+                package "images" as I {
+                    class ImageRepositoryImpl
+                    ImageRepository <|.. ImageRepositoryImpl
+                }
+
+                package "notes" as N {
+                    class CsvNotesRepositoryImpl
+                    NotesRepository <|.. CsvNotesRepositoryImpl
+                }
+
+                package "recentCaptures" as R {
+                    class RecentCapturesRepositoryImpl
+                    RecentCapturesRepository <|.. RecentCapturesRepositoryImpl
+                }
+            }
+            package "ui" as U #FFFFFF {
+                package "about" as ab {
+                    class AboutFragment
+                }
+
+                package "help" as he {
+                    class HelpFragment
+                }
+
+                package "home" as ho {
+                    class ValidationDialog
+                    class AddArchiveDialog
+                    class ArchiveAdapter
+                    class ConfirmDeleteArchiveDialog
+                    class EditArchiveDialog
+                    class HomeFragment
+                    class HomeViewModel
+                    HomeFragment --> HomeViewModel
+                    HomeFragment --> ValidationDialog
+                    HomeFragment --> ArchiveAdapter
+                    HomeFragment --> Archive
+                    HomeFragment --> TempImageData
+                    HomeViewModel --> ManageArchivesUseCase
+                    HomeViewModel --> ManageImagesUseCase
+                    HomeViewModel --> WriteNotesUseCase
+                    HomeViewModel --> ManageRecentCapturesUseCase
+                    HomeViewModel --> RecordReferenceCreator
+                    ArchiveAdapter --> EditArchiveDialog
+                    ArchiveAdapter --> Archive
+                    EditArchiveDialog --> ConfirmDeleteArchiveDialog
+                    ArchiveAdapter --> AddArchiveDialog
+                    ValidationDialog -[hidden]-> ArchiveAdapter
+                }
+
+                package "notes" as no {
+                    class NotesFragment
+                    class NotesViewModel
+                    NotesFragment --> NotesViewModel
+                    NotesViewModel --> ManageRecentCapturesUseCase
+                    NotesViewModel --> Capture
+                }
+
+                package "navigation" as na {
+                    class MainActivity
+                    MainActivity --> HomeFragment
+                    MainActivity --> AboutFragment
+                    MainActivity -r-> HelpFragment
+                    MainActivity --> NotesFragment
+                }
+
+                package "start" as st {
+                    class StartActivity
+                    StartActivity --> MainActivity
+                }
+            }
+
+        }
+    }
+}
+
+@enduml

@@ -1,0 +1,86 @@
+@startuml
+
+top to bottom direction
+
+package "com" #CCCCCC {
+    package "voelkerh"  #DDDDDD {
+        package "cPast" #EEEEEE {
+
+            package "data" as DA #FFFFFF {
+
+                package "archives" as A {
+                    class ArchiveRepositoryImpl {
+                        - {static} String TAG
+                        - {static} String FILE_NAME
+                        - final Context context
+                        - final InputStream inputStream
+                        - final OutputStream outputStream
+                        + ArchiveRepositoryImpl()
+                        + List<Archive> load()
+                        + boolean save()
+                        - InputStream getInputStream()
+                        - OutputStream getOutputStream()
+                        - List<Archive> jsonToList()
+                        - String listToJson()
+                    }
+                }
+
+                package "images" as I {
+                    class ImageRepositoryImpl {
+                        - {static} String TAG
+                        - {static} String TEMP_FILE_NAME
+                        - {static} String MIME_TYPE
+                        - {static} int JPEG_QUALITY
+                        - String fileProviderAuthority
+                        - Context context
+                        + ImageRepositoryImpl()
+                        + TempImageData getTempImageData()
+                        + boolean save()
+                        + int getHighestCounterForRecord()
+                        - ExifInterface loadExif()
+                        - Uri createMediaStoreEntry()
+                        - boolean writeImageAndExif()
+                        - String getRelativePath()
+                        - void copyExifDataFromTempImageToMediaStoreEntry()
+                        - int extractCounter()
+                    }
+                }
+
+                package "notes" as N {
+                    class CsvNotesRepositoryImpl {
+                        - {static} String TAG
+                        - {static} String FILE_NAME
+                        - {static} String TARGET_DIR
+                        - {static} String CSV_HEADER
+                        - {static} String CSV_DELIMITER
+                        - Context context
+                        + CsvNotesRepositoryImpl()
+                        + boolean save()
+                        ~ Uri findExistingFile()
+                        ~ Uri createNewFile()
+                        ~ boolean appendToFile()
+                        - String csvField()
+                        - String formatEntry()
+                    }
+                }
+
+                package "recentCaptures" as R {
+                    class RecentCapturesRepositoryImpl {
+                        - {static} String TAG
+                        - {static} String FILE_NAME
+                        - Context context
+                        + RecentCapturesRepositoryImpl()
+                        + List<Capture> load()
+                        + boolean save()
+                        - List<Capture> parseRecentFiles()
+                        - Capture jsonToCapture()
+                        - JSONObject captureToJson()
+                    }
+                }
+            }
+
+        }
+    }
+}
+
+@enduml

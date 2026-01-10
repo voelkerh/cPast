@@ -1,0 +1,123 @@
+@startuml
+
+top to bottom direction
+
+package "com" #CCCCCC {
+    package "voelkerh"  #DDDDDD {
+        package "cPast" #EEEEEE {
+            package "domain" as DO #FFFFFF {
+
+                package "model" as M {
+                    class Archive {
+                        - String fullName
+                        - String shortName
+                        + Archive()
+                        + String getFullName()
+                        + String getShortName()
+                        + boolean setFullName()
+                        + boolean setShortName()
+                        + String toString()
+                    }
+                    class Capture {
+                        - Archive archive
+                        - String fileName
+                        - String note
+                        - LocalDateTime captureTime
+                        + Capture()
+                        + String getFileName()
+                        + String getNote()
+                        + LocalDateTime getCaptureTime()
+                        + Archive getArchive()
+                    }
+                    class TempImageData {
+                        - Uri uri
+                        - String path
+                        + TempImageData()
+                        + Uri getUri()
+                        + String getPath()
+                    }
+                    Archive -[hidden]r-> Capture
+                    Capture -[hidden]r-> TempImageData
+                }
+
+                package "repository" as RE {
+                    interface ArchiveRepository {
+                        List<Archive> load()
+                        boolean save()
+                    }
+                    interface ImageRepository {
+                        boolean save()
+                        TempImageData getTempImageData()
+                        int getHighestCounterForRecord()
+                    }
+                    interface NotesRepository {
+                        boolean save()
+                    }
+                    interface RecentCapturesRepository {
+                        List<Capture> load()
+                        boolean save()
+                    }
+                }
+
+                package "usecase" as UC {
+                    class ManageArchivesUseCase {
+                        - ArchiveRepository archiveRepository
+                        - List<Archive> archives
+                        + ManageArchivesUseCase()
+                        + boolean createArchive()
+                        + boolean deleteArchive()
+                        + boolean updateArchive()
+                        + List<Archive> readArchives()
+                        - String normalizeString()
+                        - Archive findByFullName()
+                        - Archive findByShortName()
+                    }
+                    ManageArchivesUseCase -down-> ArchiveRepository
+                    ManageArchivesUseCase -up-> Archive
+
+                    class ManageImagesUseCase {
+                        - ImageRepository imageRepository
+                        + ManageImagesUseCase()
+                        + TempImageData getTempImageData()
+                        + boolean saveImageToGallery()
+                        + int getHighestCounterForRecord()
+                        - deriveDirectoryStructure()
+                    }
+                    ManageImagesUseCase -down-> ImageRepository
+                    ManageImagesUseCase -up-> TempImageData
+
+                    class ManageRecentCapturesUseCase {
+                        - {static} int MAX_RECENT_FILES
+                        - RecentCapturesRepository recentCapturesRepository
+                        - List<Capture> recentCaptures
+                        + ManageRecentCapturesUseCase()
+                        + boolean addRecentCapture()
+                        + List<Capture> getRecentCaptures
+                        + int getMaxRecentFiles()
+                    }
+                    ManageRecentCapturesUseCase -down-> RecentCapturesRepository
+                    ManageRecentCapturesUseCase -up-> Capture
+
+                    class WriteNotesUseCase {
+                        - NotesRepository notesRepository
+                        + WriteNotesUseCase()
+                        + boolean saveNote()
+                    }
+                    WriteNotesUseCase -down-> NotesRepository
+                    WriteNotesUseCase -up-> Capture
+                }
+
+                package "service" as S {
+                    class RecordReferenceCreator {
+                        + {static} String createBaseReference()
+                        + {static} String addCounterAndFileExtension()
+                    }
+                }
+               S -[hidden]-> UC
+               M -[hidden]r-> S
+            }
+        }
+    }
+}
+
+@enduml

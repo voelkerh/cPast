@@ -39,7 +39,7 @@ public class ManageRecentCapturesUseCase {
      * @param capture the capture to add
      * @return boolean if the capture was added and persisted successfully
      */
-    public boolean addFileToRecentCaptures(Capture capture) {
+    public boolean addRecentCapture(Capture capture) {
         if (capture == null) return false;
         String fileName = capture.getFileName();
         if (fileName == null || fileName.isEmpty()) return false;

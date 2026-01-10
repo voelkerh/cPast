@@ -22,7 +22,7 @@ import java.util.List;
 public class ArchiveRepositoryImpl implements ArchiveRepository {
 
     private static final String TAG = "ArchiveRepositoryImpl";
-    private static final String FILE = "archives.json";
+    private static final String FILE_NAME = "archives.json";
     private final Context context;
     private final InputStream inputStream;
     private final OutputStream outputStream;
@@ -89,7 +89,7 @@ public class ArchiveRepositoryImpl implements ArchiveRepository {
         if (inputStream != null) return this.inputStream;
         if (context != null) {
             try {
-                return context.openFileInput(FILE);
+                return context.openFileInput(FILE_NAME);
             } catch (FileNotFoundException e) {
                 return null;
             }
@@ -150,7 +150,7 @@ public class ArchiveRepositoryImpl implements ArchiveRepository {
         if (outputStream != null) return this.outputStream;
         if (context != null) {
             try {
-                return context.openFileOutput(FILE, Context.MODE_PRIVATE);
+                return context.openFileOutput(FILE_NAME, Context.MODE_PRIVATE);
             } catch (FileNotFoundException e) {
                 return null;
             }

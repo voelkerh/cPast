@@ -1,0 +1,40 @@
+@startuml
+
+top to bottom direction
+
+package "domain" {
+    [model]
+    [repository]
+    [service]
+    [usecase]
+    [usecase] --> [repository]
+    [usecase] --> [model]
+}
+
+package "data" {
+    [archives]
+    [images]
+    [\nnotes]
+    [\nrecentCaptures]
+}
+
+package "ui" {
+    [start] -r-> [navigation]
+
+    [navigation] --> [home]
+    [navigation] --> [notes]
+    [navigation] --> [help]
+    [navigation] --> [about]
+}
+
+"ui" --> [di]
+[di] -right-> "ui"
+
+[di] --> "domain"
+"ui" -down-> "domain"
+
+[di] ---> "data"
+"data" -up-> "domain"
+
+
+@enduml
