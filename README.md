@@ -62,6 +62,7 @@ While you take photos in the archive, the app offers three core functions:
 10) You will be asked "Do you want to install this app?" Click "Install".
 11) You may be asked to scan the app. You can choose to scan the app and proceed with the installation.
 12) Choose "Open" to start using cPast on your phone. You can disconnect your phone from your computer.
+13) Disable "Install unknown apps" for "My Files" in your phone's settings.
 
 <h2 style="color: #16385E;">3) How can I use the app?</h2>
 
@@ -105,7 +106,7 @@ We now want to start taking photos. As we take photos, starting from the "Take P
 We found a page that would make a great figure in our next publication. To find this photo later, we add a note in the note field before we take a photo of this page.
 Once we confirmed the photo in the camera app of our phone, we receive a confirmation that both photo and note were saved.
 To find an overview of your photos or notes, open the menu via the burger icon on the upper left.
-"Photos" will open your gallery app. In "Notes" you see a list of the most recently captures photos with the notes you took.
+"Photos" will open your gallery app. Please note that your gallery app might not reflect the folder structure created by the app - even if it was created correctly. In "Notes" you see a list of the most recently captures photos with the notes you took.
 Currently, your notes cannot be edited here. However, you can use and edit your notes on your computer.
 
 Please note: This app does not save any of your photos or notes to a cloud or server. It runs only locally on your phone. This might be important for GDPR compliance.
