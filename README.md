@@ -32,7 +32,9 @@ While you take photos in the archive, the app offers three core functions:
 2) cPast automatically <b style="color: #A8843E;">creates folders</b> along the archive structure and saves your photos in them.
    <br>
    <br>E.g. for the record "DQ1/14614" in the German Federal Archive (short "BArch"):
-<img src="doc/help/help_hierarchy.png" width="300px" align="center" />
+   <div align="center">
+      <img src="doc/help/help_hierarchy.png" width="300px" />
+   </div>
    <br>
    Connect your mobile phone to your computer and move the top folder to your computer. Save time sorting your photos!
    <br>
@@ -42,7 +44,9 @@ While you take photos in the archive, the app offers three core functions:
     Have you found an important document or had a brilliant idea that you want to think about later?
     Your notes are saved in a table with the recording time, archive and file name.
     This allows you to continue working on them later on your computer.
-<img src="doc/help/notes_file.png" width="300" align="center" />
+<div align="center">
+   <img src="doc/help/notes_file.png" width="400px" />
+</div>
 
 <h2 style="color: #16385E;">2) How can I install the app?</h2>
 
@@ -121,7 +125,7 @@ Then we can enter the internal storage via the file explorer on the computer. We
 
 <div align="center">
     <img src="doc/screenshots/usb_settings.jpg" width="150px" />
-    <img src="doc/screenshots/internal_storage.png" width="500" />
+    <img src="doc/screenshots/internal_storage.png" width="400px" />
 </div>
 
 To find our photos, we navigate via Pictures to the cPast folder.
@@ -133,8 +137,8 @@ If you leave the folder structure the way it is, new files will be added at the 
 
 <div align="center">
     <img src="doc/screenshots/photos_dir.png" width="200px" />
-    <img src="doc/screenshots/archive_dir.png" width="200" />
-    <img src="doc/screenshots/photos_in_dir.png" width="200" />
+    <img src="doc/screenshots/archive_dir.png" width="200px" />
+    <img src="doc/screenshots/photos_in_dir.png" width="200px" />
 </div>
 
 To find our notes, we will navigate via Documents to another cPast folder.
@@ -143,9 +147,9 @@ You can move this file to your computer and remove it from your phone. This way,
 If you only copy the file to your computer and leave the file on your phone, new entries will be written to the same file.
 
 <div align="center">
-    <img src="doc/screenshots/notes_dir.png" width="300px" />
-    <img src="doc/screenshots/notes_in_dir.png" width="300px" />
-    <img src="doc/screenshots/notes_file.png" width="300px" />
+    <img src="doc/screenshots/notes_dir.png" width="200px" />
+    <img src="doc/screenshots/notes_in_dir.png" width="200px" />
+    <img src="doc/screenshots/notes_file.png" width="200px" />
 </div>
 
 <h2 style="color: #16385E;">4) How is this app implemented?</h2>
@@ -171,9 +175,9 @@ This Java-based Android app follows clean architecture principles, ensuring sepa
 The ui and data layers depend on the domain layer, but not vice versa.
 Dependency Injection is managed via the di package.
 
-
-   <img src="doc/diagrams/png/component_diagram_general.png" width="400" align="center" />
-
+<div align="center">
+   <img src="doc/diagrams/png/component_diagram_general.png" width="400px" />
+</div>
 
 ### Tools and testing
 
