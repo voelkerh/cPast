@@ -28,7 +28,7 @@ public class CsvNotesRepositoryImpl implements NotesRepository {
 
     private static final String TAG = "CsvNoteStore";
     private static final String FILE_NAME = "cPast_Notes.csv";
-    private static final String TARGET_DIR = Environment.DIRECTORY_DOCUMENTS + "/CapturingThePast/";
+    private static final String TARGET_DIR = Environment.DIRECTORY_DOCUMENTS + "/cPast/";
     private static final String CSV_HEADER = "Date; Time; Archive; File; Note\n";
     private static final String CSV_DELIMITER = ";";
 

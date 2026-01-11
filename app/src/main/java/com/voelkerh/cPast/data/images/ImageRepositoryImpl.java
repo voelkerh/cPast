@@ -141,7 +141,7 @@ public class ImageRepositoryImpl implements ImageRepository {
 
     private String getRelativePath(String[] directoryNames) {
         return Environment.DIRECTORY_PICTURES
-                + "/CapturingThePast/"
+                + "/cPast/"
                 + String.join("/", directoryNames) + "/";
     }
 
