@@ -1,6 +1,6 @@
 <h1 style="color: #16385E;">cPast - An Android App for Historians in the Archive</h1>
 
-<img src="doc/icons/cPast_icon.png" width="80px" align="left">
+<img src="doc/icons/cPast_icon.png" width="100px" align="left" />
 
 This repository contains the Android app cPast.
 It provides an .apk for download and use as well as the Java code base.
@@ -11,9 +11,9 @@ The app is aimed at all historians and researchers who work in historical archiv
 <br>
 
 <div align="center">
-    <img src="doc/screenshots/cPast_startScreen.jpg" width="150px">
-    <img src="doc/screenshots/cPast_homeScreen.jpg" width="150px">
-    <img src="doc/screenshots/cPast_menu.jpg" width="150px">
+    <img src="doc/screenshots/cPast_startScreen.jpg" width="150px" />
+    <img src="doc/screenshots/cPast_homeScreen.jpg" width="150px" />
+    <img src="doc/screenshots/cPast_menu.jpg" width="150px" />
 </div>
 
 <h2 style="color: #16385E;">1) What does cPast do for me?</h2>
@@ -32,7 +32,7 @@ While you take photos in the archive, the app offers three core functions:
 2) cPast automatically <b style="color: #A8843E;">creates folders</b> along the archive structure and saves your photos in them.
    <br>
    <br>E.g. for the record "DQ1/14614" in the German Federal Archive (short "BArch"):
-   <img src="doc/help/help_hierarchy.png" width="200px" align="center">
+<img src="doc/help/help_hierarchy.png" width="300px" align="center" />
    <br>
    Connect your mobile phone to your computer and move the top folder to your computer. Save time sorting your photos!
    <br>
@@ -42,7 +42,7 @@ While you take photos in the archive, the app offers three core functions:
     Have you found an important document or had a brilliant idea that you want to think about later?
     Your notes are saved in a table with the recording time, archive and file name.
     This allows you to continue working on them later on your computer.
-   <img src="doc/help/notes_file.png" width="300" style="display: block; margin-left: auto; margin-right: auto; margin-top: 10px; margin-bottom: 10px;">
+<img src="doc/help/notes_file.png" width="300" align="center" />
 
 <h2 style="color: #16385E;">2) How can I install the app?</h2>
 
@@ -72,19 +72,11 @@ This short form will automatically be part of the file name and the folder struc
 You made a typo? Use the pen symbol to open an edit dialog, where you can edit the names or delete the archive.
 We enter "Bundesarchiv" and the short form "BArch".
 
-<div style="
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
-    margin: 10px 0;
-    background-color: #f0f0f0;
-    border-radius: 10px;
-    padding: 10px 0;
-">
-    <img src="doc/screenshots/cPast_add1.jpg" width="150">
-    <img src="doc/screenshots/cPast_add2.jpg" width="150">
-    <img src="doc/screenshots/cPast_add3.jpg" width="150">
-    <img src="doc/screenshots/cPast_edit.jpg" width="150">
+<div align="center">
+    <img src="doc/screenshots/cPast_add1.jpg" width="150px" />
+    <img src="doc/screenshots/cPast_add2.jpg" width="150px" />
+    <img src="doc/screenshots/cPast_add3.jpg" width="150px" />
+    <img src="doc/screenshots/cPast_edit.jpg" width="150px" />
 </div>
 
 ### Add record information and define folder structure via record name
@@ -98,17 +90,9 @@ The underscores define the folder structure provided by the app.
 As we can see on the right, we will get nested folders that imitate the archive structure with our photos placed on the file level.
 For more information on the use of the folder structure, please see below.
 
-<div style="
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
-    margin: 10px 0;
-    background-color: #f0f0f0;
-    border-radius: 10px;
-    padding: 10px 0;
-">
-    <img src="doc/screenshots/cPast_record.jpg" width="150">
-    <img src="doc/screenshots/photos_in_dir.png" width="500">
+<div align="center">
+    <img src="doc/screenshots/cPast_record.jpg" width="150px" />
+    <img src="doc/screenshots/photos_in_dir.png" width="500px" />
 </div>
 
 ### Take notes and photos
@@ -122,19 +106,11 @@ Currently, your notes cannot be edited here. However, you can use and edit your 
 
 Please note: This app does not save any of your photos or notes to a cloud or server. It runs only locally on your phone. This might be important for GDPR compliance.
 
-<div style="
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
-    margin: 10px 0;
-    background-color: #f0f0f0;
-    border-radius: 10px;
-    padding: 10px 0;
-">
-    <img src="doc/screenshots/cPast_homeNote.jpg" width="150">
-    <img src="doc/screenshots/cPast_saved.jpg" width="150">
-    <img src="doc/screenshots/cPast_menu.jpg" width="150">
-    <img src="doc/screenshots/cPast_notes.jpg" width="150">
+<div align="center">
+    <img src="doc/screenshots/cPast_homeNote.jpg" width="150px" />
+    <img src="doc/screenshots/cPast_saved.jpg" width="150px" />
+    <img src="doc/screenshots/cPast_menu.jpg" width="150px" />
+    <img src="doc/screenshots/cPast_notes.jpg" width="150px" />
 </div>
 
 ### Use your notes and photos on your computer
@@ -143,17 +119,9 @@ Our day in the archive is over and we want to transfer our material to our compu
 To see the data on our phone via our computer, we must make sure to enable "Transferring files" in our phone's USB settings.
 Then we can enter the internal storage via the file explorer on the computer. We will need the two folders "Pictures" and "Documents".
 
-<div style="
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
-    margin: 10px 0;
-    background-color: #f0f0f0;
-    border-radius: 10px;
-    padding: 10px 0;
-">
-    <img src="doc/screenshots/usb_settings.jpg" width="150">
-    <img src="doc/screenshots/internal_storage.png" width="500">
+<div align="center">
+    <img src="doc/screenshots/usb_settings.jpg" width="150px" />
+    <img src="doc/screenshots/internal_storage.png" width="500" />
 </div>
 
 To find our photos, we navigate via Pictures to the cPast folder.
@@ -163,18 +131,10 @@ It is not a problem to remove the folder from your phone.
 If you continue to work in the same archive the next day, the app will build the folder structure again.
 If you leave the folder structure the way it is, new files will be added at the right place within this structure.
 
-<div style="
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
-    margin: 10px 0;
-    background-color: #f0f0f0;
-    border-radius: 10px;
-    padding: 10px 0;
-">
-    <img src="doc/screenshots/photos_dir.png" width="300">
-    <img src="doc/screenshots/archive_dir.png" width="300">
-    <img src="doc/screenshots/photos_in_dir.png" width="300">
+<div align="center">
+    <img src="doc/screenshots/photos_dir.png" width="200px" />
+    <img src="doc/screenshots/archive_dir.png" width="200" />
+    <img src="doc/screenshots/photos_in_dir.png" width="200" />
 </div>
 
 To find our notes, we will navigate via Documents to another cPast folder.
@@ -182,18 +142,10 @@ Here we find the file "cPast_Notes.csv". You can open it in an editor or spreads
 You can move this file to your computer and remove it from your phone. This way, a new notes file will be created when you use the app the next time.
 If you only copy the file to your computer and leave the file on your phone, new entries will be written to the same file.
 
-<div style="
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
-    margin: 10px 0;
-    background-color: #f0f0f0;
-    border-radius: 10px;
-    padding: 10px 0;
-">
-    <img src="doc/screenshots/notes_dir.png" width="300">
-    <img src="doc/screenshots/notes_in_dir.png" width="300">
-    <img src="doc/screenshots/notes_file.png" width="300">
+<div align="center">
+    <img src="doc/screenshots/notes_dir.png" width="300px" />
+    <img src="doc/screenshots/notes_in_dir.png" width="300px" />
+    <img src="doc/screenshots/notes_file.png" width="300px" />
 </div>
 
 <h2 style="color: #16385E;">4) How is this app implemented?</h2>
@@ -220,7 +172,7 @@ The ui and data layers depend on the domain layer, but not vice versa.
 Dependency Injection is managed via the di package.
 
 
-   <img src="doc/diagrams/png/component_diagram_general.png" width="400" style="display: block; margin-left: auto; margin-right: auto; margin-top: 10px; margin-bottom: 10px;">
+   <img src="doc/diagrams/png/component_diagram_general.png" width="400" align="center" />
 
 
 ### Tools and testing
