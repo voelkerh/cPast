@@ -77,10 +77,10 @@ You made a typo? Use the pen symbol to open an edit dialog, where you can edit t
 We enter "Bundesarchiv" and the short form "BArch".
 
 <div align="center">
-    <img src="doc/screenshots/cPast_add1.jpg" width="150px" />
-    <img src="doc/screenshots/cPast_add2.jpg" width="150px" />
-    <img src="doc/screenshots/cPast_add3.jpg" width="150px" />
-    <img src="doc/screenshots/cPast_edit.jpg" width="150px" />
+    <img src="doc/screenshots/cPast_add1.jpg" width="175px" />
+    <img src="doc/screenshots/cPast_add2.jpg" width="175px" />
+    <img src="doc/screenshots/cPast_add3.jpg" width="175px" />
+    <img src="doc/screenshots/cPast_edit.jpg" width="175px" />
 </div>
 
 ### Add record information and define folder structure via record name
@@ -95,7 +95,7 @@ As we can see on the right, we will get nested folders that imitate the archive 
 For more information on the use of the folder structure, please see below.
 
 <div align="center">
-    <img src="doc/screenshots/cPast_record.jpg" width="150px" />
+    <img src="doc/screenshots/cPast_record.jpg" width="175px" />
     <img src="doc/screenshots/photos_in_dir.png" width="500px" />
 </div>
 
@@ -111,10 +111,10 @@ Currently, your notes cannot be edited here. However, you can use and edit your 
 Please note: This app does not save any of your photos or notes to a cloud or server. It runs only locally on your phone. This might be important for GDPR compliance.
 
 <div align="center">
-    <img src="doc/screenshots/cPast_homeNote.jpg" width="150px" />
-    <img src="doc/screenshots/cPast_saved.jpg" width="150px" />
-    <img src="doc/screenshots/cPast_menu.jpg" width="150px" />
-    <img src="doc/screenshots/cPast_notes.jpg" width="150px" />
+    <img src="doc/screenshots/cPast_homeNote.jpg" width="175px" />
+    <img src="doc/screenshots/cPast_saved.jpg" width="175px" />
+    <img src="doc/screenshots/cPast_menu.jpg" width="175px" />
+    <img src="doc/screenshots/cPast_notes.jpg" width="175px" />
 </div>
 
 ### Use your notes and photos on your computer
@@ -124,8 +124,8 @@ To see the data on our phone via our computer, we must make sure to enable "Tran
 Then we can enter the internal storage via the file explorer on the computer. We will need the two folders "Pictures" and "Documents".
 
 <div align="center">
-    <img src="doc/screenshots/usb_settings.jpg" width="150px" />
-    <img src="doc/screenshots/internal_storage.png" width="400px" />
+    <img src="doc/screenshots/usb_settings.jpg" width="175px" />
+    <img src="doc/screenshots/internal_storage.png" width="500px" />
 </div>
 
 To find our photos, we navigate via Pictures to the cPast folder.
@@ -136,9 +136,12 @@ If you continue to work in the same archive the next day, the app will build the
 If you leave the folder structure the way it is, new files will be added at the right place within this structure.
 
 <div align="center">
-    <img src="doc/screenshots/photos_dir.png" width="200px" />
-    <img src="doc/screenshots/archive_dir.png" width="200px" />
-    <img src="doc/screenshots/photos_in_dir.png" width="200px" />
+    <img src="doc/screenshots/photos_dir.png" width="350px" />
+    <img src="doc/screenshots/archive_dir.png" width="350px" />
+</div>
+
+<div align="center">
+    <img src="doc/screenshots/photos_in_dir.png" width="350px" />
 </div>
 
 To find our notes, we will navigate via Documents to another cPast folder.
@@ -147,9 +150,12 @@ You can move this file to your computer and remove it from your phone. This way,
 If you only copy the file to your computer and leave the file on your phone, new entries will be written to the same file.
 
 <div align="center">
-    <img src="doc/screenshots/notes_dir.png" width="200px" />
-    <img src="doc/screenshots/notes_in_dir.png" width="200px" />
-    <img src="doc/screenshots/notes_file.png" width="200px" />
+    <img src="doc/screenshots/notes_dir.png" width="350px" />
+    <img src="doc/screenshots/notes_in_dir.png" width="350px" />
+</div>
+
+<div align="center">
+    <img src="doc/screenshots/notes_file.png" width="350px" />
 </div>
 
 <h2 style="color: #16385E;">4) How is this app implemented?</h2>
