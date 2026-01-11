@@ -1,6 +1,6 @@
 <h1 style="color: #16385E;">cPast - An Android App for Historians in the Archive</h1>
 
-<img src="doc/icons/cPast_icon.png" width="80" style="float: left; margin-right: 10px; margin-left: 10px;">
+<img src="doc/icons/cPast_icon.png" width="80px" align="left">
 
 This repository contains the Android app cPast.
 It provides an .apk for download and use as well as the Java code base.
@@ -10,18 +10,10 @@ The app is aimed at all historians and researchers who work in historical archiv
 
 <br>
 
-<div style="
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
-    margin: 10px 0;
-    background-color: #f0f0f0;
-    border-radius: 10px;
-    padding: 10px 0;
-">
-    <img src="doc/screenshots/cPast_startScreen.jpg" width="150">
-    <img src="doc/screenshots/cPast_homeScreen.jpg" width="150">
-    <img src="doc/screenshots/cPast_menu.jpg" width="150">
+<div align="center">
+    <img src="doc/screenshots/cPast_startScreen.jpg" width="150px">
+    <img src="doc/screenshots/cPast_homeScreen.jpg" width="150px">
+    <img src="doc/screenshots/cPast_menu.jpg" width="150px">
 </div>
 
 <h2 style="color: #16385E;">1) What does cPast do for me?</h2>
@@ -29,21 +21,23 @@ The app is aimed at all historians and researchers who work in historical archiv
 While you take photos in the archive, the app offers three core functions:
 
 1) cPast <b style="color: #A8843E;">names your photos</b> according to this pattern:
-<div style="text-align: center; background-color: #f0f0f0; padding: 10px; border-radius: 10px; display: block;">
-Archive_Inventory_Record_Counter.jpg
-</div>
-<br>
+    <div style="text-align: center; background-color: #f0f0f0; padding: 10px; border-radius: 10px; display: block;">
+    Archive_Inventory_Record_Counter.jpg
+    </div>
+    <br>
    The app detects how many photos have already been taken for a record, uses this counter for the file name and automatically counts up when you take photos.
    Never lose track on a long day in the archive.
-<br>
-
-2) cPast automatically <b style="color: #A8843E;">creates folders</b> along the archive structure and saves your photos in them.
     <br>
-    <br>E.g. for the record "DQ1/14614" in the German Federal Archive (short "BArch"):
-   <img src="doc/help/help_hierarchy.png" width="200" style="display: block; margin-left: auto; margin-right: auto;">
-    Connect your mobile phone to your computer and move the top folder to your computer. Save time sorting your photos!
-<br>
-<br>
+    <br>
+2) cPast automatically <b style="color: #A8843E;">creates folders</b> along the archive structure and saves your photos in them.
+   <br>
+   <br>E.g. for the record "DQ1/14614" in the German Federal Archive (short "BArch"):
+   <img src="doc/help/help_hierarchy.png" width="200px" align="center">
+   <br>
+   Connect your mobile phone to your computer and move the top folder to your computer. Save time sorting your photos!
+   <br>
+   <br>
+   
 3) cPast allows you to <b style="color: #A8843E;">save notes about your photos</b>.
     Have you found an important document or had a brilliant idea that you want to think about later?
     Your notes are saved in a table with the recording time, archive and file name.
