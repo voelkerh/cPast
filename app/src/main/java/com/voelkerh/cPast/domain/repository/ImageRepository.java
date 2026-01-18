@@ -40,7 +40,8 @@ public interface ImageRepository {
      *
      * @param directoryNames directory path segments identifying the record
      * @return the highest numeric counter found, or {@code 0} if none exist
+     * @throws NumberFormatException when counter exceeds Integer.MAX_VALUE
      */
-    int getHighestCounterForRecord(String[] directoryNames);
+    int getHighestCounterForRecord(String[] directoryNames) throws NumberFormatException;
 
 }

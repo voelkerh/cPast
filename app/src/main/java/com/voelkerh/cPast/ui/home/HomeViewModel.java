@@ -141,10 +141,11 @@ public class HomeViewModel extends ViewModel {
      */
     public void saveCapturedImage(String tempImagePath, String note) {
         String baseReference = getBaseReference();
-        int counter = manageImagesUseCase.getHighestCounterForRecord(baseReference);
-        String imageFileName = createFileName(baseReference, String.valueOf(counter + 1));
 
         try {
+            int counter = manageImagesUseCase.getHighestCounterForRecord(baseReference);
+            String imageFileName = createFileName(baseReference, String.valueOf(counter + 1));
+
             boolean saved = manageImagesUseCase.saveImageToGallery(imageFileName, note, tempImagePath);
             if (saved) {
                 String newFileName = createFileName(baseReference, String.valueOf(counter + 2));
@@ -158,10 +159,12 @@ public class HomeViewModel extends ViewModel {
                 if (noteSaved) {
                     successMessage.setValue("Note and image saved\n " + imageFileName);
                 } else {
-                    successMessage.setValue("Image saved to " + imageFileName + "\nNote could not be saved");
+                    successMessage.setValue("Image saved to " + imageFileName + "\nNo note saved");
                 }
             }
             else errorMessage.setValue("Image could not be saved.");
+        } catch (NumberFormatException numberFormatException) {
+            errorMessage.setValue("Error: Image not saved.\n" + numberFormatException.getMessage());
         } catch (Exception e) {
             errorMessage.setValue("Error: Image not saved.\n" + e.getMessage());
         }

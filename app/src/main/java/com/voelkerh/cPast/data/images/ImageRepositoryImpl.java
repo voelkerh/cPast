@@ -182,7 +182,7 @@ public class ImageRepositoryImpl implements ImageRepository {
     }
 
     @Override
-    public int getHighestCounterForRecord(String[] directoryNames) {
+    public int getHighestCounterForRecord(String[] directoryNames) throws NumberFormatException {
         if (directoryNames == null || directoryNames.length == 0) return 0;
 
         String relative = getRelativePath(directoryNames);
@@ -210,6 +210,7 @@ public class ImageRepositoryImpl implements ImageRepository {
                 if (counter > max) max = counter;
             }
         }
+        if (max >= Integer.MAX_VALUE) throw new NumberFormatException("Maximum number of photos for record exceeded.");
         return max;
     }
 
