@@ -48,6 +48,7 @@ public class CsvNotesRepositoryImpl implements NotesRepository {
     @Override
     public boolean save(Capture capture) {
         String note = capture.getNote();
+        if (note.equals("No note taken.")) note = "-";
         String imageName = capture.getFileName();
         LocalDateTime captureTime = capture.getCaptureTime();
         Archive archive = capture.getArchive();

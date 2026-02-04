@@ -156,7 +156,7 @@ public class HomeViewModel extends ViewModel {
 
                 boolean noteSaved = writeNotesUseCase.saveNote(capture);
 
-                if (noteSaved) {
+                if (noteSaved && !note.isEmpty()) {
                     successMessage.setValue("Note and image saved\n " + imageFileName);
                 } else {
                     successMessage.setValue("Image saved to " + imageFileName + "\nNo note saved");
@@ -222,14 +222,16 @@ public class HomeViewModel extends ViewModel {
             nextFileName.setValue("");
             return;
         }
+        try {
+            int counter = manageImagesUseCase.getHighestCounterForRecord(baseReference);
+            String fileName = createFileName(baseReference, String.valueOf(counter + 1));
+            nextFileName.setValue(fileName);
 
-        int counter = manageImagesUseCase.getHighestCounterForRecord(baseReference);
-
-        String fileName = createFileName(baseReference, String.valueOf(counter + 1));
-        nextFileName.setValue(fileName);
-
-        if (fileName.length() > 128) {
-            errorMessage.setValue("Your catalogue reference is very long and may result in unusable file names.");
+            if (fileName.length() > 128) {
+                errorMessage.setValue("Your catalogue reference is very long and may result in unusable file names.");
+            }
+        } catch (NumberFormatException numberFormatException) {
+            errorMessage.setValue("Error:\n" + numberFormatException.getMessage());
         }
     }
 

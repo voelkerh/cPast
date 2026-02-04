@@ -210,7 +210,7 @@ public class ImageRepositoryImpl implements ImageRepository {
                 if (counter > max) max = counter;
             }
         }
-        if (max >= Integer.MAX_VALUE) throw new NumberFormatException("Maximum number of photos for record exceeded.");
+        if (max >= Integer.MAX_VALUE) throw new NumberFormatException("Max. number of photos for record exceeded.");
         return max;
     }
 
