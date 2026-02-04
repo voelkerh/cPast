@@ -202,9 +202,9 @@ You are also welcome to submit your own suggestions and code improvements.
 
 <h2 style="color: #16385E;">6) License</h2>
 
-cPast is marked with the MIT License.
+cPast by Henriette Voelker is marked with the MIT License.
 
 This project is a revised version of [Capturing The Past](https://github.com/benskitchen/CapturingThePast).
 The original application was developed at the [Sussex Digital Humanities Lab](https://www.sussex.ac.uk/research/centres/sussex-humanities-lab/)
 in the Capturing the Past [project](https://blogs.sussex.ac.uk/capturing-the-past/about-us/).
-The MIT licence is granted with the kind permission of PI Tim Hitchcock.
+The original code was published under the MIT license(https://github.com/benskitchen/CapturingThePast/).

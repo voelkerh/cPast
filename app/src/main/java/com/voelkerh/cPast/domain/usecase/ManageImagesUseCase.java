@@ -77,7 +77,7 @@ public class ManageImagesUseCase {
      * @param baseReference base identifier used to derive the record directory
      * @return the highest numeric counter found, or {@code 0} if none exist
      */
-    public int getHighestCounterForRecord(String baseReference) {
+    public int getHighestCounterForRecord(String baseReference) throws NumberFormatException {
         if (baseReference == null) return 0;
 
         String[] directoryNames = deriveDirectoryStructure(baseReference);

@@ -25,8 +25,7 @@ public class WriteNotesUseCase {
     /**
      * Persists the note associated with the given capture.
      *
-     * <p>The operation is rejected if the capture is incomplete or if the note
-     * content is empty.</p>
+     * <p>The operation is rejected if the capture is incomplete.</p>
      *
      * @param capture the capture containing note data
      * @return boolea if the note was successfully validated and persisted
@@ -36,7 +35,6 @@ public class WriteNotesUseCase {
 
         if (capture.getFileName() == null ||
                 capture.getNote() == null ||
-                capture.getNote().equals("No note taken.") ||
                 capture.getCaptureTime() == null ||
                 capture.getArchive() == null) {
             return false;
