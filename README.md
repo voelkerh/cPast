@@ -21,7 +21,8 @@ The app is aimed at all historians and researchers who work in historical archiv
 While you take photos in the archive, the app offers three core functions:
 
 1) cPast <b style="color: #A8843E;">names your photos</b> according to this pattern:
-    <div style="text-align: center; background-color: #f0f0f0; padding: 10px; border-radius: 10px; display: block;">
+
+   <div style="text-align: center; background-color: #f0f0f0; padding: 10px; border-radius: 10px; display: block;">
     Archive_Inventory_Record_Counter.jpg
     </div>
     <br>
@@ -30,8 +31,9 @@ While you take photos in the archive, the app offers three core functions:
     <br>
     <br>
 2) cPast automatically <b style="color: #A8843E;">creates folders</b> along the archive structure and saves your photos in them.
-   <br>
-   <br>E.g. for the record "DQ1/14614" in the German Federal Archive (short "BArch"):
+
+   E.g. for the record "DQ1/14614" in the German Federal Archive (short "BArch"):
+
    <div align="center">
       <img src="doc/help/help_hierarchy.png" width="300px" />
    </div>
@@ -39,30 +41,32 @@ While you take photos in the archive, the app offers three core functions:
    Connect your mobile phone to your computer and move the top folder to your computer. Save time sorting your photos!
    <br>
    <br>
-   
 3) cPast allows you to <b style="color: #A8843E;">save notes about your photos</b>.
-    Have you found an important document or had a brilliant idea that you want to think about later?
-    Your notes are saved in a table with the recording time, archive and file name.
-    This allows you to continue working on them later on your computer.
+   Have you found an important document or had a brilliant idea that you want to think about later?
+   Your notes are saved in a table with the recording time, archive and file name.
+   This allows you to continue working on them later on your computer.
+
 <div align="center">
    <img src="doc/help/notes_file.png" width="400px" />
 </div>
 
 <h2 style="color: #16385E;">2) How can I install the app?</h2>
 
-1) Click on the latest release in the Releases section at the right of this repository below the About section.
-2) Download the .apk file. You do not need to download the source code.
-3) Connect your phone to your computer using a USB cable.
-4) Make sure to enable "Transferring files" in our phone's USB settings. Only now you can access the internal storage of your phone via your computer.
-5) In your phone's settings search for the option "Install unknown apps". Enable installations from the source "My Files".
-6) Access your phone's internal storage from your computer. To do so, you must select your phone in your file explorer and double click on it.
-7) Navigate to your phone's "Download" folder via your file explorer on your computer.
-8) Copy the .apk file from your computer to your phone.
-9) On your phone open "My Files" > "Download" and click on the .apk file.
-10) You will be asked "Do you want to install this app?" Click "Install".
-11) You may be asked to scan the app. You can choose to scan the app and proceed with the installation.
-12) Choose "Open" to start using cPast on your phone. You can disconnect your phone from your computer.
-13) Disable "Install unknown apps" for "My Files" in your phone's settings.
+Details of this installation may vary between Android version.
+
+1. Click on the latest release in the Releases section at the right of this repository below the About section.
+3) Download the .apk file. You do not need to download the source code.
+4) Connect your phone to your computer using a USB cable.
+5) Make sure to enable "Transferring files" in our phone's USB settings. Only now you can access the internal storage of your phone via your computer.
+6) In your phone's settings search for the option "Install unknown apps". Enable installations from the source "My Files".
+7) Access your phone's internal storage from your computer. To do so, you must select your phone in your file explorer and double click on it.
+8) Navigate to your phone's "Download" folder via your file explorer on your computer.
+9) Copy the .apk file from your computer to your phone.
+10) On your phone open "My Files" > "Download" and click on the .apk file.
+11) You will be asked "Do you want to install this app?" Click "Install".
+12) You may be asked to scan the app. You can choose to scan the app and proceed with the installation.
+13) Choose "Open" to start using cPast on your phone. You can disconnect your phone from your computer.
+14) Disable "Install unknown apps" for "My Files" in your phone's settings.
 
 <h2 style="color: #16385E;">3) How can I use the app?</h2>
 
@@ -166,10 +170,9 @@ If you only copy the file to your computer and leave the file on your phone, new
 This Java-based Android app follows clean architecture principles, ensuring separation of concerns and maintainability. The architecture consists of three layers:
 
 - UI Layer: Handles user interactions (Activities, Fragments, ViewModels).
-
 - Domain Layer: Contains business logic, use cases, and models (e.g., UseCases, Models, Repository Interfaces).
-
 - Data Layer: Manages data sources and repositories.
+
 ```
 /app
 ├── /ui (Activities, Fragments, ViewModels)
@@ -177,7 +180,6 @@ This Java-based Android app follows clean architecture principles, ensuring sepa
 ├── /data (Repositories)
 └── /di (Dependency Injection Modules)
 ```
-
 
 The ui and data layers depend on the domain layer, but not vice versa.
 Dependency Injection is managed via the di package.
