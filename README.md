@@ -52,9 +52,10 @@ While you take photos in the archive, the app offers three core functions:
 
 <h2 style="color: #16385E;">2) How can I install the app?</h2>
 
-Details of this installation may vary between Android version.
+Details of this installation may vary between Android versions.
 
 1. Click on the latest release in the Releases section at the right of this repository below the About section.
+
 3) Download the .apk file. You do not need to download the source code.
 4) Connect your phone to your computer using a USB cable.
 5) Make sure to enable "Transferring files" in our phone's USB settings. Only now you can access the internal storage of your phone via your computer.
