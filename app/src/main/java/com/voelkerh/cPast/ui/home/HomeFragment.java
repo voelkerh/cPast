@@ -1,16 +1,12 @@
 package com.voelkerh.cPast.ui.home;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -18,6 +14,9 @@ import com.voelkerh.cPast.R;
 import com.voelkerh.cPast.di.ViewModelFactory;
 import com.voelkerh.cPast.domain.model.Archive;
 import com.voelkerh.cPast.domain.model.TempImageData;
+import com.voelkerh.cPast.ui.capture.CaptureMethod;
+import com.voelkerh.cPast.ui.capture.CaptureRequest;
+import com.voelkerh.cPast.ui.capture.intent.IntentCaptureMethod;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
@@ -36,10 +35,9 @@ import static android.widget.Toast.LENGTH_SHORT;
  *
  * <p>This class belongs to the UI layer and contains no business logic.</p>
  */
-public class HomeFragment extends Fragment implements AddArchiveDialog.Listener, EditArchiveDialog.Listener {
+public class HomeFragment extends Fragment implements AddArchiveDialog.Listener, EditArchiveDialog.Listener, CaptureMethod.Listener {
 
     private HomeViewModel homeViewModel;
-    private String tempImagePath;
 
     // UI components
     private Spinner dropdown;
@@ -47,18 +45,14 @@ public class HomeFragment extends Fragment implements AddArchiveDialog.Listener,
     private TextView recordReferenceText;
     private TextView noteText;
 
-    private ActivityResultLauncher<Intent> takePictureLauncher;
+    private CaptureMethod captureMethod;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         homeViewModel = new ViewModelProvider(this, new ViewModelFactory()).get(HomeViewModel.class);
 
-        takePictureLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
-            if (result.getResultCode() == android.app.Activity.RESULT_OK) {
-                handleCameraResult();
-            }
-        });
+        captureMethod = new IntentCaptureMethod(this, requireContext(), this);
     }
 
     @Override
@@ -157,32 +151,14 @@ public class HomeFragment extends Fragment implements AddArchiveDialog.Listener,
             return;
         }
 
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        TempImageData tempData = homeViewModel.prepareCameraCapture();
 
-        if (takePictureIntent.resolveActivity(requireContext().getPackageManager()) != null) {
-            TempImageData tempData = homeViewModel.prepareCameraCapture();
+        if(tempData == null) return;
 
-            if (tempData != null) {
-                tempImagePath = tempData.getPath();
-                android.net.Uri uri = tempData.getUri();
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-                takePictureLauncher.launch(takePictureIntent);
-            }
-        }
+        captureMethod.capture(new CaptureRequest(tempData.getPath(), tempData.getUri()));
+
     }
 
-    private void handleCameraResult() {
-        if (tempImagePath == null) {
-            showMessage("Error: No image path available");
-            return;
-        }
-
-        String note = noteText.getText().toString().trim();
-        homeViewModel.saveCapturedImage(tempImagePath, note);
-
-        noteText.setText("");
-        tempImagePath = null;
-    }
 
     @Override
     public void onArchiveCreated(String fullName, String shortName) {
@@ -201,5 +177,22 @@ public class HomeFragment extends Fragment implements AddArchiveDialog.Listener,
 
     private void showMessage(String str) {
         Toast.makeText(requireContext(), str, LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onCaptured(String filePath) {
+        String note = noteText.getText().toString().trim();
+        homeViewModel.saveCapturedImage(filePath, note);
+        noteText.setText("");
+    }
+
+    @Override
+    public void onCancelled() {
+
+    }
+
+    @Override
+    public void onError(String message) {
+        showMessage(message);
     }
 }
